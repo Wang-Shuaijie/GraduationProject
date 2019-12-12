@@ -35,7 +35,7 @@
             <artifactId>spring-boot-starter-logging</artifactId>
         </dependency>
 
-        <!--验证框架-->
+        <!--验证框架
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
@@ -45,6 +45,7 @@
             <artifactId>hibernate-validator</artifactId>
             <version>6.0.17.Final</version>
         </dependency>
+        -->
 
         <!-- 集成redis -->
         <dependency>
