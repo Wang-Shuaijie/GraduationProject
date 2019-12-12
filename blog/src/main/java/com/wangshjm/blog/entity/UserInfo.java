@@ -15,17 +15,17 @@ public class UserInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    //用户id
     private Long uId;
-
+    //姓名
     private String name;
-
+    //性别
     private String sex;
-
+    //生日
     private Date birthday;
-
+    //爱好
     private String hobby;
-
+    //地址
     private String address;
 
     public String getFormateBirthday(){
