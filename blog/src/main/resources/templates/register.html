@@ -4,13 +4,17 @@
     <meta charset="UTF-8">
     <title>注册页面</title>
 
-    <link type="text/css" rel="stylesheet" th:href="@{/css/blog.css}">
+    <link type="text/css" rel="stylesheet" th:href="@{/css/register.css}">
     <script type="text/javascript"  th:src="@{/js/jquery-3.2.1.min.js}"></script>
 </head>
 <body class="login_bj" style="background-color: grey">
-<div class="zhuce_body">
-    <div class="zhuce_kong" id="dre_div">
-        <div class="zc">
+<canvas id="c"></canvas>
+<!--动态码流背景 -->
+<script type="text/javascript" src="https://blog-static.cnblogs.com/files/Steven-Tim/hk01.js"></script>
+
+<div id="home">
+    <div class="register_kong" id="register_div">
+        <div class="rigister">
             <div class="bj_bai" style="height: 468px">
                 <h3>欢迎注册</h3>
                 <form action="#" th:action="@{/doRegister}" method="post" id="registerForm">
