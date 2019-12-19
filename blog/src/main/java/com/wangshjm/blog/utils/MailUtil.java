@@ -26,11 +26,8 @@ public class MailUtil {
             MyAuthenticator myauth = new MyAuthenticator(from, "hyzncuxfcjntbced");
             Session session = Session.getDefaultInstance(props, myauth);
 
-            //    session.setDebug(true);
-
             // Define message
             MimeMessage message = new MimeMessage(session);
-
 
             // Set the from address
             message.setFrom(new InternetAddress(from));
@@ -54,6 +51,7 @@ public class MailUtil {
             log.info("Send Email Exception:" + e.getMessage());
         }
     }
+
 }
 
 class MyAuthenticator extends javax.mail.Authenticator {
