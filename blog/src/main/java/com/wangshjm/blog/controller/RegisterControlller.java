@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,44 +30,37 @@ public class RegisterControlller extends BaseController {
     private RedisTemplate<String, String> redisTemplate;
 
     @RequestMapping("/doRegister")
+    @Transactional(rollbackFor = {Exception.class})
     public String doRegister(Model model, @RequestParam(value = "email", required = false) String email,
                              @RequestParam(value = "password", required = false) String password,
                              @RequestParam(value = "phone", required = false) String phone,
                              @RequestParam(value = "nickName", required = false) String nickname,
                              @RequestParam(value = "code", required = false) String code) {
-        log.debug("注册");
-        if (StringUtils.isEmpty(code)) {
-            model.addAttribute("error", "非法注册，请重新注册！");
-            return "/register";
-        }
-
-        User user = userService.findByEmail(email);
-        if (user != null) {
-            model.addAttribute("error", "该用户已经被注册！");
-            return "/register";
-        } else {
-            user = new User();
-            user.setNickName(nickname);
-
-            user.setPassword(MD5Util.encodeToHex(ConstantsValue.SALT + password));
-            user.setPhone(phone);
-            user.setEmail(email);
-            user.setState("0");
-            user.setEnable("0");
-            //默认头像
-            user.setImgUrl("/images/icon_m.jpg");
-            //生成邮件激活码
-            String validateCode = MD5Util.encodeToHex(ConstantsValue.SALT + email + password);
-            redisTemplate.opsForValue().set(email, validateCode, 24, TimeUnit.HOURS);// 24小时 有效激活 redis保存激活码
-
+        User user = new User();
+        user.setNickName(nickname);
+        user.setPassword(MD5Util.encodeToHex(ConstantsValue.SALT + password));
+        user.setPhone(phone);
+        user.setEmail(email);
+        user.setState("0");
+        user.setEnable("0");
+        //默认头像
+        user.setImgUrl("/images/icon_m.jpg");
+        //生成邮件激活码
+        String validateCode = MD5Util.encodeToHex(ConstantsValue.SALT + email + password);
+        redisTemplate.opsForValue().set(email, validateCode, 24, TimeUnit.HOURS);// 24小时 有效激活 redis保存激活码
+        try {
             userService.regist(user);
-            log.info("注册成功");
-            //发送激活邮件
-            MailUtil.sendEmailMessage(email, validateCode);
-            String message = email + "," + validateCode;
-            model.addAttribute("message", message);
-            return "/regist/registerSuccess";
+        } catch (Exception e) {
+            log.error("注册出错:{}", e.getMessage());
+            model.addAttribute("error", "注册出现了问题，稍后重试！");
+            return "/register";
         }
+        //发送激活邮件
+        MailUtil.sendEmailMessage(email, validateCode);
+        String message = email + "," + validateCode;
+        model.addAttribute("message", message);
+        return "/regist/registerSuccess";
+
     }
 
     /**
@@ -144,7 +138,7 @@ public class RegisterControlller extends BaseController {
             return "/regist/activeFail";
         }
 
-        if (StringUtils.isEmpty(validateCode) && validateCode.equals(code)) {
+        if (!StringUtils.isEmpty(validateCode) && validateCode.equals(code)) {
             //激活码正确
             userTrue.setEnable("1");
             userTrue.setState("1");

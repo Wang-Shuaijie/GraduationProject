@@ -130,7 +130,7 @@ public class LoginController extends BaseController {
                 getSession().setAttribute("user", user);
                 model.addAttribute("user", user);
                 log.info("手机快捷登录成功");
-                return "/list";
+                return "/index";
             } else {
                 //验证码错误或过期
                 model.addAttribute("error", "验证码错误或过期");
@@ -150,7 +150,7 @@ public class LoginController extends BaseController {
                 getSession().setAttribute("user", user);
                 model.addAttribute("user", user);
 
-                return "redirect:/list";
+                return "redirect:/index";
             } else {
                 log.info("用户登录登录失败");
                 model.addAttribute("email", email);
