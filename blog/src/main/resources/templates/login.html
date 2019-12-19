@@ -7,6 +7,8 @@
     <link rel="stylesheet" th:href="@{/css/zui/css/zui.min.css}">
     <link rel="stylesheet" th:href="@{/css/zui/lib/uploader/zui.uploader.min.css}">
     <link rel="stylesheet"  th:href="@{/css/login.css}">
+    <script th:src="@{/js/jquery-3.2.1.min.js}"></script>
+    <script th:src="@{/css/zui/js/zui.min.js}"></script>
 </head>
 <body>
 <canvas id="c"></canvas>
@@ -29,10 +31,12 @@
                         <div class="form-group">
                             <label for="username" class="sr-only">用户名</label>
                             <input type="text" id="username" name="username" onblur="checkUserName();" th:value="${email}" class="form-control" placeholder="用户名">
+                            <span id="username_span"></span>
                         </div>
                         <div class="form-group">
                             <label for="password" class="sr-only">密码</label>
                             <input type="password" id="password" name="password" onblur="checkPassword();" class="form-control" placeholder="密码">
+                            <span id="password_span"></span>
                         </div>
                         <div class="form-group">
                             <label for="code" class="sr-only">验证码</label>
@@ -52,7 +56,7 @@
                             <div> <a th:href = "@{/register}" >没有账号？立即注册</a></div>
                         </div>
                         <br/>
-                        <span th:if="${error ne null}" style="color: red">${error}</span>
+                        <span th:if="${error ne null}" style="color: red" th:text="${error}"></span>
                     </form>
                 </div>
                 <!--手机登录-->
@@ -90,7 +94,6 @@
                             </div>
                         </div>
                         <br/>
-                        <span th:if="${error ne null}" style="color: red">${error}</span>
                     </form>
                 </div>
             </div>
@@ -98,6 +101,7 @@
     </div>
 </div>
 </body>
+
 <script type="text/javascript">
 
     /**
@@ -146,16 +150,13 @@
      * 校验用户名
      */
     function checkUserName() {
-        $("#back_data").text("");
-        $("#back_active").text("");
-        $("#back_phone").text("");
         var username = $("#username").val();
         username = username.replace(/^\s+|\s+$/g,"");
         if(username == ""){
-            $("#normal_span").text("请输入用户名或密码！").css("color","red");
+            $("#username_span").text("请输入用户名或密码！").css("color","red");
             return false;
         }else{
-            $("#normal_span").text("").css("color","green");
+            $("#username_span").text("").css("color","green");
             return true;
         }
     }
@@ -164,17 +165,14 @@
      * 校验密码
      */
     function checkPassword() {
-        $("#back_data").text("");
-        $("#back_active").text("");
-        $("#back_phone").text("");
         var password = $("#password").val();
         password = password.replace(/^\s+|\s+$/g, "");
         if (password == "") {
-            $("#normal_span").text("请输入密码！").css("color", "red");
+            $("#password_span").text("请输入密码！").css("color", "red");
             return false;
         }
         if (password.length < 6) {
-            $("#normal_span").text("密码长度少于6位，请重新输入！").css("color", "red");
+            $("#password_span").text("密码长度少于6位，请重新输入！").css("color", "red");
             return false;
         }
 
@@ -202,7 +200,7 @@
         phone = phone.replace(/^\s+|\s+$/g, "");
 
         if (!(/^1[3|4|5|8|7][0-9]\d{8}$/.test(phone))) {
-            $("#phone_span").text("手机号码非法，请重新输入！");
+            $("#phone_span").text("手机号码非法，请重新输入！").css("color", "red");;
             phoneFlag = false;
         } else {
             $.ajax({
@@ -244,7 +242,7 @@
     /**
      * 发送验证码
      */
-    $("#go").click(function () {
+    $("#go").click(function (ev) {
         if(phoneFlag){
             //  发送短信给用户手机..
             // 1 发送一个HTTP请求，通知服务器 发送短信给目标用户
@@ -301,4 +299,5 @@
     });
 
 </script>
+
 </html>

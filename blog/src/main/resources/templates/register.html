@@ -55,7 +55,7 @@
                     </div>
                     <input name="注册" type="button" class="btn_zhuce" id="to_register" value="注册">
                     <br/>
-                    <span th:if="${error ne null}" style="color: red">${error}</span>
+                    <span th:if="${error ne null}" style="color: red" th:text="${error}"></span>
                 </form>
             </div>
             <div class="bj_right" style="height: 468px">
