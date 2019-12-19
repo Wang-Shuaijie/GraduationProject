@@ -4,35 +4,15 @@
     <meta charset="UTF-8">
     <title>登录页面</title>
 
-    <link rel="stylesheet" href="/css/zui/css/zui.min.css" th:href="@{/css/zui/css/zui.min.css}">
-    <link rel="stylesheet" href="/css/zui/lib/uploader/zui.uploader.min.css" th:href="@{/css/zui/lib/uploader/zui.uploader.min.css}">
-    <style>
-        body {
-            background: url("/images/4.jpg") no-repeat center fixed;
-        }
-
-        .content {
-            margin: 50px;
-        }
-
-        .login-box {
-            background: white;
-            box-shadow: 0 0 0 15px rgba(255, 255, 255, .1);
-            border-radius: 5px;
-            padding: 40px;
-        }
-
-        .login-form, .form-group {
-            margin-top: 20px;
-        }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/zui/css/zui.min.css}">
+    <link rel="stylesheet" th:href="@{/css/zui/lib/uploader/zui.uploader.min.css}">
+    <link rel="stylesheet"  th:href="@{/css/login.css}">
 </head>
 <body>
+<canvas id="c"></canvas>
+<!--动态码流背景 -->
+<script type="text/javascript" th:src="@{/js/background.js}"></script>
 <div class="content">
-    <!-- logo -->
-    <div class="row">
-        <img src="images/2.gif">
-    </div>
     <!--表单-->
     <div class="row" style="margin-top: 50px">
         <div class="col-sm-6 col-sm-offset-3 col-md-4 col-sm-offset-4 login-box">
@@ -45,14 +25,14 @@
             <div class="tab-content">
                 <!--普通登录-->
                 <div class="tab-pane fade in active" id="account-login">
-                    <form id="normal_form" name="form" role="form" class="login-form" action="" method="post">
+                    <form id="normal_form" name="form" role="form" class="login-form" th:action="@{/doLogin}" method="post">
                         <div class="form-group">
                             <label for="username" class="sr-only">用户名</label>
-                            <input type="text" id="username" name="username" onblur="checkUserName();" value="${email}" class="form-control" placeholder="用户名">
+                            <input type="text" id="username" name="username" onblur="checkUserName();" th:value="${email}" class="form-control" placeholder="用户名">
                         </div>
                         <div class="form-group">
                             <label for="password" class="sr-only">密码</label>
-                            <input type="password" id="password" name="password" onblur="checkPassword();" value="${password}" class="form-control" placeholder="密码">
+                            <input type="password" id="password" name="password" onblur="checkPassword();" class="form-control" placeholder="密码">
                         </div>
                         <div class="form-group">
                             <label for="code" class="sr-only">验证码</label>
@@ -61,38 +41,23 @@
 
                         <div>
                             <img id="captchaImg" style="CURSOR: pointer" onclick="changeCaptcha()"
-                                 title="看不清楚?请点击刷新验证码!" align='absmiddle' src="${ctx}/captchaServlet"
-                                 height="18" width="55">
+                                 title="看不清楚?请点击刷新验证码!" align='absmiddle' th:src="@{/captcha}">
                             <a href="javascript:;"
                                onClick="changeCaptcha()" style="color: #666;">看不清楚</a> <span id="code_span" style="color: red"></span>
                         </div>
+
                         <div class="form-group">
-                            <!-- 多选框 -->
-                            <div class="checkbox">
-                                <label>
-                                    <br/>
-                                    <!--
-                                    <span th:if="${error eq 'fail'}" style="color: red" id="back_data">用户名或者密码错误</span>
-
-                                    <span th:if="${error eq 'active'}" style="color: red" id="back_active">您的账号未激活，请先激活！</span>
-
-                                    <span th:if="${error eq 'phone_fail'}" style="color: red" id="back_phone">手机验证码错误或者已失效</span>
-                                    -->
-
-                                    <span style="color: green" id="normal_span">${success}</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <button type="button" id="btn" class="btn btn-primary btn-block" onclick="normal_login();">登录</button>
+                            <button type="button" id="to_Login" class="btn btn-primary btn-block">登录</button>
                             <br/>
-                            <div> <a href = "register.jsp" >没有账号？立即注册</a></div>
+                            <div> <a th:href = "@{/register}" >没有账号？立即注册</a></div>
                         </div>
+                        <br/>
+                        <span th:if="${error ne null}" style="color: red">${error}</span>
                     </form>
                 </div>
                 <!--手机登录-->
                 <div class="tab-pane fade" id="phone-login">
-                    <form role="form" class="login-form form-horizontal" id="phone_form" action="${ctx}/doLogin" method="post">
+                    <form role="form" class="login-form form-horizontal" id="phone_form" th:action="@{/doLogin}" method="post">
                         <div class="form-group">
                             <label for="username" class="sr-only">用户名</label>
                             <div class="col-xs-12">
@@ -110,11 +75,9 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <!-- 多选框 -->
                             <div class="checkbox col-xs-12">
                                 <label>
-                                    <input type="checkbox" name="hobbies"> 记住登录状态
-
+                                    <input type="checkbox" name="loginstate"> 记住登录状态
                                 </label>
                             </div>
                         </div>
@@ -123,16 +86,219 @@
                             <div class="col-xs-12">
                                 <button type="button" id="phone_btn" class="btn btn-primary btn-block">登录</button>
                                 <br/>
-                                <div> <a href = "register.html" >没有账号？立即注册</a></div>
+                                <div> <a th:href = "@{/register}" >没有账号？立即注册</a></div>
                             </div>
                         </div>
+                        <br/>
+                        <span th:if="${error ne null}" style="color: red">${error}</span>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-
 </body>
+<script type="text/javascript">
+
+    /**
+     * 更换验证码
+     * js语句行使用thymeleaf的语法,使用内联表达式inline的语法
+     */
+    function changeCaptcha() {
+        $("#captchaImg").attr('src', '[[@{/captcha?}]]'+ Math.floor(Math.random() * 100));
+    }
+
+    /**
+     * 验证码校验
+     */
+    var verifyCodeFlag = false;
+    function checkCode() {
+        var code = $("#code").val();
+        code = code.replace(/^\s+|\s+$/g, "");
+        if (code == "") {
+            $("#code_span").text("请输入验证码！").css("color", "red");
+            verifyCodeFlag = false;
+        } else {
+            $.ajax({
+                type: 'post',
+                url: '[[@{/checkCode}]]',
+                data: {
+                    "code": code
+                },
+                dataType: 'json',
+                success: function (data) {
+                    var val = data['message'];
+                    if (val == "success") {
+                        $("#code_span").text("√").css("color", "green");
+                        $("#reg_span").text("");
+                        verifyCodeFlag = true;
+                    } else {
+                        $("#code_span").text("验证码错误！").css("color", "red");
+                        verifyCodeFlag = false;
+                    }
+                }
+            });
+        }
+        return verifyCodeFlag;
+    }
+
+    /**
+     * 校验用户名
+     */
+    function checkUserName() {
+        $("#back_data").text("");
+        $("#back_active").text("");
+        $("#back_phone").text("");
+        var username = $("#username").val();
+        username = username.replace(/^\s+|\s+$/g,"");
+        if(username == ""){
+            $("#normal_span").text("请输入用户名或密码！").css("color","red");
+            return false;
+        }else{
+            $("#normal_span").text("").css("color","green");
+            return true;
+        }
+    }
+
+    /**
+     * 校验密码
+     */
+    function checkPassword() {
+        $("#back_data").text("");
+        $("#back_active").text("");
+        $("#back_phone").text("");
+        var password = $("#password").val();
+        password = password.replace(/^\s+|\s+$/g, "");
+        if (password == "") {
+            $("#normal_span").text("请输入密码！").css("color", "red");
+            return false;
+        }
+        if (password.length < 6) {
+            $("#normal_span").text("密码长度少于6位，请重新输入！").css("color", "red");
+            return false;
+        }
+
+        $("#normal_span").text("").css("color", "green");
+        return true;
+    }
+
+    /**
+     * 提交表单
+     */
+    $("#to_Login").click(function () {
+        if(checkUserName() && checkPassword() && checkCode()) {
+            $("#normal_form").submit();
+        }
+    });
+
+
+    /**
+     * 校验手机号
+     */
+    var v = 0;
+    var phoneFlag = false;
+    function checkPhone() {
+        var phone = $("#phone").val();
+        phone = phone.replace(/^\s+|\s+$/g, "");
+
+        if (!(/^1[3|4|5|8|7][0-9]\d{8}$/.test(phone))) {
+            $("#phone_span").text("手机号码非法，请重新输入！");
+            phoneFlag = false;
+        } else {
+            $.ajax({
+                type: 'post',
+                url: '[[@{/checkPhone}]]',
+                data: {
+                    "phone": phone
+                },
+                dataType: 'json',
+                success: function (data) {
+                    var val = data['message'];
+                    if (val == "success") {
+                        $("#phone_span").text("该手机号尚未注册");
+                        phoneFlag = false;
+                    } else {
+                        $("#phone_span").text("");
+                        phoneFlag = true;
+                    }
+                }
+            });
+        }
+        return phoneFlag;
+    }
+
+    /**
+     * 重新获取手机验证码
+     */
+    function countDown(s){
+        if(s <= 0){
+            $("#go").text("重新获取");
+            $("#go").removeAttr("disabled");
+            return;
+        }
+        /* $("#go").val(s + "秒后重新获取");*/
+        $("#go").text(s + "秒后重新获取");
+        setTimeout("countDown("+(s-1)+")",1000);
+    }
+
+    /**
+     * 发送验证码
+     */
+    $("#go").click(function () {
+        if(phoneFlag){
+            //  发送短信给用户手机..
+            // 1 发送一个HTTP请求，通知服务器 发送短信给目标用户
+            var telephone =$("input[name='telephone']").val();// 用户输入的手机号
+            // 用户输入手机号校验通过
+            $("#go").attr("disabled", "disabled");
+            countDown(60);
+            $.ajax({
+                type: 'post',
+                url: '[[@{/sendSms}]]',
+                data: {
+                    "telephone": telephone
+                },
+                dataType: 'json',
+                success: function (data) {
+                    var msg = data["msg"];
+                    if(msg){
+                        alert("发送短信成功!");
+                    }else{
+                        alert("发送短信出错，请联系管理员");
+                    }
+                }
+            });
+            var oEvent = ev || event;
+            //js阻止链接默认行为，没有停止冒泡
+            oEvent.preventDefault();
+        }
+    });
+
+    /**
+     * 验证码是否规范
+     * @returns {boolean}
+     */
+    function checkPhoneCode(){
+        var reg = /^\d{6}\b/;
+        var code = $("#verifyCode").val();
+        if(reg.test(code)){
+            return true;
+        }else {
+            return false;
+        }
+
+        return false;
+    }
+
+    $("#phone_btn").click(function () {
+        if(checkPhone()&& checkPhoneCode()){
+            // 校验用户名和密码
+            $("#phone_span").text("").css("color","red");
+            $("#phone_form").submit();
+        }else {
+            alert("请输入手机号和6位验证码!");
+        }
+    });
+
+</script>
 </html>

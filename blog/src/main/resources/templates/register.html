@@ -9,7 +9,7 @@
     <link type="text/css" rel="stylesheet" th:href="@{/css/register.css}">
     <script type="text/javascript"  th:src="@{/js/jquery-3.2.1.min.js}"></script>
 </head>
-<body class="login_bj" style="background-color: grey">
+<body style="background-color: grey">
 <canvas id="c"></canvas>
 <!--动态码流背景 -->
 <script type="text/javascript" th:src="@{/js/background.js}"></script>
@@ -44,7 +44,7 @@
                         <img id="captchaImg" style="cursor: pointer"
                              onclick="changeCaptcha()" title="看不清楚?请点击刷新验证码!" align='absmiddle' th:src="@{/captcha}">
                         <a href="javascript:;"
-                           onClick="changeCaptcha()" style="color: #666;">看不清楚</a>
+                           onClick="changeCaptcha()" style="color: #666;">看不清楚</a><span id="code_span" style="color: red"></span>
                     </div>
 
                     <div style="padding-top: 12px;">
@@ -107,7 +107,7 @@
      * js语句行使用thymeleaf的语法,使用内联表达式inline的语法
      */
     function changeCaptcha() {
-        $("#captchaImg").attr('src', '[[@{/captcha}]]');
+        $("#captchaImg").attr('src', '[[@{/captcha?}]]'+ Math.floor(Math.random() * 100));
     }
 
     /**
@@ -170,6 +170,7 @@
                 }
             });
         }
+        return phoneFlag;
     }
 
     /**
@@ -293,7 +294,6 @@
      * 验证码校验
      */
     var verifyCodeFlag = false;
-
     function checkCode() {
         var code = $("#code").val();
         code = code.replace(/^\s+|\s+$/g, "");
