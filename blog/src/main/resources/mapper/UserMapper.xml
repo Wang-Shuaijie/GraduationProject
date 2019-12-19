@@ -1,17 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.wangshjm.blog.dao.UserMapper">
-    <select id="findUserByEmailAndPwd" parameterType="String" resultType="com.wangshjm.blog.entity.User">
+    <resultMap id="userResult" type="com.wangshjm.blog.entity.User">
+        <id property="id" column="id" />
+        <result property="email" column="email" />
+        <result property="password" column="password" />
+        <result property="phone" column="phone" />
+        <result property="nickName" column="nick_name" />
+        <result property="imgUrl" column="img_url" />
+        <result property="state" column="state" />
+        <result property="enable" column="enable" />
+    </resultMap>
+    <select id="findUserByEmailAndPwd" parameterType="String" resultMap="userResult">
         select *
         from user
         where email=#{email} and password=#{password};
     </select>
-    <select id="findByEmail" parameterType="String" resultType="com.wangshjm.blog.entity.User">
+    <select id="findByEmail" parameterType="String" resultMap="userResult">
         select *
         from user
         where email=#{email};
     </select>
-    <select id="findByPhone" parameterType="String" resultType="com.wangshjm.blog.entity.User">
+    <select id="findByPhone" parameterType="String" resultMap="userResult">
         select *
         from user
         where phone=#{phone};
