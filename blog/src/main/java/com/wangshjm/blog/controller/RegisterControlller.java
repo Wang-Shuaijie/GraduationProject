@@ -1,5 +1,6 @@
 package com.wangshjm.blog.controller;
 
+import com.google.code.kaptcha.Constants;
 import com.wangshjm.blog.entity.User;
 import com.wangshjm.blog.service.UserService;
 import com.wangshjm.blog.utils.MD5Util;
@@ -26,6 +27,8 @@ public class RegisterControlller extends BaseController {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
+    private final static String SALT = "salt";
+
     @RequestMapping("/doRegister")
     public String doRegister(Model model, @RequestParam(value = "email", required = false) String email,
                              @RequestParam(value = "password", required = false) String password,
@@ -35,34 +38,35 @@ public class RegisterControlller extends BaseController {
         log.debug("注册");
         if (StringUtils.isEmpty(code)) {
             model.addAttribute("error", "非法注册，请重新注册！");
-            return "register";
+            return "/register";
         }
 
         int b = checkValidateCode(code);
         if (b == -1) {
             model.addAttribute("error", "验证码超时，请重新注册！");
-            return "register";
+            return "/register";
         } else if (b == 0) {
             model.addAttribute("error", "验证码不正确,请重新输入!");
-            return "register";
+            return "/register";
         }
 
         User user = userService.findByEmail(email);
         if (user != null) {
             model.addAttribute("error", "该用户已经被注册！");
-            return "register";
+            return "/register";
         } else {
             user = new User();
             user.setNickName(nickname);
 
-            user.setPassword(MD5Util.encodeToHex("salt" + password));
+            user.setPassword(MD5Util.encodeToHex(SALT + password));
             user.setPhone(phone);
             user.setEmail(email);
             user.setState("0");
             user.setEnable("0");
+            //默认头像
             user.setImgUrl("/images/icon_m.jpg");
             //生成邮件激活码
-            String validateCode = MD5Util.encodeToHex("salt" + email + password);
+            String validateCode = MD5Util.encodeToHex(SALT + email + password);
             redisTemplate.opsForValue().set(email, validateCode, 24, TimeUnit.HOURS);// 24小时 有效激活 redis保存激活码
 
             userService.regist(user);
@@ -71,7 +75,7 @@ public class RegisterControlller extends BaseController {
             MailUtil.sendEmailMessage(email, validateCode);
             String message = email + "," + validateCode;
             model.addAttribute("message", message);
-            return "regist/registerSuccess";
+            return "/regist/registerSuccess";
         }
     }
 
@@ -122,6 +126,12 @@ public class RegisterControlller extends BaseController {
         return map;
     }
 
+    /**
+     * 账号是否激活
+     *
+     * @param model
+     * @return
+     */
     @RequestMapping("/activecode")
     public String active(Model model) {
         log.info("==============激活验证==================");
@@ -166,7 +176,7 @@ public class RegisterControlller extends BaseController {
      * @return
      */
     private int checkValidateCode(String code) {
-        Object vercode = getSession().getAttribute("VERCODE_KEY");
+        Object vercode = getSession().getAttribute(Constants.KAPTCHA_SESSION_KEY);
         if (null == vercode) {
             return -1;
         }

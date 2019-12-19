@@ -2,6 +2,8 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
     <title>注册页面</title>
 
     <link type="text/css" rel="stylesheet" th:href="@{/css/register.css}">
@@ -10,7 +12,7 @@
 <body class="login_bj" style="background-color: grey">
 <canvas id="c"></canvas>
 <!--动态码流背景 -->
-<script type="text/javascript" src="https://blog-static.cnblogs.com/files/Steven-Tim/hk01.js"></script>
+<script type="text/javascript" th:src="@{/js/background.js}"></script>
 
 <div id="home">
     <div class="register_kong" id="register_div">
@@ -28,7 +30,7 @@
                     <br/>
                     <span id="email_span" style="color: red"></span>
                     <input id="password" name="password" type="password" class="kuang_txt possword" placeholder="密码"
-                           onKeyUp="CheckIntensity(this.value)" onblur="checkPassword();">
+                           onblur="checkPassword();">
                     <br/>
                     <span id="password_span"></span>
                     <input id="nickName" name="nickName" type="text" class="kuang_txt possword" placeholder="昵称"
@@ -38,17 +40,22 @@
 
                     <input id="code" name="code" type="text" class="kuang_txt yanzm" placeholder="验证码"
                            onblur="checkCode()">
-
                     <div>
+                        <img id="captchaImg" style="cursor: pointer"
+                             onclick="changeCaptcha()" title="看不清楚?请点击刷新验证码!" align='absmiddle' th:src="@{/captcha}">
+                        <a href="javascript:;"
+                           onClick="changeCaptcha()" style="color: #666;">看不清楚</a>
+                    </div>
+
+                    <div style="padding-top: 12px;">
                         <input id="protocol" type="checkbox" onclick="checkProtocol();">
                         <span>已阅读并同意
                             <a href="#" target="_blank"><span class="lan">《用户协议》</span></a></span>
-                        <br/>
                         <span id="protocol_span"></span>
                     </div>
                     <input name="注册" type="button" class="btn_zhuce" id="to_register" value="注册">
                     <br/>
-                    <span style="color: red">${error}</span>
+                    <span th:if="${error ne null}" style="color: red">${error}</span>
                 </form>
             </div>
             <div class="bj_right" style="height: 468px">
@@ -56,7 +63,7 @@
                 <a href="#" class="zhuce_qq">QQ注册</a>
                 <a href="#" class="zhuce_wb">微博注册</a>
                 <a href="#" class="zhuce_wx">微信注册</a>
-                <p>已有账号？<a href="login.html">立即登录</a></p>
+                <p>已有账号？<a th:href="@{/login}">立即登录</a></p>
 
             </div>
         </div>
@@ -64,5 +71,285 @@
 </div>
 
 <div style="text-align:center;"></div>
+
 </body>
+<script type="text/javascript">
+    //手机页面显示
+    var phoneWidth = parseInt(window.screen.width);
+    var ua = navigator.userAgent;
+    if (/Android (\d+\.\d+)/.test(ua)) {
+        var version = parseFloat(RegExp.$1);
+        if (version > 2.3) {
+            document.write('<meta name="viewport" content="width=640, minimum-scale = ‘+phoneScale+‘, maximum-scale = ‘+phoneScale+‘, target-densitydpi=device-dpi">');
+        } else {
+            document.write('<meta name="viewport" content="width=640, target-densitydpi=device-dpi">');
+        }
+    } else {
+        document.write('<meta name="viewport" content="width=640, user-scalable=no, target-densitydpi=device-dpi">');
+    }
+
+    //根据内容增加而增加高度
+    function increaseHeight() {
+        var hgt = $("#regist-left").height();
+        $("#regist-left").height(hgt + 30);
+        $("#regist-right").height(hgt + 30);
+    }
+
+    //根据内容减少而减少高度
+    function reduceHeight() {
+        var hgt = $("#regist-left").height();
+        $("#regist-left").height(hgt - 30);
+        $("#regist-right").height(hgt - 30);
+    }
+
+    /**
+     * 更换验证码
+     * js语句行使用thymeleaf的语法,使用内联表达式inline的语法
+     */
+    function changeCaptcha() {
+        $("#captchaImg").attr('src', '[[@{/captcha}]]');
+    }
+
+    /**
+     * 校验手机号
+     */
+    var v = 0;
+    var phoneFlag = false;
+    function checkPhone() {
+        var phone = $("#phone").val();
+        phone = phone.replace(/^\s+|\s+$/g, "");
+        if (phone == "") {
+            $("#phone_span").text("请输入手机号码！");
+            $("#phone_ok").text("");
+        }
+        if (v == 0) {
+            increaseHeight();
+            v++;
+        }
+        phoneFlag = false;
+        if (!(/^1[3|4|5|8|7][0-9]\d{8}$/.test(phone))) {
+            $("#phone_span").text("手机号码非法，请重新输入！");
+            $("#phone_ok").text("");
+            if (v == 0) {
+                increaseHeight();
+                v++;
+            }
+            phoneFlag = false;
+        } else {
+            $.ajax({
+                type: 'post',
+                url: '[[@{/checkPhone}]]',
+                data: {
+                    "phone": phone
+                },
+                dataType: 'json',
+                success: function (data) {
+                    var val = data['message'];
+                    if (val == "success") {
+                        $("#phone_span").text("");
+                        $("#reg_span").text("");
+                        $("#phone_ok").text("√").css("color", "green");
+
+                        var content = $("#phone_ok").text();
+                        if (content == "√") {
+                            if (v == 1) {
+                                reduceHeight();
+                            }
+                            v = 0;
+                        }
+                        phoneFlag = true;
+                    } else {
+                        $("#phone_span").text("该手机号已经注册！");
+                        $("#phone_ok").text("");
+                        if (v == 0) {
+                            increaseHeight();
+                            v++;
+                        }
+                        phoneFlag = false;
+                    }
+                }
+            });
+        }
+    }
+
+    /**
+     * 密码框离焦事件
+     */
+    var cp = 0;
+    function checkPassword() {
+        var password = $("#password").val();
+        password = password.replace(/^\s+|\s+$/g, "");
+        if (password == "") {
+            $("#password_span").text("请输入密码！").css("color", "red");
+            if (cp == 0) {
+                increaseHeight();
+                cp++;
+            }
+            return false;
+        }
+        if (password.length < 6) {
+            $("#password_span").text("密码长度少于6位，请重新输入！").css("color", "red");
+            if (cp == 0) {
+                cp++;
+                increaseHeight();
+            }
+            return false;
+        }else {
+            //密码强度
+            if(/^[0-9]*$/.test(password) || /^[A-Za-z]+$/.test(password)){
+                $("#password_span").text("密码强度弱！").css("color","red");
+            }else if(/^[A-Za-z0-9]+$ /.test(password) || password.length <= 10){
+                $("#password_span").text("密码强度中！").css("color","#FF6100");
+            }else{
+                $("#password_span").text("密码强度强！").css("color","green");
+            }
+            return true;
+        }
+    }
+
+    /**
+     * 邮箱校验
+     */
+    var e = 0;
+    var emailFlag = false;
+    function checkEmail() {
+        var email = $("#email").val();
+        email = email.replace(/^\s+|\s+$/g, "");
+        if (email == "" || email == null) {
+            if (e == 0) {
+                increaseHeight();
+                e++;
+            }
+            $("#email_span").text("请输入邮箱账号！");
+            $("#email_ok").text("");
+            emailFlag = false;
+        }
+        if (!(/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+$/.test(email))) {
+            $("#email_span").text("邮箱账号不存在，请重新输入！");
+            $("#email_ok").text("");
+            if (e == 0) {
+                increaseHeight();
+                e++;
+            }
+            emailFlag = false;
+        } else {
+            //验证邮箱是否已经被注册
+            $.ajax({
+                type: 'post',
+                url: '[[@{/checkEmail}]]',
+                data: {
+                    "email": email
+                },
+                dataType: 'json',
+                success: function (data) {
+                    var val = data['message'];
+                    if (val == "success") {
+                        $("#email_span").text("");
+                        $("#reg_span").text("");
+                        $("#email_ok").text("√").css("color", "green");
+
+                        var content = $("#email_ok").text();
+                        if (content == "√") {
+                            var hgt = $("#regist-left").height();
+                            if (v == 1) {
+                                $("#regist-left").height(hgt - 30);
+                                $("#regist-right").height(hgt - 30);
+                            }
+                            v = 0;
+                        }
+                        emailFlag = true;
+                    } else {
+                        $("#email_span").text("该Email已经注册！");
+                        $("#email_ok").text("");
+                        var hgt = $("#regist-left").height();
+                        if (v == 0) {
+                            $("#regist-left").height(hgt + 30);
+                            $("#regist-right").height(hgt + 30);
+                            v++;
+                        }
+                        emailFlag = false;
+                    }
+                }
+            });
+        }
+        return emailFlag;
+    }
+
+    //昵称校验
+    function checkNickName() {
+        var nickName = $("#nickName").val();
+        nickName = nickName.replace(/^\s+|\s+$/g, "");
+        if (nickName == "") {
+            $("#nickName_span").text("请输入昵称！");
+            return false;
+        } else {
+            $("#nickName_span").text("");
+            $("#reg_span").text("");
+            return true;
+        }
+    };
+
+    /**
+     * 验证码校验
+     */
+    var verifyCodeFlag = false;
+
+    function checkCode() {
+        var code = $("#code").val();
+        code = code.replace(/^\s+|\s+$/g, "");
+        if (code == "") {
+            $("#code_span").text("请输入验证码！").css("color", "red");
+            verifyCodeFlag = false;
+        } else {
+            $.ajax({
+                type: 'post',
+                url: '[[@{/checkCode}]]',
+                data: {
+                    "code": code
+                },
+                dataType: 'json',
+                success: function (data) {
+                    var val = data['message'];
+                    if (val == "success") {
+                        $("#code_span").text("√").css("color", "green");
+                        $("#reg_span").text("");
+                        verifyCodeFlag = true;
+                    } else {
+                        $("#code_span").text("验证码错误！").css("color", "red");
+                        verifyCodeFlag = false;
+                    }
+                }
+            });
+        }
+        return verifyCodeFlag;
+    }
+
+    //勾选用户协议校验
+    function checkProtocol() {
+        if ($('#protocol').prop("checked")) {
+            $("#reg_span").text("");
+            return true;
+        } else {
+            return false;
+        }
+    };
+
+    /**
+     * 提交表单
+     */
+    $("#to_register").click(function () {
+        if (!checkProtocol()) {
+            $("#protocol_span").text("请勾选\"阅读并接受猿天地用户协议\"！").css("color", "red");
+        } else {
+            $("#protocol_span").text("");
+        }
+
+        if (checkPhone() && checkPassword() && checkEmail() && checkNickName() && checkCode() && checkProtocol()) {
+            $("#registerForm").submit();
+        } else {
+            $("#reg_span").text("请将信息填写完整！").css("color", "red");
+        }
+    });
+
+</script>
 </html>
