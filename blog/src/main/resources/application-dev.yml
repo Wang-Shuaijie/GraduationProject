@@ -55,6 +55,12 @@ spring:
       enabled: true
       force: true
 
+  activemq:
+    # 配置端口号61616，启动端口号：8161
+    broker-url: tcp://localhost:61616
+    user: admin
+    password: admin
+
   mvc:
     throw-exception-if-no-handler-found: true
 
