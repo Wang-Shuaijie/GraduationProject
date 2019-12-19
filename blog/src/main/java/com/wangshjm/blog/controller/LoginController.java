@@ -186,6 +186,7 @@ public class LoginController extends BaseController {
                 }
             });
         } catch (Exception e) {
+            log.debug(e.getMessage());
             map.put("msg", false);
         }
         map.put("msg", true);
