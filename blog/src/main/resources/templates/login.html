@@ -55,7 +55,6 @@
                             <br/>
                             <div> <a th:href = "@{/register}" >没有账号？立即注册</a></div>
                         </div>
-                        <br/>
                         <span th:if="${error ne null}" style="color: red" th:text="${error}"></span>
                     </form>
                 </div>
@@ -93,7 +92,7 @@
                                 <div> <a th:href = "@{/register}" >没有账号？立即注册</a></div>
                             </div>
                         </div>
-                        <br/>
+                        <span th:if="${error ne null}" style="color: red" th:text="${error}"></span>
                     </form>
                 </div>
             </div>
