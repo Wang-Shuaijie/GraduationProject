@@ -1,6 +1,7 @@
 package com.wangshjm.blog.utils;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -8,6 +9,7 @@ import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
 @Slf4j
+@Component
 public class MailUtil {
     public static void sendEmailMessage(String email, String validateCode) {
         try {
