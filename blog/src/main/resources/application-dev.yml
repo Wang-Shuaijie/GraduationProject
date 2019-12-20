@@ -67,6 +67,9 @@ spring:
   messages:
     encoding: UTF-8
 
+#elasticsearch配置
+es:
+  hosts: 127.0.0.1:9200
 
 # 通用mapper配置
 mapper:
