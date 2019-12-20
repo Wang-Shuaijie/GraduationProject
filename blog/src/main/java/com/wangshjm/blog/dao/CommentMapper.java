@@ -2,10 +2,12 @@ package com.wangshjm.blog.dao;
 
 import com.wangshjm.blog.entity.Comment;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 import tk.mybatis.mapper.common.Mapper;
 
 import java.util.List;
 
+@Repository
 public interface CommentMapper extends Mapper<Comment> {
     //根据文章id查询所有评论
     List<Comment> selectAll(@Param("cid") long cid);

@@ -2,10 +2,12 @@ package com.wangshjm.blog.dao;
 
 import com.wangshjm.blog.entity.UserContent;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 import tk.mybatis.mapper.common.Mapper;
 
 import java.util.List;
 
+@Repository
 public interface UserContentMapper extends Mapper<UserContent> {
     /**
      * 根据用户id查询文章分类
