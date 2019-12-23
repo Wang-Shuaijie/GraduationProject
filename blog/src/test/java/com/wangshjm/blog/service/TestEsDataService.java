@@ -12,7 +12,7 @@ import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class TsetEsDataService {
+public class TestEsDataService {
     @Autowired
     private EsDataService esDataService;
     @Autowired
