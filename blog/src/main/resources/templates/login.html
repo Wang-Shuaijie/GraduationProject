@@ -2,6 +2,9 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>登录页面</title>
 
     <link rel="stylesheet" th:href="@{/css/zui/css/zui.min.css}">
@@ -128,6 +131,7 @@
                 data: {
                     "code": code
                 },
+                async : false,
                 dataType: 'json',
                 success: function (data) {
                     var val = data['message'];
@@ -208,6 +212,7 @@
                 data: {
                     "phone": phone
                 },
+                async : false,
                 dataType: 'json',
                 success: function (data) {
                     var val = data['message'];
@@ -255,6 +260,7 @@
                 data: {
                     "telephone": telephone
                 },
+                async : false,
                 dataType: 'json',
                 success: function (data) {
                     var msg = data["msg"];

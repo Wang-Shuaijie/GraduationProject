@@ -6,6 +6,7 @@ c.height = window.innerHeight;
 c.width = window.innerWidth;
 
 //chinese characters - taken from the unicode charset
+//var chinese="0123456789qwertyuiopasdfghjklzxcvbnm,./;'[]QWERTYUIOP{}ASDFGHJHJKL:ZXCVBBNM<>?がガぎギぐグげゲごゴきゃキャきゅキュきょキョりゃリャゅリュりょリョ";
 var chinese = "0123456789qwertyuiopasdfghjklzxcvbnm,./;'\[]QWERTYUIOP{}ASDFGHJHJKL:ZXCVBBNM<>?あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみ むめもやゆよらりるれろわを";
 //converting the string into an array of single characters
 chinese = chinese.split("");
