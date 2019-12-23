@@ -34,8 +34,9 @@
     <!--user_content和user表连接查询-->
     <select id="findByJoin"  resultMap="joinMap">
         <!--我们要的是 user 表中的 imgUrl 和 nickName，还有别名 nickName、imgUrl 要和 UserContent 实体类中的属性对应，主要是通过属性的 setter 方法赋值，页面通过 getter 方法取值的。-->
-        select u1.id,u1.u_id,u1.title,u1.category,u1.personal,u1.rpt_time,u1.upvote,u1.downvote,u1.comment_num,u1.content,
-            u2.nick_name nickName,u2.img_url imgUrl
+        select u1.id,u1.u_id,u1.title,u1.category,u1.personal,u1.rpt_time,
+            u1.upvote,u1.downvote,u1.comment_num,u1.content,
+            u2.nick_name nick_name,u2.img_url img_url
         from user_content u1
         LEFT JOIN user u2
         on u1.u_id = u2.id
@@ -53,7 +54,6 @@
                     </if>
                 </otherwise>
             </choose>
-
         </where>
         <if test='uId!=null and uId!=""'>
             and u1.u_id = #{uId}
