@@ -81,7 +81,6 @@ public class LoginController extends BaseController {
     @RequestMapping("/checkCode")
     @ResponseBody
     public Map<String, Object> checkCode(Model model, @RequestParam(value = "code", required = false) String code) {
-        log.debug("注册-判断验证码" + code + "是否可用");
         Map map = new HashMap<String, Object>();
         String vcode = (String) getSession().getAttribute(Constants.KAPTCHA_SESSION_KEY);
         if (code.equals(vcode)) {
@@ -121,7 +120,7 @@ public class LoginController extends BaseController {
                           @RequestParam(value = "phone_code", required = false) String phone_code,
                           @RequestParam(value = "state", required = false) String state) {
         //判断是否手机号登录
-        if (StringUtils.isEmpty(telephone)) {
+        if (!StringUtils.isEmpty(telephone)) {
             //从redis里获取验证码
             String verifyCode = redisTemplate.opsForValue().get(telephone);
             if (phone_code.equals(verifyCode)) {
@@ -175,7 +174,6 @@ public class LoginController extends BaseController {
         try { //  发送验证码操作
             final String code = RandStringUtils.getCode();
             redisTemplate.opsForValue().set(telephone, code, 60, TimeUnit.SECONDS);// 60秒 有效 redis保存验证码
-            log.debug("--------短信验证码为：" + code);
             // 调用ActiveMQ jmsTemplate，发送一条消息给MQ
             jmsTemplate.send("login_msg", new MessageCreator() {
                 public Message createMessage(javax.jms.Session session) throws JMSException {

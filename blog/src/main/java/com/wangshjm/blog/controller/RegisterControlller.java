@@ -73,7 +73,6 @@ public class RegisterControlller extends BaseController {
     @RequestMapping("/checkPhone")
     @ResponseBody
     public Map<String, Object> checkPhone(Model model, @RequestParam(value = "phone", required = false) String phone) {
-        log.debug("注册-判断手机号" + phone + "是否可用");
         Map map = new HashMap<String, Object>();
         User user = userService.findByPhone(phone);
         if (user == null) {
@@ -97,7 +96,6 @@ public class RegisterControlller extends BaseController {
     @RequestMapping("/checkEmail")
     @ResponseBody
     public Map<String, Object> checkEmail(Model model, @RequestParam(value = "email", required = false) String email) {
-        log.debug("注册-判断邮箱" + email + "是否可用");
         Map map = new HashMap<String, Object>();
         User user = userService.findByEmail(email);
         if (user == null) {
@@ -118,7 +116,6 @@ public class RegisterControlller extends BaseController {
      */
     @RequestMapping("/activecode")
     public String active(Model model) {
-        log.info("==============激活验证==================");
         //判断激活码有无过期 是否正确
         String validateCode = getRequest().getParameter("validateCode");
         String email = getRequest().getParameter("email");
