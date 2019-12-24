@@ -115,6 +115,7 @@ public class IndexController extends BaseController {
                 up.setIp(getClientIpAddress());
                 upvoteService.add(up);
             }
+            userContent.setUpvote(userContent.getDownvote() + upvote);
         } else {
             if (!ObjectUtils.isEmpty(upv)) {
                 if ("1".equals(upv.getUpvote())) {
@@ -134,6 +135,7 @@ public class IndexController extends BaseController {
             }
             userContent.setUpvote(userContent.getUpvote() + upvote);
         }
+
         userContentService.update(userContent);
         map.put("data", "success");
         return map;
@@ -271,9 +273,12 @@ public class IndexController extends BaseController {
         }
         comment.setById(bid);
         comment.setUpvote(upvote);
+
         User u = userService.findById(uid);
+
         comment.setUser(u);
         commentService.add(comment);
+        //System.out.println(comment.getId());
 
         Comment com = commentService.findById(id);
         if (StringUtils.isEmpty(com.getChildren())) {
