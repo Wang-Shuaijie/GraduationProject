@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!--suppress ALL-->
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -157,7 +158,6 @@
     <div id="page-info">
         <ul class="pager pager-loose" id="page">
 
-
         </ul>
     </div>
     <div class="foot">
@@ -215,7 +215,7 @@
                         <a href="#" onMouseOut="hideImg()"  onmouseover="showImg()">
                             微信
                             <div id="wxImg" style="display:none;height:50px;back-ground:#f00;position:absolute;">
-                                <img src="images/weinxin.png"/><br/>
+                                <img th:src="@{/images/weinxin.png}"/><br/>
                                 手机扫描二维码关注
                             </div>
                         </a>
@@ -246,6 +246,8 @@
         var before;
         if([[${page.pageNum}]] > 1){
             before ='<li><a href="[[@{/index(pageNum = ${page.pageNum - 1}, pageSize = ${page.pageSize})}]]" >上一页</a></li>';
+        }else{
+            before ='<li><a href="[[@{/index(pageNum = 1, pageSize = ${page.pageSize})}]]" >上一页</a></li>';
         }
         ul+= first;
         ul += before;
@@ -299,12 +301,17 @@
      * @param count
      */
     function upvote_click(id, count) {
+        var user = "[[${user}]]";
+        if(user==''|| user==null){
+            window.location.href = "[[@{/login}]]";
+            return
+        }
         $.ajax({
             type: 'post',
             url: '[[@{/upvote}]]',
             data: {
                 "id": id,
-                "uid": '[[${user.id}]]',
+                "uid": user.id,
                 "upvote":count
             },
             dataType:'json',
@@ -323,12 +330,14 @@
                         document.getElementById("up_"+id).innerHTML = value;
                     }
                 }else if(up == "done"){
-                    alert("已点赞！")
-
+                    new $.zui.Messager('今日已赞！', {
+                        icon: 'bell' // 定义消息图标
+                    }).show();
                 }else if(up == "down"){
-                    alert("已踩！")
+                    new $.zui.Messager('今日已踩！', {
+                        icon: 'bell' // 定义消息图标
+                    }).show();
                 } else {
-                    alert("请先登录！！")
                     window.location.href = "[[@{/login}]]";
                 }
             }
@@ -360,9 +369,11 @@
     function reply(id,uid) {
         $("div").remove("#comment_reply_"+id+" .comment-show");
         $("div").remove("#comment_reply_"+id+" .comment-show-con");
-        if(showdiv_display = document.getElementById('comment_reply_'+id).style.display=='none'){//如果show是隐藏的
+        //如果show是隐藏的
+        if(showdiv_display = document.getElementById('comment_reply_'+id).style.display=='none'){
+            //show的display属性设置为block（显示）
+            document.getElementById('comment_reply_'+id).style.display='block';
 
-            document.getElementById('comment_reply_'+id).style.display='block';//show的display属性设置为block（显示）
             $.ajax({
                 type: 'post',
                 url: '[[@{/reply}]]',
@@ -506,22 +517,28 @@
      * @param fid
      */
     function deleteComment(con_id,uid,id,fid) {
-        // alert(uid)
-        if('${user.id}'==uid){
+        if('[[${user}]]' == null){
+            window.location.href = "[[@{/login}]]";
+        }
+        if('[[${user.id}]]'==uid){
             if (!confirm("确认要删除？")) {
                 window.event.returnValue = false;
             }else{
                 //发送ajax请求
                 $.ajax({
-                    type:'post',
-                    url:'/deleteComment',
-                    data: {"id":id,"uid":uid,"con_id":con_id,"fid":fid},
+                    type: 'post',
+                    url: '[[@{/deleteComment}]]',
+                    data: {
+                        "id":id,
+                        "uid":uid,
+                        "con_id":con_id,
+                        "fid":fid
+                    },
                     dataType:'json',
                     success:function(data){
                         var comm_data =  data["data"];
-                        //alert(comm_data);
                         if(comm_data=="fail"){
-                            window.location.href = "/login.jsp";
+                            window.location.href = "[[@{/login}]]";
                         }else if(comm_data=="no-access"){
                             //alert("没有权限！");
                         }else {
@@ -556,7 +573,6 @@
      * @param cuid
      */
     function comment_hf(content_id,comment_id,fid,by_id,cuid) {
-        // alert(cuid)
         //获取回复人的名字
         var oThis = $("#comment_hf_"+comment_id);
         var fhName = oThis.parents('.date-dz-right').parents('.date-dz').siblings('.pl-text').find('.comment-size-name').html();
@@ -598,14 +614,17 @@
         }
 
         $.ajax({
-            type:'post',
-            url:'/comment',
-            data: {"id":id,"upvote":num},
+            type: 'post',
+            url: '[[@{/comment}]]',
+            data: {
+                "id":id,
+                "upvote":num
+            },
             dataType:'json',
             success:function(data){
                 var comm_data =  data["data"];
                 if(comm_data=="fail"){
-                    window.location.href = "/login.jsp";
+                    window.location.href = "[[@{/login}]]";
                 }
             }
         });
@@ -648,15 +667,22 @@
 
         }else {
             $.ajax({
-                type:'post',
-                url:'/comment_child',
-                data: {"content_id":content_id,"uid":'${user.id}',"oSize":oHfVal,"comment_time":now,"by_id":by_id,"id":fid},
+                type: 'post',
+                url: '[[@{/comment_child}]]',
+                data: {
+                    "content_id":content_id,
+                    "uid":'[[${user.id}]]',
+                    "oSize":oHfVal,
+                    "comment_time":now,
+                    "by_id":by_id,
+                    "id":fid
+                },
                 dataType:'json',
                 success:function(data){
                     var comm_data =  data["data"];
                     //alert(comm_data);
                     if(comm_data=="fail"){
-                        window.location.href = "/login.jsp";
+                        window.location.href = "[[@{/login}]]";
                     }else {
                         var id = comm_data.id;
                         //alert(id)
