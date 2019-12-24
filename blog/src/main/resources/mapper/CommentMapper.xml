@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wangshjm.blog.dao.CommentMapper">
     <resultMap type="com.wangshjm.blog.entity.Comment" id="commentMap">
-        <id property="id" column="children"></id>
+        <id property="id" column="id"></id>
         <!-- property 表示com.wsj.myblog.entity.Comment中的属性； column 表示表中的列名 -->
         <result property="children" column="children"></result>
         <result property="conId" column="con_id" />
@@ -34,8 +34,11 @@
     </select>
 
     <insert id="insertComment" parameterType="com.wangshjm.blog.entity.Comment">
-        insert into comment(id, con_id, com_id, by_id, com_content, upvote, comm_time,children)
-        values(#{id}, #{conId},#{comId}, #{byId},#{comContent},#{upvote}, #{commTime},#{children})
+        <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER">
+            select last_insert_id()
+        </selectKey>
+        insert into comment(con_id, com_id, by_id, com_content, upvote, comm_time,children)
+        values(#{conId},#{comId}, #{byId},#{comContent},#{upvote}, #{commTime},#{children})
     </insert>
 
     <!--查询全部一级评论-->
