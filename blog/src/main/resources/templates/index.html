@@ -54,16 +54,17 @@
             </ul>
         </div>
 
-        <form class="navbar-form navbar-right" role="search" style="margin-top: -35px;margin-right: 10px">
+        <form class="navbar-form navbar-right" role="search" style="margin-top: -35px;margin-right: 10px" th:action="@{/index}">
             <div class="form-group">
-                <input type="text" class="form-control" placeholder="Search">
+                <input type="text" class="form-control" placeholder="Search" name="keyword">
             </div>
+            <button type="submit" class="btn btn-default">Submit</button>
             &nbsp; &nbsp;<i class="icon icon-search" style="color: white"></i>
         </form>
     </nav>
-
-    <div id="content" class="row-fluid">
-        <div id="content_col" class="content-main">
+    <div id="main">
+        <div id="content" class="row-fluid">
+            <div id="content_col" class="content-main">
             <!-- 正文开始 -->
             <th:block th:each="article: ${page.list}">
                 <div class="content-text">
@@ -148,81 +149,86 @@
                 <!-- 正文结束 -->
             </th:block>
         </div>
-    </div>
+        </div>
 
-<!--    <div id="sideBar">-->
-<!--        <div style="background-color: white;width: 250px;border-radius: 5px;">-->
-<!--            <iframe name="weather_inc" src="http://i.tianqi.com/index.php?c=code&id=82" width="250" height="440" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>-->
-<!--        </div>-->
-<!--    </div>-->
+        <div id="sideBar">
+<!--            <div style="background-color: white;">-->
+<!--                <iframe name="weather_inc" src="http://i.tianqi.com/index.php?c=code&id=82" width="250" height="440" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>-->
+<!--            </div>-->
+        </div>
+
+    </div>
+    <div class="clear"></div>
     <div id="page-info">
         <ul class="pager pager-loose" id="page">
 
         </ul>
     </div>
+
+    <div class="clear"></div>
     <div class="foot">
-        <div class="foot-nav clearfix">
-            <div class="foot-nav-col">
-                <h3>
-                    关于
-                </h3>
-                <ul>
-                    <li>
-                        <a href="#" target="_blank" rel="nofollow">
-                            博客DEMO
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" target="_blank" rel="nofollow">
-                            留言
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" target="_blank" rel="nofollow">
-                            打赏
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            <div class="foot-nav-col">
-                <h3>
-                    帮助
-                </h3>
-                <ul>
-                    <li>
-                        <a href="#" target="_blank" rel="nofollow">
-                            在线反馈
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" target="_blank" rel="nofollow">
-                            用户协议
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" target="_blank" rel="nofollow">
-                            隐私政策
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            <div class="foot-nav-col">
-                <h3>
-                    关注
-                </h3>
-                <ul>
-                    <li>
-                        <a href="#" onMouseOut="hideImg()"  onmouseover="showImg()">
-                            微信
-                            <div id="wxImg" style="display:none;height:50px;back-ground:#f00;position:absolute;">
-                                <img th:src="@{/images/weinxin.png}"/><br/>
-                                手机扫描二维码关注
-                            </div>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
+<!--        <div class="foot-nav clearfix">-->
+<!--            <div class="foot-nav-col">-->
+<!--                <h3>-->
+<!--                    关于-->
+<!--                </h3>-->
+<!--                <ul>-->
+<!--                    <li>-->
+<!--                        <a href="#" target="_blank" rel="nofollow">-->
+<!--                            博客DEMO-->
+<!--                        </a>-->
+<!--                    </li>-->
+<!--                    <li>-->
+<!--                        <a href="#" target="_blank" rel="nofollow">-->
+<!--                            留言-->
+<!--                        </a>-->
+<!--                    </li>-->
+<!--                    <li>-->
+<!--                        <a href="#" target="_blank" rel="nofollow">-->
+<!--                            打赏-->
+<!--                        </a>-->
+<!--                    </li>-->
+<!--                </ul>-->
+<!--            </div>-->
+<!--            <div class="foot-nav-col">-->
+<!--                <h3>-->
+<!--                    帮助-->
+<!--                </h3>-->
+<!--                <ul>-->
+<!--                    <li>-->
+<!--                        <a href="#" target="_blank" rel="nofollow">-->
+<!--                            在线反馈-->
+<!--                        </a>-->
+<!--                    </li>-->
+<!--                    <li>-->
+<!--                        <a href="#" target="_blank" rel="nofollow">-->
+<!--                            用户协议-->
+<!--                        </a>-->
+<!--                    </li>-->
+<!--                    <li>-->
+<!--                        <a href="#" target="_blank" rel="nofollow">-->
+<!--                            隐私政策-->
+<!--                        </a>-->
+<!--                    </li>-->
+<!--                </ul>-->
+<!--            </div>-->
+<!--            <div class="foot-nav-col">-->
+<!--                <h3>-->
+<!--                    关注-->
+<!--                </h3>-->
+<!--                <ul>-->
+<!--                    <li>-->
+<!--                        <a href="#" onMouseOut="hideImg()"  onmouseover="showImg()">-->
+<!--                            微信-->
+<!--                            <div id="wxImg" style="display:none;height:50px;back-ground:#f00;position:absolute;">-->
+<!--                                <img th:src="@{/images/weinxin.png}"/><br/>-->
+<!--                                手机扫描二维码关注-->
+<!--                            </div>-->
+<!--                        </a>-->
+<!--                    </li>-->
+<!--                </ul>-->
+<!--            </div>-->
+<!--        </div>-->
         <!-- rgba(60,63,65,0.31)-->
         <hr style="background-color: rgba(161,171,175,0.31);height: 1px;left: 0px"/>
         <hr style="background-color: rgba(161,171,175,0.31);height: 1px;left: 0px"/>
@@ -301,8 +307,8 @@
      * @param count
      */
     function upvote_click(id, count) {
-        var user = "[[${user}]]";
-        if(user==''|| user==null){
+        var uid = "[[${user != null ? user.id:null}]]";
+        if (user == '' || user == null) {
             window.location.href = "[[@{/login}]]";
             return
         }
@@ -311,15 +317,15 @@
             url: '[[@{/upvote}]]',
             data: {
                 "id": id,
-                "uid": user.id,
-                "upvote":count
+                "uid": uid,
+                "upvote": count
             },
-            dataType:'json',
-            success:function(data){
-                var up =  data["data"];
-                if(up == "success"){
-                    if (count == -1){
-                        var down = document.getElementById("down_"+id);
+            dataType: 'json',
+            success: function (data) {
+                var up = data["data"];
+                if (up == "success") {
+                    if (count == -1) {
+                        var down = document.getElementById("down_" + id);
                         var num = down.innerHTML;
                         var value = parseInt(num) + count;
                         down.innerHTML = value;
@@ -327,13 +333,13 @@
                         var num = document.getElementById(id).innerHTML;
                         var value = parseInt(num) + count;
                         document.getElementById(id).innerHTML = value;
-                        document.getElementById("up_"+id).innerHTML = value;
+                        document.getElementById("up_" + id).innerHTML = value;
                     }
-                }else if(up == "done"){
+                } else if (up == "done") {
                     new $.zui.Messager('今日已赞！', {
                         icon: 'bell' // 定义消息图标
                     }).show();
-                }else if(up == "down"){
+                } else if (up == "down") {
                     new $.zui.Messager('今日已踩！', {
                         icon: 'bell' // 定义消息图标
                     }).show();
@@ -539,11 +545,12 @@
      * @param fid
      */
     function deleteComment(con_id,uid,id,fid) {
-        var user = "[[${user}]]";
-        if(user == null){
-            window.location.href = "[[@{/login}]]";
-        }
-        if(user.id == uid){
+        var currentUserId = '[[${user!=null?user.id:null}]]';
+        if(currentUserId != uid){
+            alert(currentUserId);
+            alert(uid);
+            alert("你没有权限或未登录！");
+        }else{
             if (!confirm("确认要删除？")) {
                 window.event.returnValue = false;
             }else{
@@ -664,7 +671,7 @@
      * @param cuid
      */
     function comment_pl(content_id,comment_id,fid,by_id,cuid) {
-        var uid = "[[${user.id}]]";
+        var uid = "[[${user == null?null:user.id}]]";
         if(fid == null){
             fid = comment_id;
         }
@@ -724,10 +731,11 @@
                                     '<span class="pull-left date-dz-line">|</span> ' +
                                     '<a onclick="reply_up('+id+')" id="change_color_'+id+'" style="cursor:pointer" class="date-dz-z pull-left"><i class="date-dz-z-click-red"></i>赞 (<i class="z-num" id="comment_upvote_'+id+'">0</i>)</a> ' +
                             '</div> </div></div>';
-                        $("#comment_pl_"+comment_id).parents('.hf-con').siblings('.comment-show-con-list').find('.hf-list-con').css('display','block').prepend(oHtml) && oThis.parents('.hf-con').siblings('.date-dz-right').find('.pl-hf').addClass('hf-con-block') && oThis.parents('.hf-con').remove();
+                        $("#comment_pl_"+comment_id).parents('.hf-con').siblings('.comment-show-con-list').find('.hf-list-con').prepend(oHtml) && oThis.parents('.hf-con').siblings('.date-dz-right').find('.pl-hf').addClass('hf-con-block') && oThis.parents('.hf-con').remove();
 
-                        var num = document.getElementById("comment_num_"+content_id).innerHTML;
-                        document.getElementById("comment_num_"+content_id).innerHTML = (parseInt(num) + 1)+"";
+
+                        var num = document.getElementById("#comment_pl_"+comment_id).innerHTML;
+                        document.getElementById("#comment_pl_"+comment_id).innerHTML = (parseInt(num) + 1)+"";
 
                     }
                 }

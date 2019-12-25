@@ -25,31 +25,51 @@ body {
     margin-bottom: 50px;
     box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
 }
+
+#main {
+    width: 100%;
+    text-align: left;
+    margin-top: 30px;
+}
+
 #sideBar{
-    margin-left: 2px;
-    min-height: 500px;
+    width: auto;
+    min-height: 200px;
+    padding: 0 0 0 5px;
     float: right;
     -o-text-overflow: ellipsis;
     text-overflow: ellipsis;
     overflow: hidden;
 }
 
+
 #content{
-    min-height:100%;
+    padding: 0 0 10px 0;
+    *padding-top: 10px;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    float: left;
+    margin-left: -22em;
 }
+
+#content_col{
+    margin-left: 22em;
+    float: none;
+    width: auto;
+}
+
 .content-text{
-    width: 75%;
+    width: 100%;
+    padding: 20px;
     background-color: #F8F8FF;
     margin-top: 8px;
-    padding-bottom: 20px;
     border-radius: 10px;
     box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
 }
 
 #page-info{
-    width:900px;
-    height: 80px;
-    margin-top: 10px;
+    width: 800px;
 }
 
 .author img {
@@ -87,10 +107,6 @@ fieldset, img {
     margin-left: 5px;
 }
 
-
-.content-text{
-    padding: 20px;
-}
 .single-share{
     float: right;
 }
