@@ -1,0 +1,164 @@
+#c{
+    position: fixed;
+    top:0;
+    left: 0;
+    z-index:-1;
+    opacity:0.8;
+}
+body {
+    color: #000;
+    background-color: #e6e6e6;
+    font-family: "Helvetica Neue",Helvetica,Verdana,Arial,sans-serif;
+    font-size: 12px;
+    min-height: 101%;
+}
+#container{
+    border-radius: 18px;
+    width: 80%;
+    min-width: 750px;
+    background-color: #fff;
+    margin: 0 auto;
+    background-attachment: fixed;
+    padding: 30px;
+    margin-top:50px;
+    margin-bottom: 50px;
+    box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
+}
+#main{
+    width:auto;
+    min-height:850px;
+}
+.author-card{
+    width:20%;
+    float:left;
+}
+
+.content{
+    width:75%;
+    float:left;
+}
+
+.ibx-advice{
+    width:5%;
+    position: fixed;
+    left:85%;
+    top:25%;
+    -moz-transition: right .5s;
+    -webkit-transition: right .5s;
+    transition: right .5s;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.designer-card {
+    background: #fff;
+    border-radius: 4px;
+    text-align: center;
+    padding: 30px 0 20px;
+    overflow: hidden;
+    display: inline-block;
+    margin: 0 20px 20px 0;
+    width: 100%;
+    height: 380px;
+}
+
+.designer-card img {
+    border-radius: 50%;
+    vertical-align: middle;
+}
+
+.position-info {
+    margin-bottom: 20px;
+}
+.btn-area {
+    width:250px;
+}
+.js-project-focus-btn {
+    height: 32px;
+}
+.js-project-focus-btn {
+    float: left;
+}
+.js-project-focus-btn {
+    display: inline-block;
+    position: relative;
+}
+
+.btn-default-main {
+    color: #444;
+    background: #ffd100;
+    border: 1px solid #ffd100;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+}
+.btn-default-secondary {
+    color: #444;
+    background: #ffd100;
+    border: 1px solid #ffd100;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.btn-current {
+    width: 65px;
+    height: 36px;
+}
+.private-letter {
+    margin-right: 0;
+}
+.private-letter {
+    float: right;
+}
+
+/* 梦分类*/
+#category{
+    display: block;
+    width: 100%;
+    min-height: 60px;
+    background-color: #EBEBEB;
+}
+
+a {
+    text-decoration:none;
+    color: inherit;
+    outline: 0;
+}
+
+a:-webkit-any-link {
+    cursor: pointer;
+}
+
+.tab li{list-style:none}
+.table tr:hover{background-color: #dafdf3;}
+
+.content-bar{
+    padding: 30px;
+}
+.dreamland-fix{
+    list-style-type:none;
+    margin-left: 10px;
+    margin-right: 30px;
+}
+.bar-commend{
+    float: right;
+    margin-right: 20px;
+    color: grey;
+}
+.bar-read{
+    float: right;
+    margin-right: 20px;
+    color: grey;
+}
+.bar-update{
+    float: right;
+    margin-right: 20px;
+    color: grey;
+}
+
+.bar-delete{
+    margin-right: 20px;
+    float: right;
+    color: grey;
+}
