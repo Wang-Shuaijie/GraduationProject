@@ -1,5 +1,5 @@
 
 spring:
-  # 应用部署的环境(测试: test, 日常: daily, u8c 日常: combine, 预发: pre, 线上: online)
+  #閲囩敤寮�鍙戠幆澧冿紝鍗充娇鐢╝pplication-dev.yml閰嶇疆鏂囦欢
   profiles:
     active: dev
