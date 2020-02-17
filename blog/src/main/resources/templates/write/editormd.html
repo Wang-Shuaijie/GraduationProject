@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>猿天地</title>
+    <link th:href="@{/zui/css/zui.min.css}" rel="stylesheet"/>
+    <link th:href="@{/zui/css/zui-theme.min.css}" rel="stylesheet"/>
+
+    <link th:href="@{/editormd/examples/css/style.css}" rel="stylesheet"/>
+    <link th:href="@{/editormd/css/editormd.css}" rel="stylesheet"/>
+
+    <link th:href="@{/css/write.css}" rel="stylesheet"/>
+
+    <script type="text/javascript" th:src="@{/editormd/examples/js/jquery.min.js}"></script>
+    <script type="text/javascript" src="/editormd/lib/editormd.min.js"></script>
+
+</head>
+<body>
+<canvas id="c"></canvas>
+<!--&lt;!&ndash;动态码流背景 &ndash;&gt;-->
+<script type="text/javascript" th:src="@{/js/background.js}"></script>
+<div id="container">
+    <div class="row">
+        <img th:src="@{/images/2.gif}">
+    </div>
+    <nav class="navbar navbar-inverse" role="navigation">
+        <div class="container-fluid">
+            <!-- 导航头部 -->
+            <div class="navbar-header">
+                <!-- 移动设备上的导航切换按钮 -->
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse-example">
+                    <span class="sr-only">切换导航</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <!-- 品牌名称或logo -->
+                <a class="navbar-brand" href="javascript:void(0);">个人空间</a>
+            </div>
+            <!-- 导航项目 -->
+            <div class="collapse navbar-collapse navbar-collapse-example">
+                <!-- 一般导航项目 -->
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="your/nice/url">我的文章</a></li>
+                    <li><a th:href="@{/index}">首页</a></li>
+
+                    <!-- 导航中的下拉菜单 -->
+                    <li class="dropdown">
+                        <a href="your/nice/url" class="dropdown-toggle" data-toggle="dropdown">设置 <b class="caret"></b></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="your/nice/url">任务</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav">
+                    <li><a href="your/nice/url">消息</a></li>
+                </ul>
+
+                <ul class="nav navbar-nav">
+                    <li><a th:href="@{/write}">写文章</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div id="main">
+        <div id="content">
+            <form th:action="@{/doWrite}" id="write_form" method="post">
+                <div class="dropdown dropdown-hover" id="category-div">
+                    <button class="btn" type="button" data-toggle="dropdown" id="dream-diff"
+                            style="background-color:#EBEBEB">
+                        <span id="category" th:text="${article == null ? '文章分类' : article.category}">
+                        </span>
+
+                        <span class="caret"></span>
+                    </button>
+
+                    <ul class="dropdown-menu" id="dreamland-category">
+                        <th:block th:each="category:${categoryList}">
+                            <li><a th:text="${category.name}"></a></li>
+                        </th:block>
+<!--                        <li><a>编程语言</a></li>-->
+<!--                        <li><a>技术总结</a></li>-->
+<!--                        <li><a>后端开发</a></li>-->
+<!--                        <li><a>心得体会</a></li>-->
+                    </ul>
+
+                    <input hidden="hidden" name="cid" th:value="${article == null ? null: article.id}"/>
+                    <input hidden="hidden" id="hidden_category" name="categoryName" th:value="${article == null ? null: article.category}"/>
+
+                </div>
+                <div id="title">
+                    <input type="text" id="txtTitle" name="title" th:value="${article == null ? null: article.title}" class="input-file-title" maxlength="100" placeholder="&nbsp;&nbsp;&nbsp;&nbsp;输入文章标题"  style="height: 33px;width: 100%;background-color:#EBEBEB;border: 0px" >
+                </div>
+                <!--mrakdown编辑器-->
+                <div id="test-editormd">
+                    <textarea class="editormd-markdown-textarea" th:utext="${article == null ? null: article.markdownContent}" id="doc" name="doc">
+                    #### Disabled options
+                    - TeX (Based on KaTeX);
+                    - Emoji;
+                    - Task lists;
+                    - HTML tags decode;
+                    - Flowchart and Sequence Diagram;
+                    </textarea>
+                    <!-- 第二个隐藏文本域，用来构造生成的HTML代码，方便表单POST提交，这里的name可以任意取，后台接受时以这个name键为准 -->
+                    <textarea class="editormd-html-textarea" style="display: none" name="html" id="html"></textarea>
+                </div>
+                <br/>
+                <div class="switch">
+                    <input type="checkbox" id="private" value="off" name="private">
+                    <label>不公开</label>
+                </div>
+                <br/>
+                <div id="btn">
+                    <button  type="button" id="sub_dream">发布</button>
+                    <button  id="go_back" type="button" >返回</button>
+                </div>
+            </form>
+            <div style="clear:both;"></div>
+        </div>
+
+        <div style="clear:both;"></div>
+    </div>
+    <div style="clear:both;"></div>
+
+    <div class="foot">
+        <hr style="background-color: rgba(161,171,175,0.31);height: 1px;left: 0px"/>
+        <div class="foot-nav clearfix" style="margin-top: 40px;text-align: center">
+            <div class="foot-copyrights" style="">
+                <p>
+                    <span>邮箱：2283613941@qq.com</span>
+                </p>
+                <p style="margin-top: 8px">&copy;made by wangshuaijie 如有需要请联系</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+
+    var testEditor;
+    $(function() {
+        testEditor = editormd("test-editormd", {
+            placeholder : "请开始你的表演...",
+            width   : "90%",
+            /*   codeFold : true,*/
+            height  : 640,
+            syncScrolling : "single",
+            path    : "/editormd/lib/",
+            imageUpload : true,
+            imageFormats : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+            imageUploadURL : "/uploadJson",
+            saveHTMLToTextarea : true,
+            emoji: true,
+            taskList: true,
+            tocm: true,         // Using [TOCM]
+            tex: true,                   // 开启科学公式TeX语言支持，默认关闭
+            flowChart: true,             // 开启流程图支持，默认关闭
+            sequenceDiagram: true,// 开启时序/序列图支持，默认关闭
+            /*  toolbarIcons : function() {
+                  // Or return editormd.toolbarModes[name]; // full, simple, mini
+                      // Using "||" set icons align right.
+                      return ["undo","redo","|","bold","italic","quote","uppercase","lowercase","|","h1","h2","h3","h4","|","list-ul","list-ol","hr","|","link","image","code","code-block","table","html-entities","|","watch","preview","fullscreen","clear","|","help"]
+              },*/
+            //下面这一行将使用dark主题
+            // previewTheme : "dark"
+            //editor.md期望得到一个json格式的上传后的返回值，格式是这样的：
+            /*
+                {
+                 success : 0 | 1,           // 0 表示上传失败，1 表示上传成功
+                 message : "提示的信息，上传成功或上传失败及错误信息等。",
+                 url     : "图片地址"        // 上传成功时才返回
+                 }
+            */
+        });
+    });
+
+    //li标签的点击事件
+    $("#dreamland-category li").click(function(){//jquery的click事件
+        var val = $(this).text();
+        $("#category").html(val);
+        $("#hidden_category").val(val);
+    });
+
+
+    //是否公开开关点击事件
+    $(".switch").click(function () {
+        var pd = document.getElementById('private');
+        if(pd.checked == true){
+            $("#private_dream").val("on");
+        }else{
+            $("#private_dream").val("off");
+        }
+    });
+    //返回
+    $("#go_back").click(function () {
+        location.href ="javascript:history.go(-1);"
+    });
+
+    //发布
+    $("#sub_dream").click (function(){
+        var val =  $("#category").html();
+        if(val.trim()=='文章分类'){
+            new $.zui.Messager('请选择文章分类！', {
+                icon: 'bell', // 定义消息图标
+                type:'danger'
+            }).show()
+            return;
+        }
+        var tit = $("#txtTitle").val();
+        if(tit == null || tit.trim() == ""){
+            new $.zui.Messager('请输入文章标题！', {
+                icon: 'bell', // 定义消息图标
+                type:'danger'
+            }).show()
+            return;
+        }
+        var v1 = $("#doc").val();
+        if(v1 == null || v1.trim() == ""){
+            new $.zui.Messager('文章内容为空！', {
+                icon: 'bell', // 定义消息图标
+                type:'danger'
+            }).show()
+            return;
+        }
+        $("#write_form").submit();
+    });
+
+    //不公开开关回显
+    $(function () {
+        var v = '[[${article == null ? 0:article.personal}]]';
+        if(v == "1"){
+            var pd = document.getElementById('private');
+            pd.checked = true;
+        }
+    });
+</script>
+</body>
+</html>

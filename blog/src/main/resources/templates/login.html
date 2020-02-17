@@ -7,11 +7,11 @@
     <meta http-equiv="Expires" content="0">
     <title>登录页面</title>
 
-    <link rel="stylesheet" th:href="@{/css/zui/css/zui.min.css}">
-    <link rel="stylesheet" th:href="@{/css/zui/lib/uploader/zui.uploader.min.css}">
-    <link rel="stylesheet"  th:href="@{/css/login.css}">
-    <script th:src="@{/js/jquery-3.2.1.min.js}"></script>
-    <script th:src="@{/css/zui/js/zui.min.js}"></script>
+    <link rel="stylesheet" href="/zui/css/zui.min.css">
+    <link rel="stylesheet" href="/zui/lib/uploader/zui.uploader.min.css">
+    <link rel="stylesheet" href="/css/login.css">
+    <script src="/js/jquery-3.2.1.min.js"></script>
+    <script src="/zui/js/zui.min.js"></script>
 </head>
 <body>
 <canvas id="c"></canvas>
@@ -30,7 +30,7 @@
             <div class="tab-content">
                 <!--普通登录-->
                 <div class="tab-pane fade in active" id="account-login">
-                    <form id="normal_form" name="form" role="form" class="login-form" th:action="@{/doLogin}" method="post">
+                    <form id="normal_form" name="form" role="form" class="login-form" th:action="@{/emailLogin}" method="post">
                         <div class="form-group">
                             <label for="username" class="sr-only">用户名</label>
                             <input type="text" id="username" name="username" onblur="checkUserName();" th:value="${email}" class="form-control" placeholder="用户名">
@@ -63,7 +63,7 @@
                 </div>
                 <!--手机登录-->
                 <div class="tab-pane fade" id="phone-login">
-                    <form role="form" class="login-form form-horizontal" id="phone_form" th:action="@{/doLogin}" method="post">
+                    <form role="form" class="login-form form-horizontal" id="phone_form" th:action="@{/phoneLogin}" method="post">
                         <div class="form-group">
                             <label for="username" class="sr-only">用户名</label>
                             <div class="col-xs-12">

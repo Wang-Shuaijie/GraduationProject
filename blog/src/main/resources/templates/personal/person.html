@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<!--suppress ALL-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>个人空间</title>
+    <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link th:href="@{/bootstrap/css/bootstrap-theme.min.css}" rel="stylesheet"/>
+
+    <link th:href="@{/zui/css/zui.min.css}" rel="stylesheet"/>
+    <link th:href="@{/zui/css/zui-theme.min.css}" rel="stylesheet"/>
+    <link th:href="@{/css/person.css}" rel="stylesheet">
+
+    <script type="text/javascript" th:src="@{/js/jquery-3.2.1.min.js}"></script>
+    <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{/zui/js/zui.min.js}"></script>
+    <script th:src="@{/zui/lib/kindeditor/kindeditor.min.js}"></script>
+
+</head>
+<body>
+<canvas id="c"></canvas>
+<!--&lt;!&ndash;动态码流背景 &ndash;&gt;-->
+<script type="text/javascript" th:src="@{/js/background.js}"></script>
+<div id="container">
+    <!-- 弹出设置信息对话框 -->
+    <div class="modal fade" id="myModal">
+        <div class="modal-dialog" style="width: 0px;margin-left: 550px;">
+            <div class="modal-content">
+                <div class="tab-pane fade in active" id="account-login">
+                    <div class="content" >
+                        <div class="col-sm-6 col-sm-offset-3 col-md-4 col-sm-offset-4 login-box" style="width: 450px;height: 260px;">
+                            <span id="update-span" style="color: red"></span>
+                            <form id="normal_form" name="form" role="form" class="login-form" action="${ctx}/profile" method="post">
+                                <div class="form-group">
+                                    <label for="email" class="sr-only">用户名</label>
+                                    <input type="text" id="email" name="email" onblur="checkEmail();" class="form-control" placeholder="邮箱账号">
+                                </div>
+                                <div class="form-group">
+                                    <label for="password" class="sr-only">密码</label>
+                                    <input type="password" id="password" onblur="checkPassword();" name="password" class="form-control" placeholder="密码">
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone" class="sr-only">手机号</label>
+                                    <input type="text" id="phone" name="phone" onblur="checkPhone();" class="form-control" placeholder="手机号">
+                                </div>
+                            </form>
+                            <div class="form-group" style="margin-top: 30px ">
+                                <div style="width: 80px;float: left">
+                                    <button type="button" id="btn" onclick="sure();"  class="btn btn-primary btn-block">确定</button>
+                                </div>
+                                <div style="width: 80px;float: left;margin-left: 30px">
+                                    <button type="button" id="cancle" onclick="cancle();" class="btn btn-primary btn-block">取消</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <nav class="navbar navbar-inverse" role="navigation">
+        <div class="container-fluid">
+            <!-- 导航头部 -->
+            <div class="navbar-header">
+                <!-- 移动设备上的导航切换按钮 -->
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse-example">
+                    <span class="sr-only">切换导航</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <!-- 品牌名称或logo -->
+                <a class="navbar-brand" href="javascript:void(0);">个人空间</a>
+            </div>
+            <!-- 导航项目 -->
+            <div class="collapse navbar-collapse navbar-collapse-example">
+                <!-- 一般导航项目 -->
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="your/nice/url">我的文章</a></li>
+                    <li><a th:href="@{/index}">首页</a></li>
+
+                    <!-- 导航中的下拉菜单 -->
+                    <li class="dropdown">
+                        <a href="your/nice/url" class="dropdown-toggle" data-toggle="dropdown">设置 <b class="caret"></b></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="your/nice/url">任务</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav">
+                    <li><a href="your/nice/url">消息</a></li>
+                </ul>
+
+                <ul class="nav navbar-nav">
+                    <li><a th:href="@{/write}">写文章</a></li>
+                </ul>
+            </div>
+        </div>
+
+    </nav>
+    <div id="main">
+        <!-- 左侧菜单栏-->
+        <div class="author-card follow-box">
+            <div class="designer-card card-media">
+
+                <input type="hidden" name="creator" value="201677I0632">
+                <div class="avatar-container-80 center">
+                    <a href="#" th:title="${user.nickName}" class="avatar" target="_blank">
+                        <img th:src="${user.imgUrl}" width="80" height="80" alt="">
+                    </a>
+
+                </div>
+
+                <br/>
+                <div class="author-info">
+                    <p class="author-info-title">
+                        <a href="#" th:title="${user.nickName}"class="title-content" target="_blank">
+                            <span th:text="${user.nickName}"></span>
+                        </a>
+                    </p>
+                    <div class="position-info">
+                        <span>郑州大学&nbsp;|&nbsp;在校学生</span>
+                    </div>
+                    <div class="btn-area">
+                        <div class="js-project-focus-btn" style="margin-left: 20px">
+
+                            <input type="button" title="添加关注" class="btn-default-main btn-current attention notfollow" value="关注"
+                                   z-st="follow">
+
+                        </div>
+                        <div style="margin-left: 30px;float: left">
+                            <input type="button" title="发私信" class="btn-default-secondary btn-current private-letter" value="私信"
+                                   onclick="" z-st="privateMsg">
+                        </div>
+                    </div>
+
+                    <div style="float: left;margin-top: 40px; margin-left: 20px;">
+                        <a th:href="@{/profile(id=${user.id})}"><i class="icon icon-edit"></i><span style="margin-left: 10px">修改个人资料</span></a>
+                    </div>
+                    <div style="clear:both;"></div>
+                </div>
+            </div>
+
+            <div id="category">
+                <div class="customer" style="height: 40px;background-color:#262626;line-height: 40px ">
+                    <font color="white" size="2.8" face="黑体" style="margin-top: 10px;margin-left: 10px">文章分类</font>
+                </div>
+                <div class="list-group">
+                    <a onclick="changeToActive('category_x','',0)" class="list-group-item active" id="category_x">
+                        <span th:text="|全部(${page.total})|"></span>
+                    </a>
+                    <th:block th:each="articleCategory : ${categorys}">
+                        <a th:onclick="changeToActive([[|category_${articleCategoryStat.index}|]],[[${articleCategory.category}]],0)";
+                           class="list-group-item" th:id="|category_${articleCategoryStat.index}|">
+                            <span th:text="|${articleCategory.category}(${articleCategory.num})|"></span>
+                        </a>
+                    </th:block>
+                </div>
+            </div>
+            <div style="clear:both;"></div>
+        </div>
+
+        <!-- 中间内容展示 -->
+        <div class="content" style="margin-left: 20px; background-color: #F8F8FF; border-radius: 18px;">
+            <div class="content-bar">
+                <div id="fa-dreamland" style="background-color: #B22222;width: 120px;text-align: center;height: 40px;line-height: 40px;float: left" onclick="release_dreamland();">
+                    <span id="fa-span" style="color: white">发布的文章</span>
+                </div>
+
+                <div id="manage-dreamland" style="background-color: #F0F0F0;width: 120px;text-align: center;height: 40px;line-height: 40px;float: left;margin-left: 20px" onclick="manage_dreamland();">
+                    <span id="manage-span" style="color: black">管理文章</span>
+                </div>
+
+                <div id="per-dreamland" style="background-color: #F0F0F0;width: 120px;text-align: center;height: 40px;line-height: 40px;float: left;margin-left: 20px" onclick="personal_dreamland();">
+                    <span id="personal-span"  style="color: black">不公开文章</span>
+                </div>
+            </div>
+
+            <div id="release-dreamland" style="margin-top: 50px;width: 100%;">
+                <div id="release-div">
+                    <ul style="font-size: 12px" id="release-dreamland-ul">
+                    <th:block th:each="article:${page.list}">
+                        <li class="dreamland-fix">
+                            <a th:href="@{/watch(cid=${article.id})}"><span th:text="${article.title}"></span></a>
+                            <span class="bar-read" th:text="|评论 (${article.commentNum})|"></span>
+                            <span class="bar-commend" th:text="|${article.upvote}人阅读|"></span>
+                            <hr/>
+                        </li>
+                    </th:block>
+                </ul>
+                </div>
+                <div id="release-dreamland-div" style="float: left;margin-left: 20px">
+                    <ul class="pager pager-loose" id="release-dreamland-fy">
+
+                    </ul>
+                </div>
+                <div style="clear:both;"></div>
+            </div>
+
+            <div id="update-dreamland" style="margin-top: 50px;width: 100%;display: none" >
+                <div id="update-div">
+                    <ul style="font-size: 12px" id="update-dreamland-ul">
+                        <th:block th:each="article: ${page.list}">
+                            <li class="dreamland-fix">
+                                <a th:href="@{/watch(cid=${article.id})}"><span th:text="${article.title}"></span></a>
+                                <a th:href="@{/delete(cid=${article.id})}"><span class="bar-delete">删除</span></a>
+                                <a th:href="@{/write(cid=${article.id},style=${article.markdownContent!=null?1:2})}"><span class="bar-update">修改</span></a>
+                                <hr/>
+                            </li>
+                        </th:block>
+                    </ul>
+                </div>
+
+                <div id="update-dreamland-div" style="float: left;margin-left: 20px">
+                    <ul class="pager pager-loose" id="update-dreamland-fy">
+
+                    </ul>
+                </div>
+                <div style="clear:both;"></div>
+            </div>
+
+            <div id="personal-dreamland" style="margin-top: 50px;width: 100%;display: none">
+                <div id="personal-div">
+                    <ul style="font-size: 12px" id="personal-dreamland-ul">
+                        <th:block th:each="article: ${personalPage.list}">
+                            <li class="dreamland-fix">
+                                <a th:href="@{/watch(cid=${article.id})}"><span th:text="${article.title}"></span></a>
+                                <a th:href="@{/delete(cid=${article.id})}"><span class="bar-delete">删除</span></a>
+                                <a th:href="@{/write(cid=${article.id},style=${article.markdownContent!=null?1:2})}"><span class="bar-update">修改</span></a>
+                                <hr/>
+                            </li>
+                        </th:block>
+                    </ul>
+                </div>
+
+                <div id="personal-dreamland-div" style="float: left;margin-left: 20px">
+                    <ul class="pager pager-loose" id="personal-dreamland-fy">
+
+                    </ul>
+                </div>
+                <div style="clear:both;"></div>
+            </div>
+
+            <div class="hot-dreamland" style="background: #FFFFFF; border-radius: 18px; margin-bottom: 20px; margin-left: 20px; margin-right: 20px;">
+                <div style="text-align: center;padding-top: 15px">
+                    <h2>文章推荐<span style="color:#B22222 ">hot</span></h2>
+                </div>
+
+                <div style="margin-top: 30px;width: 100%" id="hot-div">
+                    <ul style="font-size: 12px" id="hot-dreamland-ul">
+                        <th:block th:each="article:${hotPage.list}">
+                            <li class="dreamland-fix">
+                                <a th:href="@{/watch(cid=${article.id})}"><span th:text="${article.title}"></span></a>
+                                <span class="bar-read" th:text="|评论 (${article.commentNum})|"></span>
+                                <span class="bar-commend" th:text="|${article.upvote}人阅读|"></span>
+                                <hr/>
+                            </li>
+                        </th:block>
+                    </ul>
+                </div>
+
+                <div id="hot-dreamland-div" style="float: left;margin-left: 20px">
+                    <ul class="pager pager-loose" id="hot-dreamland-fy">
+
+                    </ul>
+                </div>
+                <div style="clear:both;"></div>
+            </div>
+
+        </div>
+
+        <!--右侧-->
+        <div class="ibx-advice" onmouseover="changeBackColor();" onmouseout="back2color();">
+            <a th:href="@{/write(style=1)}"><span class="glyphicon glyphicon-edit" aria-hidden="true" style="color:#1b1b1b;font-size:30px;"></span></a>
+        </div>
+
+        <div style="clear:both;"></div>
+    </div>
+
+    <!--底部-->
+    <div class="foot">
+        <hr style="background-color: rgba(161,171,175,0.31);height: 1px;left: 0px"/>
+        <hr style="background-color: rgba(161,171,175,0.31);height: 1px;left: 0px"/>
+        <div class="foot-nav clearfix" style="margin-top: 40px;text-align: center">
+            <div class="foot-copyrights" style="">
+                <p>
+                    <span>邮箱：2283613941@qq.com</span>
+                </p>
+                <p style="margin-top: 8px">&copy;made by wangshuaijie 如有需要请联系</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script type="text/javascript">
+    /**
+     * 页码显示
+     */
+    $(function () {
+        var val = "[[${manage}]]";
+        if(val=="manage"){
+            manage_dreamland();
+        }
+
+        changeToActive("category_x",'',0);
+        turnPage(1);
+        personTurnPage(1);
+        hotTurnPage(1);
+    });
+</script>
+
+</body>
+<script type="text/javascript">
+
+    $(function () {
+        //防止类型过多而导致页面显示错误
+
+        //其它页面返回管理文章模块
+        var val = "${manage}";
+        if(val=="manage"){
+            manage_dreamland();
+        }
+    });
+
+    /**
+     * 文章分类点击事件
+     * @param id a标签id
+     * @param category 分类名称
+     * @param pageNum  页码
+     */
+    function changeToActive(id,category,pageNum) {
+        var ulist_id = "";
+        if(typeof (id)=="object"){
+            ulist_id = id.id;
+        }else{
+            ulist_id = id;
+        }
+        $("ul").remove("#release-dreamland-ul");
+        $("ul").remove("#release-dreamland-fy");
+        $(".list-group-item").attr("class","list-group-item");
+        $("#"+ulist_id).attr("class","list-group-item active");
+
+        $.ajax({
+            type: 'post',
+            url: '/findByCategory',
+            data: {
+                "category": category,
+                "pageNum":pageNum
+            },
+            dataType: 'json',
+            success: function (data) {
+                var pageCategory = data["pageCategory"];
+                if(pageCategory=="fail"){
+                    window.location.href = "[[@{/login}]]";
+                }else{
+                    var ucList = pageCategory.list;
+                    if(ucList==null || ucList.length==0){
+                        alert("没有找到此类型的文章！！");
+                    }else{
+                        var startHtml = "<ul style='font-size: 12px' id='release-dreamland-ul'>";
+                        $(ucList).each(function () {
+                            var contHtml =
+                                "<li class='dreamland-fix'><a href='[[@{/watch}]]?cid="+this.id+"'>"+this.title+"</a> <span class='bar-read'>评论 ("+this.commentNum+")</span>"
+                                +"<span class='bar-commend'>"+this.upvote+"人阅读</span><hr/></li>";
+                            startHtml = startHtml + contHtml;
+                        });
+                        var endHtml = "</ul>";
+                        var okHtml = startHtml + endHtml;
+
+                        $("#release-div").append(okHtml);
+
+
+                        //分页
+                        var stPageHtml = " <ul id='release-dreamland-fy' class='pager pager-loose'>";
+                        var before;
+                        if(pageCategory.pageNum > 1){
+                            var num = parseInt(pageCategory.pageNum) -1;
+                            before ="<li><a onclick='changeToActive("+ulist_id+",\""+category+"\","+num+")'>« 上一页</a></li>";
+                        }else{
+                            before ='<li><a href="javascript:void(0);" >上一页</a></li>';
+                        }
+                        stPageHtml += before;
+                        var begin;
+                        var end;
+                        if (pageCategory.pageNum<10){
+                            begin=1;
+                            end=pageCategory.pages;
+                        }else{
+                            begin = pageCategory.pageNum-5;
+                            end = pageCategory.pageNum+4;
+                            if (begin < 1){
+                                begin = 1;
+                                end = begin + 9;
+                            }
+                            if (end > pageCategory.pages){
+                                end = pageCategory.pages;
+                                begin = end -9;
+                            }
+                        }
+                        var li ;
+                        for (var i = begin ; i <= end ; i++) {
+                            li = "<li ><a onclick='changeToActive("+ulist_id+",\""+category+"\","+i+")'>"+i+"</a></li>"
+                            stPageHtml+=li;
+                        }
+                        if (pageCategory.pageNum >= pageCategory.pages){
+                            var lastPage ='<li><a href="javascript:void(0);" >下一页</a></li>';
+                        }else {
+                            var num = parseInt(pageCategory.pageNum) + 1;
+                            var lastPage ="<li><a onclick='changeToActive("+ulist_id+",\""+category+"\","+num+")'>下一页 »</a></li>";
+                        }
+                        stPageHtml+=lastPage;
+                        var endPageHtml = "</ul>";
+                        var pageOkHtml = stPageHtml+endPageHtml;
+
+                        $("#release-dreamland-div").append(pageOkHtml);
+                    }
+
+                }
+            }
+
+        });
+    }
+
+    /**
+     * 发布文章点击事件
+     */
+    function release_dreamland() {
+        document.getElementById("fa-dreamland").style.backgroundColor = "#B22222";
+        document.getElementById("fa-span").style.color = "white";
+
+        document.getElementById("manage-dreamland").style.backgroundColor = "#F0F0F0";
+        document.getElementById("manage-span").style.color = "black";
+
+        document.getElementById("per-dreamland").style.backgroundColor = "#F0F0F0";
+        document.getElementById("personal-span").style.color = "black";
+
+        document.getElementById("release-dreamland").style.display = "";
+        document.getElementById("personal-dreamland").style.display = "none";
+        document.getElementById("update-dreamland").style.display = "none";
+    }
+
+    /**
+     * 管理文章点击事件
+     */
+    function manage_dreamland() {
+        document.getElementById("fa-dreamland").style.backgroundColor = "#F0F0F0";
+        document.getElementById("fa-span").style.color = "black";
+
+        document.getElementById("per-dreamland").style.backgroundColor = "#F0F0F0";
+        document.getElementById("personal-span").style.color = "black";
+
+        document.getElementById("manage-dreamland").style.backgroundColor = "#B22222";
+        document.getElementById("manage-span").style.color = "white";
+
+        document.getElementById("release-dreamland").style.display = "none";
+        document.getElementById("personal-dreamland").style.display = "none";
+        document.getElementById("update-dreamland").style.display = "";
+    }
+
+    /**
+     * 不公开文章点击事件
+     */
+    function personal_dreamland() {
+        document.getElementById("fa-dreamland").style.backgroundColor = "#F0F0F0";
+        document.getElementById("fa-span").style.color = "black";
+
+        document.getElementById("per-dreamland").style.backgroundColor = "#B22222";
+        document.getElementById("personal-span").style.color = "white";
+
+        document.getElementById("manage-dreamland").style.backgroundColor = "#F0F0F0";
+        document.getElementById("manage-span").style.color = "black";
+
+        document.getElementById("release-dreamland").style.display = "none";
+        document.getElementById("update-dreamland").style.display = "none";
+        document.getElementById("personal-dreamland").style.display = "";
+    }
+
+    /**
+     * 管理文章分页
+     * @param pageNum
+     */
+    function turnPage(pageNum) {
+        $("ul").remove("#update-dreamland-ul");
+        $("ul").remove("#update-dreamland-fy");
+        $.ajax({
+            type: 'post',
+            url: '/findByCategory',
+            data: {"pageNum": pageNum},
+            dataType: 'json',
+            success: function (data) {
+                var pageCategory = data["pageCategory"];
+                if(pageCategory =="fail"){
+                    window.location.href = "[[@{/login}]]";
+                }else{
+                    var ucList = pageCategory.list;
+                    if(ucList==null || ucList.length==0){
+                        alert("没有找到此类型的文章！！");
+                    }else {
+                        var startHtml = "<ul style='font-size: 12px' id='update-dreamland-ul'>";
+                        $(ucList).each(function () {
+                            var contHtml =
+                                "<li class='dreamland-fix'>" +
+                                "<a href='[[@{/watch}]]?cid=" + this.id + "'>" + this.title + "</a> " +
+                                "<a href='[[@{/delete}]]?cid="+this.id+"'><span class='bar-delete'>删除</span></a>" +
+                                "<a href='[[@{/write}]]?style="+(this.markdownContent!=null?1:0)+"&cid="+this.id+"'><span class='bar-update'>修改</span><hr/></a>" +
+                                "</li>";
+                            startHtml = startHtml + contHtml;
+                        });
+                        var endHtml = "</ul>";
+                        var okHtml = startHtml + endHtml;
+
+                        $("#update-div").append(okHtml);
+
+
+                        //分页
+                        var stPageHtml = " <ul id='update-dreamland-fy' class='pager pager-loose'>";
+                        var before;
+                        if (pageCategory.pageNum > 1) {
+                            var num = parseInt(pageCategory.pageNum) - 1;
+                            before = "<li><a onclick='turnPage("+num+")'>« 上一页</a></li>";
+                        } else {
+                            before = '<li><a href="javascript:void(0);" >上一页</a></li>';
+                        }
+                        stPageHtml += before;
+                        var begin;
+                        var end;
+                        if (pageCategory.pageNum < 10) {
+                            begin = 1;
+                            end = pageCategory.pages;
+                        } else {
+                            begin = pageCategory.pageNum - 5;
+                            end = pageCategory.pageNum + 4;
+                            if (begin < 1) {
+                                begin = 1;
+                                end = begin + 9;
+                            }
+                            if (end > pageCategory.pages) {
+                                end = pageCategory.pages;
+                                begin = end - 9;
+                            }
+                        }
+                        var li;
+                        for (var i = begin; i <= end; i++) {
+                            li = "<li ><a onclick='turnPage("+i+")'>" + i + "</a></li>"
+                            stPageHtml += li;
+                        }
+                        if (pageCategory.pageNum >= pageCategory.pages) {
+                            var lastPage = '<li><a href="javascript:void(0);" >下一页</a></li>';
+                        } else {
+                            var num = parseInt(pageCategory.pageNum) + 1;
+                            var lastPage = "<li><a onclick='turnPage("+num+")'>下一页 »</a></li>";
+                        }
+                        stPageHtml += lastPage;
+                        var endPageHtml = "</ul>";
+                        var pageOkHtml = stPageHtml + endPageHtml;
+
+                        $("#update-dreamland-div").append(pageOkHtml);
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * 未公开文章分页
+     * @param pageNum
+     */
+    function personTurnPage(pageNum) {
+        $("ul").remove("#personal-dreamland-ul");
+        $("ul").remove("#personal-dreamland-fy");
+        $.ajax({
+            type: 'post',
+            url: '/findPersonal',
+            data: {"pageNum": pageNum},
+            dataType: 'json',
+            success: function (data) {
+                var pagePersonal = data["pagePersonal"];
+                if(pagePersonal=="fail"){
+                    window.location.href = "[[@{/login}]]";
+                }else{
+                    var ucList = pagePersonal.list;
+                    if(ucList==null || ucList.length==0){
+                        alert("没有找到此类型的文章！！");
+                    }else {
+                        var startHtml = "<ul style='font-size: 12px' id='personal-dreamland-ul'>";
+                        $(ucList).each(function () {
+                            var contHtml =
+                                "<li class='dreamland-fix'>" +
+                                "<a href='[[@{/watch}]]?cid=" + this.id + "'>" + this.title + "</a> " +
+                                "<a href='[[@{/delete}]]?cid="+this.id+"'><span class='bar-delete'>删除</span></a>" +
+                                "<a href='[[@{/write}]]?style="+(this.markdownContent!=null?1:0)+"&cid="+this.id+"'><span class='bar-update'>修改</span><hr/></a>" +
+                                "</li>";
+                            startHtml = startHtml + contHtml;
+                        });
+                        var endHtml = "</ul>";
+                        var okHtml = startHtml + endHtml;
+
+                        $("#personal-div").append(okHtml);
+
+
+                        //分页
+                        var stPageHtml = " <ul id='persoanl-dreamland-fy' class='pager pager-loose'>";
+                        var before;
+                        if (pagePersonal.pageNum > 1) {
+                            var num = parseInt(pagePersonal.pageNum) - 1;
+                            before = "<li><a onclick='personTurnPage("+num+")'>« 上一页</a></li>";
+                        } else {
+                            before = '<li><a href="javascript:void(0);" >上一页</a></li>';
+                        }
+                        stPageHtml += before;
+                        var begin;
+                        var end;
+                        if (pagePersonal.pageNum < 10) {
+                            begin = 1;
+                            end = pagePersonal.pages;
+                        } else {
+                            begin = pagePersonal.pageNum - 5;
+                            end = pagePersonal.pageNum + 4;
+                            if (begin < 1) {
+                                begin = 1;
+                                end = begin + 9;
+                            }
+                            if (end > pagePersonal.pages) {
+                                end = pagePersonal.pages;
+                                begin = end - 9;
+                            }
+                        }
+                        var li;
+                        for (var i = begin; i <= end; i++) {
+                            li = "<li ><a onclick='personTurnPage("+i+")'>" + i + "</a></li>"
+                            stPageHtml += li;
+                        }
+                        if (pagePersonal.pageNum >= pagePersonal.pages) {
+                            var lastPage = '<li><a href="javascript:void(0);" >下一页</a></li>';
+                        } else {
+                            var num = parseInt(pagePersonal.pageNum) + 1;
+                            var lastPage = "<li><a onclick='personTurnPage("+num+")'>下一页 »</a></li>";
+                        }
+                        stPageHtml += lastPage;
+                        var endPageHtml = "</ul>";
+                        var pageOkHtml = stPageHtml + endPageHtml;
+
+                        $("#personal-dreamland-div").append(pageOkHtml);
+                    }
+                }
+            }
+        });
+    }
+
+
+    /**
+     * 文章推荐分页
+     * @param pageNum
+     */
+    function hotTurnPage(pageNum) {
+        $("ul").remove("#hot-dreamland-ul");
+        $("ul").remove("#hot-dreamland-fy");
+        $.ajax({
+            type: 'post',
+            url: '/findHot',
+            data: {"pageNum": pageNum},
+            dataType: 'json',
+            success: function (data) {
+                var hotPage = data["hotPage"];
+                if(hotPage=="fail"){
+                    window.location.href = "[[@{/login}]]";
+                }else{
+                    var ucList = hotPage.list;
+                    if(ucList==null || ucList.length==0){
+                        alert("没有推荐！！");
+                    }else {
+                        var startHtml = "<ul style='font-size: 12px' id='hot-dreamland-ul'>";
+                        $(ucList).each(function () {
+                            var contHtml =
+                                "<li class='dreamland-fix'><a href='[[@{/watch}]]?cid=" + this.id + "'>" + this.title + "</a> <span class='bar-read'>评论 (" + this.commentNum + ")</span>"
+                                + "<span class='bar-commend'>" + this.upvote + "人阅读</span><hr/></li>";
+                            startHtml = startHtml + contHtml;
+                        });
+                        var endHtml = "</ul>";
+                        var okHtml = startHtml + endHtml;
+
+                        $("#hot-div").append(okHtml);
+
+
+                        //分页
+                        var stPageHtml = " <ul id='hot-dreamland-fy' class='pager pager-loose'>";
+                        var before;
+                        if (hotPage.pageNum > 1) {
+                            var num = parseInt(hotPage.pageNum) - 1;
+                            before = "<li><a onclick='hotTurnPage("+num+")'>« 上一页</a></li>";
+                        } else {
+                            before = '<li><a href="javascript:void(0);" >上一页</a></li>';
+                        }
+                        stPageHtml += before;
+                        var begin;
+                        var end;
+                        if (hotPage.pageNum < 10) {
+                            begin = 1;
+                            end = hotPage.pages;
+                        } else {
+                            begin = hotPage.pageNum - 5;
+                            end = hotPage.pageNum + 4;
+                            if (begin < 1) {
+                                begin = 1;
+                                end = begin + 9;
+                            }
+                            if (end > hotPage.pages) {
+                                end = hotPage.pages;
+                                begin = end - 9;
+                            }
+                        }
+                        var li;
+                        for (var i = begin; i <= end; i++) {
+                            li = "<li ><a onclick='hotTurnPage("+i+")'>" + i + "</a></li>"
+                            stPageHtml += li;
+                        }
+                        if (hotPage.pageNum >= hotPage.pages) {
+                            var lastPage = '<li><a href="javascript:void(0);" >下一页</a></li>';
+                        } else {
+                            var num = parseInt(hotPage.pageNum) + 1;
+                            var lastPage = "<li><a onclick='hotTurnPage("+num+")'>下一页 »</a></li>";
+                        }
+                        stPageHtml += lastPage;
+                        var endPageHtml = "</ul>";
+                        var pageOkHtml = stPageHtml + endPageHtml;
+
+                        $("#hot-dreamland-div").append(pageOkHtml);
+                    }
+                }
+            }
+        });
+    }
+    function changeBackColor() {
+        $(".glyphicon-edit").css("color","blue");
+    }
+    function back2color() {
+        $(".glyphicon-edit").css("color", "black");
+    }
+
+
+</script>
+</html>
