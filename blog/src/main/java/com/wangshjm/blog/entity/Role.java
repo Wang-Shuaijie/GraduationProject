@@ -6,12 +6,14 @@ import lombok.NoArgsConstructor;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  * 角色表实体
  */
 @Data
 @NoArgsConstructor
+@Table(name = "tb_role")
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

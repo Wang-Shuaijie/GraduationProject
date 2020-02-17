@@ -12,6 +12,7 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
+@Table(name = "tb_comment")
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

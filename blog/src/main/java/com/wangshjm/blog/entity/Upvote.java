@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
 
 /**
@@ -13,6 +14,7 @@ import java.util.Date;
  */
 @Data
 @NoArgsConstructor
+@Table(name = "tb_upvote")
 public class Upvote {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

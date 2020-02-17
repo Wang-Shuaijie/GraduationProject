@@ -6,11 +6,13 @@ import lombok.NoArgsConstructor;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Data
 @NoArgsConstructor
+@Table(name = "tb_user_info")
 public class UserInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
