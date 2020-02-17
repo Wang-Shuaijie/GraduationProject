@@ -2,6 +2,9 @@ package com.wangshjm.blog.utils;
 
 import java.util.Random;
 
+/**
+ * 手机验证码生成
+ */
 public class RandStringUtils {
     public static String getCode(){
         StringBuilder sb = new StringBuilder();
