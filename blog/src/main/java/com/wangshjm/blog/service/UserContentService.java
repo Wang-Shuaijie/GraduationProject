@@ -1,21 +1,11 @@
 package com.wangshjm.blog.service;
 
-import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import com.wangshjm.blog.entity.UserContent;
 
 import java.util.List;
 
 public interface UserContentService {
-
-    /**
-     * 查询所有Content按照时间排序并分页
-     *
-     * @param pageNum
-     * @param pageSize
-     * @return
-     */
-    PageInfo<UserContent> findAll(Integer pageNum, Integer pageSize);
 
     /**
      * 添加文章
@@ -32,12 +22,6 @@ public interface UserContentService {
      */
     List<UserContent> findByUserId(Long uid);
 
-    /**
-     * 查询所有文章集合
-     *
-     * @return
-     */
-    List<UserContent> findAll();
 
     /**
      * 根据文章id查找文章
@@ -71,23 +55,19 @@ public interface UserContentService {
     List<UserContent> findCategoryByUid(Long uid);
 
     /**
-     * 根据分类查询所有文章并分类
-     *
-     * @param category
-     * @param uid
+     * 模糊查询，根据userContent中的参数来查
+     * @param userContent
      * @param pageNum
      * @param pageSize
      * @return
      */
-    PageInfo<UserContent> findByCategory(String category, Long uid, Integer pageNum, Integer pageSize);
+    PageInfo<UserContent> findAll(UserContent userContent, Integer pageNum, Integer pageSize);
 
     /**
-     * 查找所有不公开文章
-     *
-     * @param uid
+     * 根据点赞数查询
      * @param pageNum
      * @param pageSize
      * @return
      */
-    PageInfo<UserContent> findPersonal(Long uid, Integer pageNum, Integer pageSize);
+    PageInfo<UserContent> findByUpvote(Integer pageNum, Integer pageSize);
 }
