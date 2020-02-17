@@ -1,14 +1,13 @@
 package com.wangshjm.blog.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.wangshjm.blog.entity.Comment;
 import com.wangshjm.blog.entity.Upvote;
 import com.wangshjm.blog.entity.User;
 import com.wangshjm.blog.entity.UserContent;
 import com.wangshjm.blog.service.*;
-import com.wangshjm.blog.utils.DateUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -56,7 +56,11 @@ public class IndexController extends BaseController {
             pageNum = 1;
             pageSize = 5;
         }
-        User user = (User) getSession().getAttribute("user");
+        if (pageSize < 5) {
+            pageSize = 5;
+        }
+
+        User user = getCurrentUser();
         model.addAttribute("user", user);
 
         if (!StringUtils.isEmpty(keyword)) {
@@ -64,17 +68,24 @@ public class IndexController extends BaseController {
             model.addAttribute("keyword", keyword);
             model.addAttribute("page", page);
         } else {
-            PageInfo<UserContent> page = userContentService.findAll(pageNum, pageSize);
+            PageInfo<UserContent> page = userContentService.findAll(null, pageNum, pageSize);
             model.addAttribute("page", page);
-            //model.addAttribute("list", JSONObject.toJSONString(page.getList()));
         }
         return "/index";
+    }
+
+    @RequestMapping("/watch")
+    public String watchArticle(Model model, @RequestParam(value = "cid", required = false) Long cid) {
+        User user = getCurrentUser();
+        UserContent userContent = userContentService.findById(cid);
+        model.addAttribute("article", userContent);
+        model.addAttribute("user", user);
+        return "/watch";
     }
 
     /**
      * 点赞或踩
      *
-     * @param model
      * @param id
      * @param uid
      * @param upvote 1:点赞; -1:点踩
@@ -82,11 +93,11 @@ public class IndexController extends BaseController {
      */
     @RequestMapping("/upvote")
     @ResponseBody
-    public Map<String, Object> upvote(Model model, @RequestParam(value = "id", required = false) long id,
+    public Map<String, Object> upvote(@RequestParam(value = "id", required = false) long id,
                                       @RequestParam(value = "uid", required = false) Long uid,
                                       @RequestParam(value = "upvote", required = false) int upvote) {
         Map<String, Object> map = new HashMap<String, Object>();
-        User user = (User) getSession().getAttribute("user");
+        User user = getCurrentUser();
         if (ObjectUtils.isEmpty(user)) {
             map.put("data", "fail");
             return map;
@@ -176,7 +187,6 @@ public class IndexController extends BaseController {
     /**
      * 点击评论按钮
      *
-     * @param model
      * @param id
      * @param content_id
      * @param uid
@@ -188,35 +198,18 @@ public class IndexController extends BaseController {
      */
     @RequestMapping("/comment")
     @ResponseBody
-    public Map<String, Object> comment(Model model, @RequestParam(value = "id", required = false) Long id,
+    public Map<String, Object> comment(@RequestParam(value = "id", required = false) Long id,
                                        @RequestParam(value = "content_id", required = false) Long content_id,
                                        @RequestParam(value = "uid", required = false) Long uid,
                                        @RequestParam(value = "by_id", required = false) Long bid,
                                        @RequestParam(value = "oSize", required = false) String oSize,
                                        @RequestParam(value = "comment_time", required = false) String comment_time,
-                                       @RequestParam(value = "upvote", required = false) Integer upvote) {
+                                       @RequestParam(value = "upvote", required = false) Integer upvote) throws ParseException {
         Map<String, Object> map = new HashMap<String, Object>();
-        User user = (User) getSession().getAttribute("user");
-        if (ObjectUtils.isEmpty(user)) {
-            map.put("data", "fail");
-            return map;
-        }
-        if (ObjectUtils.isEmpty(id)) {
-            Date date = DateUtils.StringToDate(comment_time, "yyyy-MM-dd HH:mm:ss");
 
+        if (ObjectUtils.isEmpty(id)) {
             Comment comment = new Comment();
-            comment.setComContent(oSize);
-            comment.setCommTime(date);
-            comment.setConId(content_id);
-            comment.setComId(uid);
-            if (upvote == null) {
-                upvote = 0;
-            }
-            comment.setById(bid);
-            comment.setUpvote(upvote);
-            User u = userService.findById(uid);
-            comment.setUser(u);
-            commentService.add(comment);
+            processComment(comment, content_id, uid, bid, oSize, comment_time, upvote);
             map.put("data", comment);
 
             UserContent userContent = userContentService.findById(content_id);
@@ -236,7 +229,6 @@ public class IndexController extends BaseController {
     /**
      * 点击一级评论块的评论按钮
      *
-     * @param model
      * @param id
      * @param content_id
      * @param uid
@@ -248,36 +240,18 @@ public class IndexController extends BaseController {
      */
     @RequestMapping("/comment_child")
     @ResponseBody
-    public Map<String, Object> addCommentChild(Model model, @RequestParam(value = "id", required = false) Long id,
+    public Map<String, Object> addCommentChild(@RequestParam(value = "id", required = false) Long id,
                                                @RequestParam(value = "content_id", required = false) Long content_id,
                                                @RequestParam(value = "uid", required = false) Long uid,
                                                @RequestParam(value = "by_id", required = false) Long bid,
                                                @RequestParam(value = "oSize", required = false) String oSize,
                                                @RequestParam(value = "comment_time", required = false) String comment_time,
-                                               @RequestParam(value = "upvote", required = false) Integer upvote) {
+                                               @RequestParam(value = "upvote", required = false) Integer upvote) throws ParseException {
         Map map = new HashMap<String, Object>();
-        User user = (User) getSession().getAttribute("user");
-        if (ObjectUtils.isEmpty(user)) {
-            map.put("data", "fail");
-            return map;
-        }
 
-        Date date = DateUtils.StringToDate(comment_time, "yyyy-MM-dd HH:mm:ss");
+
         Comment comment = new Comment();
-        comment.setComContent(oSize);
-        comment.setCommTime(date);
-        comment.setConId(content_id);
-        comment.setComId(uid);
-        if (upvote == null) {
-            upvote = 0;
-        }
-        comment.setById(bid);
-        comment.setUpvote(upvote);
-
-        User u = userService.findById(uid);
-
-        comment.setUser(u);
-        commentService.add(comment);
+        processComment(comment, content_id, uid, bid, oSize, comment_time, upvote);
         //System.out.println(comment.getId());
 
         Comment com = commentService.findById(id);
@@ -297,10 +271,27 @@ public class IndexController extends BaseController {
 
     }
 
+    private void processComment(Comment comment, Long content_id, Long uid, Long bid, String oSize, String comment_time, Integer upvote) throws ParseException {
+        Date date = DateUtils.parseDate(comment_time, "yyyy-MM-dd HH:mm:ss");
+        comment.setComContent(oSize);
+        comment.setCommTime(date);
+        comment.setConId(content_id);
+        comment.setComId(uid);
+        if (upvote == null) {
+            upvote = 0;
+        }
+        comment.setById(bid);
+        comment.setUpvote(upvote);
+
+        User u = userService.findById(uid);
+
+        comment.setUser(u);
+        commentService.add(comment);
+    }
+
     /**
      * 删除评论
      *
-     * @param model
      * @param id
      * @param uid
      * @param con_id
@@ -309,11 +300,11 @@ public class IndexController extends BaseController {
      */
     @RequestMapping("/deleteComment")
     @ResponseBody
-    public Map<String, Object> deleteComment(Model model, @RequestParam(value = "id", required = false) Long id, @RequestParam(value = "uid", required = false) Long uid,
+    public Map<String, Object> deleteComment(@RequestParam(value = "id", required = false) Long id, @RequestParam(value = "uid", required = false) Long uid,
                                              @RequestParam(value = "con_id", required = false) Long con_id, @RequestParam(value = "fid", required = false) Long fid) {
         int num = 0;
         Map map = new HashMap<String, Object>();
-        User user = (User) getSession().getAttribute("user");
+        User user = getCurrentUser();
         if (ObjectUtils.isEmpty(user)) {
             map.put("data", "fail");
             return map;
@@ -322,12 +313,12 @@ public class IndexController extends BaseController {
         if (user.getId().equals(uid)) {
             Comment comment = commentService.findById(id);
             if (StringUtils.isEmpty(comment.getChildren())) {
-                deleteChildComment(commentService, id, fid, num);
+                deleteChildComment(id, fid, num);
             } else {
-                deleteFirstComment(comment, commentService, id, num);
+                deleteFirstComment(comment, id, num);
             }
 
-            updateCommentNum(map, userContentService, con_id, num);
+            updateCommentNum(map, con_id, num);
         } else {
             map.put("data", "no-access");
         }
@@ -336,7 +327,7 @@ public class IndexController extends BaseController {
     }
 
     //删除子评论
-    private int deleteChildComment(CommentService commentService, Long id, Long fid, int num) {
+    private int deleteChildComment(Long id, Long fid, int num) {
         if (ObjectUtils.isEmpty(fid)) {
             return num;
         }
@@ -351,7 +342,7 @@ public class IndexController extends BaseController {
     }
 
     //删除父评论
-    private int deleteFirstComment(Comment comment, CommentService commentService, Long id, int num) {
+    private int deleteFirstComment(Comment comment, Long id, int num) {
         String children = comment.getChildren();
         commentService.deleteChildrenComment(children);
         String[] arr = children.split(",");
@@ -360,7 +351,7 @@ public class IndexController extends BaseController {
         return num;
     }
 
-    private Map<String, Object> updateCommentNum(Map<String, Object> map, UserContentService userContentService, Long con_id, int num) {
+    private Map<String, Object> updateCommentNum(Map<String, Object> map, Long con_id, int num) {
         UserContent content = userContentService.findById(con_id);
         if (!ObjectUtils.isEmpty(content)) {
             if (content.getCommentNum() - num >= 0) {

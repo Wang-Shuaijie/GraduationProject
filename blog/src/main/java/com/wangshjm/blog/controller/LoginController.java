@@ -2,10 +2,8 @@ package com.wangshjm.blog.controller;
 
 import com.google.code.kaptcha.Constants;
 import com.google.code.kaptcha.Producer;
-import com.wangshjm.blog.constant.ConstantsValue;
 import com.wangshjm.blog.entity.User;
 import com.wangshjm.blog.service.UserService;
-import com.wangshjm.blog.utils.MD5Util;
 import com.wangshjm.blog.utils.RandStringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +12,6 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -93,72 +90,12 @@ public class LoginController extends BaseController {
 
     @RequestMapping("/login")
     public String register(Model model) {
-        User user = (User) getSession().getAttribute("user");
+        User user = getCurrentUser();
         if (user != null) {
-            return "/personal/personal";
+            return "/login";
         }
         return "/login";
     }
-
-    /**
-     * 用户登录
-     *
-     * @param model
-     * @param email
-     * @param password
-     * @param code
-     * @param telephone
-     * @param phone_code
-     * @param state
-     * @return
-     */
-    @RequestMapping("/doLogin")
-    public String doLogin(Model model, @RequestParam(value = "username", required = false) String email,
-                          @RequestParam(value = "password", required = false) String password,
-                          @RequestParam(value = "code", required = false) String code,
-                          @RequestParam(value = "telephone", required = false) String telephone,
-                          @RequestParam(value = "phone_code", required = false) String phone_code,
-                          @RequestParam(value = "state", required = false) String state) {
-        //判断是否手机号登录
-        if (!StringUtils.isEmpty(telephone)) {
-            //从redis里获取验证码
-            String verifyCode = redisTemplate.opsForValue().get(telephone);
-            if (phone_code.equals(verifyCode)) {
-                //验证码正确
-                User user = userService.findByPhone(telephone);
-                getSession().setAttribute("user", user);
-                model.addAttribute("user", user);
-                log.info("手机快捷登录成功");
-                return "/index";
-            } else {
-                //验证码错误或过期
-                model.addAttribute("error", "验证码错误或过期");
-                return "/login";
-            }
-        } else {
-            password = MD5Util.encodeToHex(ConstantsValue.SALT + password);
-            User user = userService.login(email, password);
-            if (user != null) {
-                if ("0".equals(user.getState())) {
-                    //未激活
-                    model.addAttribute("email", email);
-                    model.addAttribute("error", "账号未激活");
-                    return "/login";
-                }
-                log.info("用户登录登录成功");
-                getSession().setAttribute("user", user);
-                model.addAttribute("user", user);
-
-                return "redirect:/index";
-            } else {
-                log.info("用户登录登录失败");
-                model.addAttribute("email", email);
-                model.addAttribute("error", "账号或密码错误");
-                return "/login";
-            }
-        }
-    }
-
 
     /**
      * 发送手机验证码
@@ -205,16 +142,4 @@ public class LoginController extends BaseController {
         return "/login";
     }
 
-
-    // 匹对验证码的正确性
-    private int checkValidateCode(String code) {
-        Object vercode = getSession().getAttribute(Constants.KAPTCHA_SESSION_KEY);
-        if (null == vercode) {
-            return -1;
-        }
-        if (!code.equalsIgnoreCase(vercode.toString())) {
-            return 0;
-        }
-        return 1;
-    }
 }

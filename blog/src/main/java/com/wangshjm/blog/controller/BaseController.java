@@ -1,5 +1,9 @@
 package com.wangshjm.blog.controller;
 
+import com.wangshjm.blog.entity.User;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -23,17 +27,50 @@ public class BaseController {
             "HTTP_VIA",
             "REMOTE_ADDR",
             "X-Real-IP"};
+
+
+    /**
+     * 用户的认证信息都存在了 SecurityContext
+     * 获取当前用户
+     *
+     * @return
+     */
+    public User getCurrentUser() {
+        User user = null;
+        Authentication authentication = null;
+        //1.从 SecurityContextHolder 中拿到 SecurityContext 对象
+        SecurityContext context = SecurityContextHolder.getContext();
+        if (context != null) {
+            //2.从 SecurityContext 中拿到 Authentication 对象
+            authentication = context.getAuthentication();
+        }
+        if (authentication != null) {
+            //3.通过 Authentication 对象的 getPrincipal() 就可以获取到用户信息
+            Object principal = authentication.getPrincipal();
+            //如果是匿名用户
+            if (authentication.getPrincipal().toString().equals("anonymousUser")) {
+                return null;
+            } else {
+                user = (User) principal;
+            }
+
+        }
+        return user;
+    }
+
     /**
      * 获取request
+     *
      * @return
      */
     public static HttpServletRequest getRequest() {
-        ServletRequestAttributes attrs =(ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        ServletRequestAttributes attrs = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         return attrs.getRequest();
     }
 
     /**
      * 获取response
+     *
      * @return
      */
     public static HttpServletResponse getResponse() {
@@ -43,13 +80,15 @@ public class BaseController {
 
     /**
      * 获取session
+     *
      * @return
      */
     public static HttpSession getSession() {
         HttpSession session = null;
         try {
             session = getRequest().getSession();
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
         return session;
     }
 
