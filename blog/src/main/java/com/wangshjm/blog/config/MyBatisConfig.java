@@ -26,11 +26,12 @@ public class MyBatisConfig {
 
     @Bean(name = "dataSource")
     @Qualifier("dataSource")
-    public DataSource dataSource(){
+    public DataSource dataSource() {
         DruidDataSource dataSource = DruidDataSourceBuilder.create().build();
         dataSource.setUrl(url);
         return dataSource;
     }
+
     @Bean(name = "transactionManager")
     @Primary
     public DataSourceTransactionManager transactionManager(@Qualifier("dataSource") DataSource dataSource) {

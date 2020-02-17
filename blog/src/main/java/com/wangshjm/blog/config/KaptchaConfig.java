@@ -10,8 +10,8 @@ import java.util.Properties;
 @Configuration
 public class KaptchaConfig {
 
-    @Bean(name="captchaProducer")
-    public DefaultKaptcha getDefaultKaptcha(){
+    @Bean(name = "captchaProducer")
+    public DefaultKaptcha getDefaultKaptcha() {
         DefaultKaptcha defaultKaptcha = new DefaultKaptcha();
         Properties properties = new Properties();
         // 图片边框
