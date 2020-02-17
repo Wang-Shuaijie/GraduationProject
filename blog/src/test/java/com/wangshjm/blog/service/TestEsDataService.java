@@ -28,7 +28,7 @@ public class TestEsDataService {
 
     @Test
     public void search(){
-        String keyWord="java";
+        String keyWord="测试2";
         PageInfo<UserContent> pageInfo = esDataService.search(keyWord,1,7);
         for(UserContent userContent: pageInfo.getList()){
             System.out.println(userContent.getTitle());

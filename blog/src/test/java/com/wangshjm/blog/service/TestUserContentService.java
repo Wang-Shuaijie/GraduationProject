@@ -16,7 +16,7 @@ public class TestUserContentService {
 
     @Test
     public void testFindAll(){
-        PageInfo<UserContent> pageInfo = userContentService.findAll(0,7);
+        PageInfo<UserContent> pageInfo = userContentService.findAll(null,0,7);
         pageInfo.getList().forEach(list-> System.out.println(list.getNickName()+list.getTitle()));
     }
 }
