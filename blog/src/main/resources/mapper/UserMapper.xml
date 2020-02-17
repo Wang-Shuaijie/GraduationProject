@@ -13,17 +13,17 @@
     </resultMap>
     <select id="findUserByEmailAndPwd" parameterType="String" resultMap="userResult">
         select *
-        from user
+        from tb_user
         where email=#{email} and password=#{password};
     </select>
     <select id="findByEmail" parameterType="String" resultMap="userResult">
         select *
-        from user
+        from tb_user
         where email=#{email};
     </select>
     <select id="findByPhone" parameterType="String" resultMap="userResult">
         select *
-        from user
+        from tb_user
         where phone=#{phone};
     </select>
 </mapper>

@@ -28,7 +28,7 @@
 
     <select id="findAll" resultMap="commentMap">
         select c.id,c.children,c.con_id,c.com_id,c.by_id,c.upvote,c.comm_time,c.com_content,u.id as uid,u.email,u.password,u.nick_name,u.phone,u.state,u.img_url,u.enable
-        from comment c,user u
+        from tb_comment c, tb_user u
         WHERE con_id = #{cid} and c.com_id = u.id
         order by id desc
     </select>
@@ -44,7 +44,7 @@
     <!--查询全部一级评论-->
     <select id="findAllFirstComment"  resultMap="commentMap">
         select c.id,c.children,c.con_id,c.com_id,c.by_id,c.upvote,c.comm_time,c.com_content,u.id as uid,u.email,u.password,u.nick_name,u.phone,u.state,u.img_url,u.enable
-        from comment c,user u
+        from tb_comment c, tb_user u
         WHERE con_id = #{cid} and by_id is null and c.com_id = u.id
         order by id desc
     </select>
@@ -52,7 +52,8 @@
     <!--查询所有子评论-->
     <select id="findAllChildrenComment"  resultMap="commentMap">
         select c.id,c.children,c.con_id,c.com_id,c.by_id,c.upvote,c.comm_time,c.com_content,u.id as uid,u.email,u.password,u.nick_name,u.phone,u.state,u.img_url,u.enable
-        from comment c,user u WHERE con_id = #{cid}
+        from tb_comment c, tb_user u
+        WHERE con_id = #{cid}
         <if test='children!=null and children!=""'>
             AND c.id in (${children})
         </if>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wangshjm.blog.dao.ResourceMapper">
+
+    <resultMap type="com.wangshjm.blog.entity.Role" id="roleListMap">
+        <id property="id" column="id" />
+        <result property="roleName" column="role_name" />
+        <result property="roleValue" column="role_value" />
+        <result property="enabled" column="enabled" />
+    </resultMap>
+
+    <select id="findByUrl" resultType="com.wangshjm.blog.entity.Resource">
+      select id,name,url,enabled,remark
+      from tb_resource
+      where url = #{url};
+    </select>
+
+    <select id="findRolesOfResource" resultMap="roleListMap">
+        select r.*
+        from tb_role r, tb_role_resource rr
+        where r.id = rr. r_id and rr.res_id = #{resourceId}
+    </select>
+
+</mapper>
