@@ -12,7 +12,7 @@
     <select id="findByUrl" resultType="com.wangshjm.blog.entity.Resource">
       select id,name,url,enabled,remark
       from tb_resource
-      where url = #{url};
+      where url = #{url} and enabled = 1
     </select>
 
     <select id="findRolesOfResource" resultMap="roleListMap">

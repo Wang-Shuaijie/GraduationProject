@@ -37,7 +37,7 @@
         <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER">
             select last_insert_id()
         </selectKey>
-        insert into comment(con_id, com_id, by_id, com_content, upvote, comm_time,children)
+        insert into tb_comment(con_id, com_id, by_id, com_content, upvote, comm_time,children)
         values(#{conId},#{comId}, #{byId},#{comContent},#{upvote}, #{commTime},#{children})
     </insert>
 

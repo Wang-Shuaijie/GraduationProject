@@ -14,6 +14,7 @@
         <result property="categoryId" column="category_id"></result>
         <result property="title" column="title" />
         <result property="category" column="category" />
+        <result property="tag" column="tag"></result>
         <result property="personal" column="personal" />
         <result property="rptTime" column="rpt_time" />
         <result property="imgUrl" column="img_url" />
@@ -36,7 +37,7 @@
     <!--tb_user_content和tb_user,tb_category表连接查询-->
     <select id="findByJoin"  resultMap="joinMap">
         <!--我们要的是 user 表中的 imgUrl 和 nickName，还有别名 nickName、imgUrl 要和 UserContent 实体类中的属性对应，主要是通过属性的 setter 方法赋值，页面通过 getter 方法取值的。-->
-        select u1.id,u1.u_id,u1.category_id, u1.title,u1.personal,u1.rpt_time,u1.upvote,
+        select u1.id,u1.u_id,u1.category_id, u1.tag, u1.title,u1.personal,u1.rpt_time,u1.upvote,
         u1.downvote,u1.comment_num,u1.content,u1.markdown_content,
         u2.nick_name nick_name,u2.img_url img_url,
         c.name category
