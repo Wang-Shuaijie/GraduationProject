@@ -22,8 +22,7 @@ public class Role {
     private String roleName;
     //角色值
     private String roleValue;
-    //角色可访问url
-    private String roleMatcher;
+
     //角色是否可用
     private String enabled;
     //备注

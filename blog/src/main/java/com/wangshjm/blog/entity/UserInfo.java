@@ -7,7 +7,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Data
@@ -29,9 +28,11 @@ public class UserInfo {
     private String hobby;
     //地址
     private String address;
+    //公司或学校
+    private String work;
+    //学历
+    private String education;
+    //个人简介
+    private String information;
 
-    public String getFormateBirthday(){
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        return simpleDateFormat.format(birthday);
-    }
 }

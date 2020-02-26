@@ -53,8 +53,14 @@ public class PersonalController extends BaseController {
     public String findList(Model model, @RequestParam(value = "manage", required = false) String manage,
                            @RequestParam(value = "pageNum", required = false) Integer pageNum,
                            @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+        if (ObjectUtils.isEmpty(pageNum) && ObjectUtils.isEmpty(pageSize)) {
+            pageNum = 1;
+            pageSize = 7;
+        }
         User user = getCurrentUser();
         model.addAttribute("user", user);
+        UserInfo userInfo = userInfoService.findByUid(user.getId());
+        model.addAttribute("userInfo", userInfo);
         if (!StringUtils.isEmpty(manage)) {
             model.addAttribute("manage", manage);
         }
@@ -175,44 +181,43 @@ public class PersonalController extends BaseController {
         return "redirect:/list?manage=manage";
     }
 
-    /**
-     * 进入个人资料修改页面
-     *
-     * @param model
-     * @return
-     */
-    @RequestMapping("/profile")
-    public String profile(Model model, @RequestParam(value = "email", required = false) String email,
-                          @RequestParam(value = "password", required = false) String password,
-                          @RequestParam(value = "phone", required = false) String phone) {
-        User user = getCurrentUser();
-        if (StringUtils.isEmpty(user.getPassword()) && StringUtils.isEmpty(password)) {
-            return "redirect:/list";
-        }
-
-        if (!StringUtils.isEmpty(email)) {
-            user.setEmail(email);
-            user.setPassword(MD5Util.encodeToHex(ConstantsValue.SALT + password));
-            user.setPhone(phone);
-            userService.update(user);
-        }
-        UserInfo userInfo = userInfoService.findByUid(user.getId());
-        model.addAttribute("user", user);
-        model.addAttribute("userInfo", userInfo);
-
-        return "/personal/profile";
-    }
+//    /**
+//     * 进入个人资料修改页面
+//     *
+//     * @param model
+//     * @return
+//     */
+//    @RequestMapping("/profile")
+//    public String profile(Model model, @RequestParam(value = "email", required = false) String email,
+//                          @RequestParam(value = "password", required = false) String password,
+//                          @RequestParam(value = "phone", required = false) String phone) {
+//        User user = getCurrentUser();
+//        if (StringUtils.isEmpty(user.getPassword()) && StringUtils.isEmpty(password)) {
+//            return "redirect:/list";
+//        }
+//
+//        if (!StringUtils.isEmpty(email)) {
+//            user.setEmail(email);
+//            user.setPassword(MD5Util.encodeToHex(ConstantsValue.SALT + password));
+//            user.setPhone(phone);
+//            userService.update(user);
+//        }
+//        UserInfo userInfo = userInfoService.findByUid(user.getId());
+//        model.addAttribute("user", user);
+//        model.addAttribute("userInfo", userInfo);
+//
+//        return "/personal/profile";
+//    }
 
     /**
      * 保存个人头像
      *
-     * @param model
      * @param url
      * @return
      */
     @RequestMapping("/saveImage")
     @ResponseBody
-    public Map<String, Object> saveImage(Model model, @RequestParam(value = "url", required = false) String url) {
+    public Map<String, Object> saveImage(@RequestParam(value = "url", required = false) String url) {
         Map map = new HashMap<String, Object>();
         User user = getCurrentUser();
         user.setImgUrl(url);

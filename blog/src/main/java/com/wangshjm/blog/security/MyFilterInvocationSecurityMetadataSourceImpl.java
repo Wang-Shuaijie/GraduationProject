@@ -31,7 +31,10 @@ public class MyFilterInvocationSecurityMetadataSourceImpl implements FilterInvoc
         if ("/login".equals(requestUrl)) {
             return null;
         }
-
+        //对请求url处理，去除参数部分，便于比较
+        if (requestUrl.indexOf("?") != -1) {
+            requestUrl = requestUrl.substring(0, requestUrl.indexOf("?"));
+        }
         Resource resource = resourceService.getResourceByUrl(requestUrl);
 
 //        //如果没有匹配的url则说明大家登录都可以访问

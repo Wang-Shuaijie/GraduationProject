@@ -22,13 +22,17 @@ import java.util.*;
 @Slf4j
 @Controller
 public class UploadController {
-    private static final String uploadPrefix = "G:/GraduationProject";
+    //上传路径
+    private static String uploadPrefix;
 
-    private String getError(String message) {
-        JSONObject obj = new JSONObject();
-        obj.put("error", 1);
-        obj.put("message", message);
-        return obj.toJSONString();
+    public static String getUploadPrefix() {
+        String os = System.getProperty("os.name");
+        if (os.toLowerCase().startsWith("win")) {
+            uploadPrefix = "G:/GraduationProject";
+        } else {
+            uploadPrefix = "/home/GraduationProject";
+        }
+        return uploadPrefix;
     }
 
     @RequestMapping("/uploadJson")
@@ -38,10 +42,10 @@ public class UploadController {
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
         Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
         //文件保存目录路径
-        String savePath = uploadPrefix + "/upload/";
+        String savePath = getUploadPrefix() + "/upload/";
 
         //文件保存目录URL
-        String saveUrl = uploadPrefix + "/upload/";
+        String saveUrl = request.getContextPath() + "/upload/";
 
 //        System.out.println(savePath);
 //        System.out.println(saveUrl);
@@ -49,12 +53,12 @@ public class UploadController {
         //定义允许上传的文件扩展名
         HashMap<String, String> extMap = new HashMap<String, String>();
         extMap.put("image", "gif,jpg,jpeg,png,bmp");
-        extMap.put("flash", "swf,flv");
+        extMap.put("flash", "swf,flv,mp4");
         extMap.put("media", "swf,flv,mp3,wav,wma,wmv,mid,avi,mpg,asf,rm,rmvb,mp4");
         extMap.put("file", "doc,docx,xls,xlsx,ppt,htm,html,txt,zip,rar,gz,bz2,pdf");
 
         //最大文件大小
-        long maxSize = 1000000;
+        long maxSize = 3000000;
 
         response.setContentType("text/html; charset=UTF-8");
 
@@ -126,10 +130,12 @@ public class UploadController {
             }
             try {
                 FileCopyUtils.copy(mf.getBytes(), uploadFile);
+                //这个json对象要包含markdown和上传文件要的信息！
                 JSONObject obj = new JSONObject();
                 obj.put("error", 0);
                 obj.put("success", 1);
-                obj.put("url", request.getContextPath() + "/upload/" + dirName + "/" + ymd + "/" + newFileName);
+                obj.put("result","ok");
+                obj.put("url", saveUrl + newFileName);
                 out.println(obj.toJSONString());
             } catch (IOException e) {
                 e.printStackTrace();
@@ -139,14 +145,21 @@ public class UploadController {
         }
     }
 
+    private String getError(String message) {
+        JSONObject obj = new JSONObject();
+        obj.put("error", 1);
+        obj.put("message", message);
+        return obj.toJSONString();
+    }
+
     @RequestMapping("/fileManagerJson")
     public void fileManagerJson(HttpServletRequest request, HttpServletResponse response) throws Exception {
         response.setContentType("application/json; charset=UTF-8");
         PrintWriter out = response.getWriter();
         //根目录路径，可以指定绝对路径，比如 /var/www/attached/
-        String rootPath = uploadPrefix + "/upload/";
+        String rootPath = getUploadPrefix() + "/upload/";
         //根目录URL，可以指定绝对路径，比如 http://www.yoursite.com/attached/
-        String rootUrl = uploadPrefix + "/upload/";
+        String rootUrl = request.getContextPath() + "/upload/";
         //图片扩展名
         String[] fileTypes = new String[]{"gif", "jpg", "jpeg", "png", "bmp"};
 

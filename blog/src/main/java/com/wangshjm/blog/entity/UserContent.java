@@ -21,6 +21,8 @@ public class UserContent {
     private String title;
     //文章类型
     private String category;
+    //文章标签
+    private String tag;
     //是否私有
     private String personal;
     //上传时间

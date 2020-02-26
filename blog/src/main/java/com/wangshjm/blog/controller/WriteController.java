@@ -51,7 +51,8 @@ public class WriteController extends BaseController {
 
     @RequestMapping("/doWrite")
     public String doWrite(Model model, @RequestParam(value = "cid", required = false) Long cid,
-                          @RequestParam(value = "categoryName", required = false) String categoryName,
+                          @RequestParam(value = "tag", required = false) String tagName,
+                          @RequestParam(value = "category", required = false) String categoryName,
                           @RequestParam(value = "title", required = false) String title,
                           @RequestParam(value = "content", required = false) String kindeditor,
                           @RequestParam(value = "html", required = false) String mdeditorHtml,
@@ -62,7 +63,7 @@ public class WriteController extends BaseController {
         if (!ObjectUtils.isEmpty(cid)) {
             userContent = userContentService.findById(cid);
         }
-//        System.out.println(categoryName);
+        userContent.setTag(tagName);
         userContent.setCategory(categoryName);
         Category category = categoryService.findByCategoryName(categoryName);
         userContent.setCategoryId(category.getId());

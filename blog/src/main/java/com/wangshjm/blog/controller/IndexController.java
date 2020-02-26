@@ -292,10 +292,10 @@ public class IndexController extends BaseController {
     /**
      * 删除评论
      *
-     * @param id
+     * @param id 评论id
      * @param uid
-     * @param con_id
-     * @param fid
+     * @param con_id 文章id
+     * @param fid 父评论id
      * @return
      */
     @RequestMapping("/deleteComment")
@@ -313,9 +313,9 @@ public class IndexController extends BaseController {
         if (user.getId().equals(uid)) {
             Comment comment = commentService.findById(id);
             if (StringUtils.isEmpty(comment.getChildren())) {
-                deleteChildComment(id, fid, num);
+                num = deleteChildComment(id, fid, num);
             } else {
-                deleteFirstComment(comment, id, num);
+                num = deleteFirstComment(comment, id, num);
             }
 
             updateCommentNum(map, con_id, num);
@@ -328,14 +328,13 @@ public class IndexController extends BaseController {
 
     //删除子评论
     private int deleteChildComment(Long id, Long fid, int num) {
-        if (ObjectUtils.isEmpty(fid)) {
-            return num;
+        if (!ObjectUtils.isEmpty(fid)) {
+            //去除id
+            Comment fcomm = commentService.findById(fid);
+            String child = getString(fcomm.getChildren(), id);
+            fcomm.setChildren(child);
+            commentService.update(fcomm);
         }
-        //去除id
-        Comment fcomm = commentService.findById(fid);
-        String child = getString(fcomm.getChildren(), id);
-        fcomm.setChildren(child);
-        commentService.update(fcomm);
         commentService.deleteById(id);
         num = num + 1;
         return num;
