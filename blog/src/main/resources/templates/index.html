@@ -32,7 +32,7 @@
     <div class="row">
         <img th:src="@{/images/2.gif}">
     </div>
-    <nav class="navbar navbar-inverse">
+    <nav class="navbar navbar-default">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-menu" aria-expanded="false">
@@ -41,12 +41,12 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="javascript:void(0);">首页</a>
+            <a class="navbar-brand" href="javascript:void(0);"><span class="label label-badge label-primary">猿天地-分享你的技术</span></a>
         </div>
         <div id="navbar-menu" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="#">最新文章</a></li>
-                <li><a href="#">最热文章</a></li>
+                <li class="active"><a th:href="@{/index}">最新文章</a></li>
+                <li><a th:href="@{/hot}">最热文章</a></li>
                 <li><a href="#">资源小站</a></li>
                 <li><a href="#">程序人生</a></li>
                 <li><a href="#">留言</a></li>
@@ -58,7 +58,7 @@
             <div class="form-group">
                 <input type="text" class="form-control" placeholder="Search" id="keyword" name="keyword">
             </div>
-            &nbsp; &nbsp;<i id="search" class="icon icon-search" style="color: white"></i>
+            <button type="submit" class="btn btn-default">搜索</button>
         </form>
     </nav>
     <div id="main">
@@ -67,10 +67,11 @@
             <!-- 正文开始 -->
             <th:block th:each="article: ${page.list}">
                 <div class="content-text">
+                    <h1 class="header-dividing"><a th:href="@{/watch(cid=${article.id})}" th:utext="${article.title}"></a></h1>
                     <div class="author clearfix">
                         <div>
                             <a href="#" target="_blank" rel="nofollow" style="height: 35px">
-                                 <img th:src="@{article.imgUrl}">
+                                 <img th:src="${article.imgUrl}">
                             </a>
                         </div>
                         <div class="author-h2">
@@ -80,8 +81,7 @@
                         </div>
                     </div>
 
-                    <h2><a th:href="@{/watch(cid=${article.id})}" th:utext="${article.title}"></a></h2>
-                    <div th:utext="${article.content}" style="height: 120px; overflow: hidden;"></div>
+                    <div th:utext="${article.content}" style="height: 120px; overflow: hidden; margin-top: 15px"></div>
                     <div style="height: 5px"></div>
                     <div class="stats">
                         <!-- 笑脸、评论数等 -->
@@ -185,12 +185,12 @@
      */
     $(function () {
         var ul = "";
-        var first ='<li><a href="[[@{/index(pageNum = 1, pageSize = ${page.pageSize})}]]" aria-label="Previous">首页</a></li>';
+        var first ='<li><a href="[[@{/index(pageNum = 1, pageSize = ${page.pageSize}, keyword = ${keyword!=null?keyword:null})}]]" aria-label="Previous">首页</a></li>';
         var before;
         if([[${page.pageNum}]] > 1){
-            before ='<li><a href="[[@{/index(pageNum = ${page.pageNum - 1}, pageSize = ${page.pageSize})}]]" >上一页</a></li>';
+            before ='<li><a href="[[@{/index(pageNum = ${page.pageNum - 1}, pageSize = ${page.pageSize}, keyword = ${keyword!=null?keyword:null})}]]" >上一页</a></li>';
         }else{
-            before ='<li><a href="[[@{/index(pageNum = 1, pageSize = ${page.pageSize})}]]" >上一页</a></li>';
+            before ='<li><a href="[[@{/index(pageNum = 1, pageSize = ${page.pageSize}, keyword = ${keyword!=null?keyword:null})}]]" >上一页</a></li>';
         }
         ul+= first;
         ul += before;
@@ -214,27 +214,21 @@
 
         var li ;
         for (var i = begin ; i <= end ; i++) {
-            li = ' <li><a href="[[@{/index}]]?pageNum='+i+'&pageSize=[[${page.pageSize}]]">'+i+'</a></li>'
+            li = ' <li><a href="[[@{/index}]]?pageNum='+i+'&pageSize=[[${page.pageSize}]]&keyword=[[${keyword!=null?keyword:null}]]">'+i+'</a></li>'
             ul+=li;
         }
         if ([[${page.pageNum}]] >= [[${page.pages}]]){
-            var lastPage ='<li><a href="[[@{/index(pageNum = ${page.pages}, pageSize = ${page.pageSize})}]]" >下一页</a></li>';
+            var lastPage ='<li><a href="[[@{/index(pageNum = ${page.pages}, pageSize = ${page.pageSize},keyword = ${keyword!=null?keyword:null})}]]" >下一页</a></li>';
         }else {
-            var lastPage ='<li><a href="[[@{/index(pageNum = ${page.pageNum + 1}, pageSize = ${page.pageSize})}]]" >下一页</a></li>';
+            var lastPage ='<li><a href="[[@{/index(pageNum = ${page.pageNum + 1}, pageSize = ${page.pageSize}, keyword = ${keyword!=null?keyword:null})}]]" >下一页</a></li>';
         }
-        var nextPage ='<li><a href="[[@{/index(pageNum = ${page.pages}, pageSize = ${page.pageSize})}]]" aria-label="Next" >尾页</a></li>';
+        var nextPage ='<li><a href="[[@{/index(pageNum = ${page.pages}, pageSize = ${page.pageSize}, keyword = ${keyword!=null?keyword:null})}]]" aria-label="Next" >尾页</a></li>';
         ul+=lastPage;
         ul+=nextPage;
         $("#page").html(ul);
     });
-
-    $("#search").click(function () {
-        var keyword =  $("#keyword").val();
-        if(keyword!=null && keyword.trim()!=""){
-            $("#searchForm").submit();
-        }
-    });
 </script>
+
 </body>
 
 <!--看板娘设计-->
@@ -485,11 +479,11 @@
                     //alert(id)
                     oHtml = '<div class="comment-show-con clearfix">' +
                         '<div class="comment-show-con-img pull-left">' +
-                        '<img th:src="@{user.imgUrl}" alt="">' +
+                        '<img src="[[${user!=null?user.imgUrl:null}]]" alt="">' +
                         '</div> ' +
                         '<div class="comment-show-con-list pull-left clearfix">' +
                         '<div class="pl-text clearfix"> ' +
-                        '<a  class="comment-size-name" th:text="|${user.nickName} : |"></a> <span class="my-pl-con">&nbsp;' + oSize + '</span> ' +
+                        '<a  class="comment-size-name">[[${user!=null?user.nickName:null}]] :</a> <span class="my-pl-con">&nbsp;' + oSize + '</span> ' +
                         '</div> ' +
                         '<div class="date-dz"> ' +
                         '<span class="date-dz-left pull-left comment-time">' + now + '</span> ' +
@@ -706,7 +700,7 @@
                         var oAt = '回复<a class="atName">@'+oHfName+'</a>  '+oHfVal;
                         var oHtml = '<div class="all-pl-con">' +
                             '<div class="pl-text hfpl-text clearfix">' +
-                                '<a class="comment-size-name" th:text="|${user.nickName} : |"></a><span class="my-pl-con">'+oAt+'</span>' +
+                                '<a class="comment-size-name">[[${user!=null?user.nickName:null}]] :</a><span class="my-pl-con">'+oAt+'</span>' +
                             '</div>' +
                             '<div class="date-dz"> ' +
                                 '<span class="date-dz-left pull-left comment-time">'+now+'</span> ' +

@@ -1,10 +1,55 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Success</title>
+
+    <link th:href="@{/zui/css/zui.min.css}" rel="stylesheet"/>
+    <link th:href="@{/zui/css/zui-theme.min.css}" rel="stylesheet"/>
+
+    <link th:href="@{/css/write.css}" rel="stylesheet"/>
+
+    <script type="text/javascript" th:src="@{/js/jquery-3.2.1.min.js}"></script>
+    <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{/zui/js/zui.min.js}"></script>
 </head>
 <body>
-    成功！！
+<canvas id="c"></canvas>
+<!--&lt;!&ndash;动态码流背景 &ndash;&gt;-->
+<script type="text/javascript" th:src="@{/js/background.js}"></script>
+<div id="container">
+    <ul class="nav nav-tabs nav-justified">
+        <li class="nav-heading"><img th:src="@{/images/2.gif}"></li>
+        <li><a th:href="@{/list}">我的</a></li>
+        <li><a th:href="@{/index}">首页</a></li>
+        <li>
+            <a class="dropdown-toggle" data-toggle="dropdown" href="your/nice/url">设置 <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+                <li><a href="" data-toggle="modal" data-target="#myModal">基本设置</a></li>
+                <li><a href="" data-toggle="modal" data-target="#myModal">高级设置</a></li>
+                <li><a href="">反馈bug</a></li>
+                <li><a href="">申请管理员</a></li>
+            </ul>
+        </li>
+        <li><a href="#">消息</a></li>
+        <li><a  class="active" th:href="@{/write(style=1)}">去创作</a></li>
+    </ul>
+
+    <div id="main">
+        <h1> 发布成功 <small>等待管理员审核</small></h1>
+    </div>
+    <div class="foot">
+        <hr style="background-color: rgba(161,171,175,0.31);height: 1px;left: 0px"/>
+        <hr style="background-color: rgba(161,171,175,0.31);height: 1px;left: 0px"/>
+        <div class="foot-nav clearfix" style="margin-top: 40px;text-align: center">
+            <div class="foot-copyrights" style="">
+                <p>
+                    <span>邮箱：2283613941@qq.com</span>
+                </p>
+                <p style="margin-top: 8px">&copy;made by wangshuaijie 如有需要请联系</p>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

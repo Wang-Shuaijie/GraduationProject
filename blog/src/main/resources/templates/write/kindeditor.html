@@ -3,102 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <title>猿天地</title>
+    <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link th:href="@{/bootstrap/css/bootstrap-theme.min.css}" rel="stylesheet"/>
     <link th:href="@{/zui/css/zui.min.css}" rel="stylesheet"/>
-    <link th:href="@{/zui/css/zui-theme.min.css}" rel="stylesheet"/>
-    <link th:href="@{/zui/lib/kindeditor/kindeditor.min.css}" rel="stylesheet"/>
+    <link th:href="@{/zui/css/zui-theme.css}" rel="stylesheet"/>
+
+    <link rel="stylesheet" th:href="@{/zui/lib/kindeditor/themes/default/default.css}" />
+    <link rel="stylesheet" th:href="@{/zui/lib/kindeditor/plugins/code/prettify.css}" />
+
+
     <link th:href="@{/css/write.css}" rel="stylesheet"/>
 
     <script type="text/javascript" th:src="@{/js/jquery-3.2.1.min.js}"></script>
-    <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
     <script type="text/javascript" th:src="@{/zui/js/zui.min.js}"></script>
-    <script th:src="@{/zui/lib/kindeditor/kindeditor.min.js}"></script>
+
+    <script charset="utf-8" th:src="@{/zui/lib/kindeditor/kindeditor-all.js}"></script>
+    <script charset="utf-8" th:src="@{/zui/lib/kindeditor/plugins/code/prettify.js}"></script>
+    <script charset="utf-8" th:src="@{/zui/lib/kindeditor/plugins/preview/preview.js}"></script>
 </head>
 <body>
 <canvas id="c"></canvas>
 <!--&lt;!&ndash;动态码流背景 &ndash;&gt;-->
 <script type="text/javascript" th:src="@{/js/background.js}"></script>
 <div id="container">
-    <div class="row">
-        <img th:src="@{/images/2.gif}">
-    </div>
-    <nav class="navbar navbar-inverse" role="navigation">
-        <div class="container-fluid">
-            <!-- 导航头部 -->
-            <div class="navbar-header">
-                <!-- 移动设备上的导航切换按钮 -->
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse-example">
-                    <span class="sr-only">切换导航</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <!-- 品牌名称或logo -->
-                <a class="navbar-brand" href="javascript:void(0);">个人空间</a>
-            </div>
-            <!-- 导航项目 -->
-            <div class="collapse navbar-collapse navbar-collapse-example">
-                <!-- 一般导航项目 -->
-                <ul class="nav navbar-nav">
-                    <li class="active"><a href="your/nice/url">我的文章</a></li>
-                    <li><a th:href="@{/index}">首页</a></li>
-
-                    <!-- 导航中的下拉菜单 -->
-                    <li class="dropdown">
-                        <a href="your/nice/url" class="dropdown-toggle" data-toggle="dropdown">设置 <b class="caret"></b></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="your/nice/url">任务</a></li>
-                        </ul>
-                    </li>
-                </ul>
-                <ul class="nav navbar-nav">
-                    <li><a href="your/nice/url">消息</a></li>
-                </ul>
-
-                <ul class="nav navbar-nav">
-                    <li><a th:href="@{/write}">写文章</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    <ul class="nav nav-tabs nav-justified">
+        <li class="nav-heading"><img th:src="@{/images/2.gif}"></li>
+        <li><a th:href="@{/write(cid=${article == null ? null: article.id},style=1)}">markdown编辑器</a></li>
+        <li class="active"><a href="#">kindeditor编辑器</a></li>
+    </ul>
     <div id="main">
         <div id="content">
             <form th:action="@{/doWrite}" id="write_form" method="post">
-                <div class="dropdown dropdown-hover">
-                    <button class="btn" type="button" data-toggle="dropdown" id="dream-diff"
-                            style="background-color:#EBEBEB">
-                        <span id="category" th:text="${article == null ? '文章分类' : article.category}">
-                        </span>
 
-                        <span class="caret"></span>
-                    </button>
+                <input hidden="hidden" name="cid" th:value="${article == null ? null: article.id}"/>
 
-                    <input hidden="hidden" name="cid" th:value="${article == null ? null: article.id}"/>
-                    <input hidden="hidden" id="hidden_cat" name="categoryName" th:value="${article == null ? null: article.category}"/>
-
-                    <ul class="dropdown-menu" id="dreamland-category">
-                        <th:block th:each="category:${categoryList}">
-                            <li><a th:text="${category.name}"></a></li>
-                        </th:block>
-                    </ul>
+                <div class="input-control">
+                    <input type="text" id="txtTitle" name="title" th:value="${article == null ? null: article.title}" class="form-control" maxlength="100" placeholder="&nbsp;&nbsp;&nbsp;&nbsp;输入文章标题"/>
                 </div>
-                <div id="title">
-                    <input type="text" id="txtTitle" name="title" th:value="${article == null ? null: article.title}" class="input-file-title" maxlength="100" placeholder="&nbsp;&nbsp;&nbsp;&nbsp;输入文章标题"  style="height: 33px;width: 100%;background-color:#EBEBEB;border: 0px" >
+
+                <div class="input-group" style="margin-bottom: 8px; width:30%;">
+                    <input type="text" name="tag" id="tagInput" class="form-control" maxlength="10" >
+                    <div class="input-group-btn">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">热门标签推荐 <span class="caret"></span></button>
+                        <ul class="dropdown-menu pull-right" role="menu" id="tag-div">
+                            <li><a href="#">java</a></li>
+                            <li><a href="#">后端开发</a></li>
+                            <li><a href="#">人工智能</a></li>
+                            <li><a href="#">python</a></li>
+                            <li><a href="#">springboot</a></li>
+                        </ul>
+                    </div>
                 </div>
+
                 <!--富文本编辑器-->
-                <div id="article">
-                    <textarea id="articleContent" name="content" class="form-control kindeditor" style="height:600px;width: 100%"
+                <div id="article-div">
+                    <textarea id="articleContent" name="content" class="form-control kindeditor"
                               th:utext="${article == null ? null: article.content}"></textarea>
                 </div>
 
-                <br/>
+                <div class="input-group" style="margin-bottom: 8px; width:30%;">
+                    <div class="input-group-btn">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">选择分类 <span class="caret"></span></button>
+                        <ul class="dropdown-menu" role="menu" id="category-div">
+                            <th:block th:each="category:${categoryList}">
+                                <li><a th:text="${category.name}"></a></li>
+                            </th:block>
+                        </ul>
+                    </div>
+                    <input type="text" name="category" id="categoryInput" class="form-control" maxlength="10" th:value="${article == null ? '' : article.category}" readonly>
+                </div>
+
                 <div class="switch">
                     <input type="checkbox" id="private" value="off" name="private">
                     <label>不公开</label>
                 </div>
                 <br/>
-                <div id="btn">
-                    <button class="btn btn-primary"  type="button" id="sub_dream">发布</button>
-                    <button class="btn btn-primary" id="go_back" type="button" >返回</button>
+                <div class="col-sm-offset-2 col-sm-10" id="btn-div">
+                    <button  class="btn btn-lg" type="button" id="sub_dream">发布</button>
+                    <button  class="btn btn-lg" type="button" id="go_back">返回</button>
                 </div>
             </form>
             <div style="clear:both;"></div>
@@ -125,10 +107,14 @@
 
 <script type="text/javascript">
     //li标签的点击事件
-    $("#dreamland-category li").click(function(){//jquery的click事件
-        var val = $(this).text();
-        $("#category").html(val);
-        $("#hidden_cat").val(val);
+    $("#category-div li").click(function(){//jquery的click事件
+        var valText = $(this).text();
+        $("#categoryInput").val(valText);
+    });
+
+    $("#tag-div li").click(function(){//jquery的click事件
+        var valText = $(this).text();
+        $("#tagInput").val(valText);
     });
 
     $(function () {
@@ -138,7 +124,8 @@
             fileManagerJson : '[[@{/fileManagerJson}]]',
             allowFileManager : true,
             bodyClass : 'article-content',
-
+            height: 640,
+            width: "90%"
         });
         editor.sync();
     });
@@ -147,9 +134,9 @@
     $(".switch").click(function () {
         var pd = document.getElementById('private');
         if(pd.checked == true){
-            $("#private_dream").val("on");
+            $("#private").val("on");
         }else{
-            $("#private_dream").val("off");
+            $("#private").val("off");
         }
     });
     //返回
@@ -159,8 +146,8 @@
 
     //发布
     $("#sub_dream").click (function(){
-        var val =  $("#category").html();
-        if(val.trim()=='文章分类'){
+        var val =  $("#categoryInput").val();
+        if(val==''||val==null){
             new $.zui.Messager('请选择文章分类！', {
                 icon: 'bell', // 定义消息图标
                 type:'danger'
