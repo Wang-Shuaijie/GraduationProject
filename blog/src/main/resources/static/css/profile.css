@@ -26,29 +26,17 @@ body {
 
 #main {
     width: auto;
-    min-height: 850px;
+    min-height: 650px;
     margin-top: 30px;
 }
 
-#sideBar{
-    width: 20%;
-    min-height: 200px;
-    padding: 0 0 0 5px;
-    float: right;
-    -o-text-overflow: ellipsis;
-    text-overflow: ellipsis;
-    overflow: hidden;
-}
-
-
 #content{
-    width: 100%;
+    width: 130%;
     padding: 0 0 10px 0;
     *padding-top: 10px;
     -o-text-overflow: ellipsis;
     text-overflow: ellipsis;
     overflow: hidden;
-    float: left;
     margin-left: -22em;
 }
 
@@ -65,10 +53,6 @@ body {
     margin-top: 8px;
     border-radius: 10px;
     box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
-}
-
-#page-info{
-
 }
 
 .author img {
@@ -102,17 +86,7 @@ fieldset, img {
     font-weight: 400;
 }
 
-.commentAll{
-    margin-left: 5px;
-    width: 100%;
-}
 
-.single-share{
-    float: right;
-}
-.stats-buttons {
-    float: left;
-}
 a {
     text-decoration:none;
     color: inherit;

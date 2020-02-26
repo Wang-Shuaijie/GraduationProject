@@ -38,8 +38,23 @@ body {
     background-color: white;
 }
 
-#article{
-    margin-top: 8px;
+#write_form{
+    margin: 0 auto;
+}
+
+#title-div, #article-div, #category-div, #private-div{
+    left: 5%;
     margin-bottom: 8px;
 }
 
+#txtTitle{
+    width: 50%;
+    height: 50px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+}
+
+#btn-div{
+    left: 20%;
+    margin-bottom: 8px;
+}
