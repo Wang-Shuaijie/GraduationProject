@@ -1,5 +1,6 @@
 package com.wangshjm.blog.service;
 
+import com.github.pagehelper.PageInfo;
 import com.wangshjm.blog.entity.User;
 
 public interface UserService {
@@ -57,4 +58,8 @@ public interface UserService {
      * @param user
      */
     void update(User user);
+
+    int countUserNum();
+
+    PageInfo<User> findAllUser(Integer pageNum, Integer pageSize);
 }

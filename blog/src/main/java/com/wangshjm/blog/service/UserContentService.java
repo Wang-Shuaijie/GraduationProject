@@ -69,5 +69,28 @@ public interface UserContentService {
      * @param pageSize
      * @return
      */
-    PageInfo<UserContent> findByUpvote(Integer pageNum, Integer pageSize);
+    List<UserContent> findByUpvote();
+
+    PageInfo<UserContent> findByArchive(String archive, Integer pageNum, Integer pageSize);
+
+    PageInfo<UserContent> findByTag(String tag, Integer pageNum, Integer pageSize);
+
+    PageInfo<UserContent> findRefuseContent(Long uid, Integer pageNum, Integer pageSize);
+
+    /**
+     * 查询该分类下的文章数
+     * @param categoryName
+     * @return
+     */
+    int countByCategory(String categoryName);
+
+    /**
+     * 查询该日期的文章数
+     * @param archiveName
+     * @return
+     */
+    int countByArchive(String archiveName);
+
+    int countArticle();
+
 }

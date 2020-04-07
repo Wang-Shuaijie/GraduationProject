@@ -2,6 +2,7 @@ package com.wangshjm.blog.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
@@ -20,5 +21,10 @@ public class WebAppConfig implements WebMvcConfigurer {
                     //addResourceLocations=图片存放在服务器的真实路径
                     .addResourceLocations("file:/home/GraduationProject/upload/");
         }
-     }
+    }
+
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+
+    }
 }

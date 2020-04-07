@@ -1,10 +1,7 @@
 package com.wangshjm.blog.controller;
 
 import com.github.pagehelper.PageInfo;
-import com.wangshjm.blog.entity.Comment;
-import com.wangshjm.blog.entity.Upvote;
-import com.wangshjm.blog.entity.User;
-import com.wangshjm.blog.entity.UserContent;
+import com.wangshjm.blog.entity.*;
 import com.wangshjm.blog.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateUtils;
@@ -36,6 +33,8 @@ public class IndexController extends BaseController {
     @Autowired
     private UpvoteService upvoteService;
     @Autowired
+    private NoticeService noticeService;
+    @Autowired
     private EsDataService esDataService;
 
 
@@ -63,6 +62,12 @@ public class IndexController extends BaseController {
         User user = getCurrentUser();
         model.addAttribute("user", user);
 
+        Notice notice = noticeService.findNewest();
+        model.addAttribute("notice", notice);
+
+        List<UserContent> hotArticles = userContentService.findByUpvote();
+        model.addAttribute("hotArticles", hotArticles);
+
         if (!StringUtils.isEmpty(keyword)) {
             PageInfo<UserContent> page = esDataService.search(keyword, pageNum, pageSize);
             model.addAttribute("keyword", keyword);
@@ -72,15 +77,6 @@ public class IndexController extends BaseController {
             model.addAttribute("page", page);
         }
         return "/index";
-    }
-
-    @RequestMapping("/watch")
-    public String watchArticle(Model model, @RequestParam(value = "cid", required = false) Long cid) {
-        User user = getCurrentUser();
-        UserContent userContent = userContentService.findById(cid);
-        model.addAttribute("article", userContent);
-        model.addAttribute("user", user);
-        return "/watch";
     }
 
     /**
@@ -167,11 +163,11 @@ public class IndexController extends BaseController {
         List<Comment> list = commentService.findAllFirstComment(content_id);
         if (!CollectionUtils.isEmpty(list)) {
             for (Comment c : list) {
-                List<Comment> coments = commentService.findAllChildrenComment(c.getConId(), c.getChildren());
+                List<Comment> coments = commentService.findAllChildrenComment(c.getContentId(), c.getChildren());
                 if (!CollectionUtils.isEmpty(coments)) {
                     for (Comment com : coments) {
-                        if (com.getById() != null) {
-                            User byUser = userService.findById(com.getById());
+                        if (com.getRespondentId() != null) {
+                            User byUser = userService.findById(com.getRespondentId());
                             com.setByUser(byUser);
                         }
                     }
@@ -273,14 +269,14 @@ public class IndexController extends BaseController {
 
     private void processComment(Comment comment, Long content_id, Long uid, Long bid, String oSize, String comment_time, Integer upvote) throws ParseException {
         Date date = DateUtils.parseDate(comment_time, "yyyy-MM-dd HH:mm:ss");
-        comment.setComContent(oSize);
-        comment.setCommTime(date);
-        comment.setConId(content_id);
-        comment.setComId(uid);
+        comment.setCommentContent(oSize);
+        comment.setCommentTime(date);
+        comment.setContentId(content_id);
+        comment.setAnswererId(uid);
         if (upvote == null) {
             upvote = 0;
         }
-        comment.setById(bid);
+        comment.setRespondentId(bid);
         comment.setUpvote(upvote);
 
         User u = userService.findById(uid);

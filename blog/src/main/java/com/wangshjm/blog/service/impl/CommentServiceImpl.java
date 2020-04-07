@@ -1,5 +1,7 @@
 package com.wangshjm.blog.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.wangshjm.blog.dao.CommentMapper;
 import com.wangshjm.blog.entity.Comment;
 import com.wangshjm.blog.service.CommentService;
@@ -27,10 +29,6 @@ public class CommentServiceImpl implements CommentService {
         commentMapper.updateByPrimaryKey(comment);
     }
 
-    @Override
-    public List<Comment> findAll(Long content_id) {
-        return commentMapper.selectAll(content_id);
-    }
 
     @Override
     public Comment findById(Long id) {
@@ -72,7 +70,15 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void deleteByContentId(Long cid) {
         Comment comment = new Comment();
-        comment.setConId(cid);
+        comment.setContentId(cid);
         commentMapper.delete(comment);
+    }
+
+    @Override
+    public PageInfo<Comment> findAllComment(Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);//开始分页
+        List<Comment> list = commentMapper.selectAll();
+        PageInfo<Comment> pageInfo = new PageInfo(list);
+        return pageInfo;
     }
 }

@@ -1,27 +1,15 @@
 package com.wangshjm.blog.service;
 
-import com.wangshjm.blog.dao.CategoryMapper;
+import com.alibaba.fastjson.JSONObject;
 import com.wangshjm.blog.entity.Category;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
-@Slf4j
-public class CategoryService {
-    @Autowired
-    private CategoryMapper categoryMapper;
+public interface CategoryService {
+    //查找所有类型
+    List<Category> findAll();
 
-    public List<Category> findAll() {
-        List<Category> categoryList = categoryMapper.selectAll();
-        return categoryList;
-    }
+    Category findByCategoryName(String name);
 
-    public Category findByCategoryName(String name) {
-        Category category = new Category();
-        category.setName(name);
-        return categoryMapper.selectOne(category);
-    }
+    JSONObject findCategoryNameAndArticleNum();
 }

@@ -12,4 +12,6 @@ public interface UserMapper extends Mapper<User> {
     User findByEmail(String email);
 
     User findByPhone(String phone);
+
+    int countUserNum();
 }

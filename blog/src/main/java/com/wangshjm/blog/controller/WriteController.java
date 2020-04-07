@@ -51,7 +51,7 @@ public class WriteController extends BaseController {
 
     @RequestMapping("/doWrite")
     public String doWrite(Model model, @RequestParam(value = "cid", required = false) Long cid,
-                          @RequestParam(value = "tag", required = false) String tagName,
+                          @RequestParam(value = "tagName", required = false) String tagName,
                           @RequestParam(value = "category", required = false) String categoryName,
                           @RequestParam(value = "title", required = false) String title,
                           @RequestParam(value = "content", required = false) String kindeditor,

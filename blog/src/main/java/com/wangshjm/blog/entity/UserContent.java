@@ -27,9 +27,9 @@ public class UserContent {
     private String personal;
     //上传时间
     private Date rptTime;
-    //用户头像(这个字段可以删除)
+    //用户头像
     private String imgUrl;
-    //用户昵称（这个字段可以删除）
+    //用户昵称
     private String nickName;
     //点赞数
     private Integer upvote;
@@ -41,6 +41,10 @@ public class UserContent {
     private String content;
     //存储markdown标记语言(用于编辑)
     private String markdownContent;
+    //是否通过
+    private String enabled;
+    //审核内容
+    private String remark;
     //类型数量
     @Transient//非表中实际字段
     private Integer num;

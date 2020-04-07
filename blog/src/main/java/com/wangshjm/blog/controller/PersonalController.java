@@ -8,13 +8,11 @@ import com.wangshjm.blog.entity.UserInfo;
 import com.wangshjm.blog.service.*;
 import com.wangshjm.blog.utils.MD5Util;
 import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -50,20 +48,16 @@ public class PersonalController extends BaseController {
      * @return
      */
     @RequestMapping("/list")
-    public String findList(Model model, @RequestParam(value = "manage", required = false) String manage,
-                           @RequestParam(value = "pageNum", required = false) Integer pageNum,
+    public String findList(Model model, @RequestParam(value = "pageNum", required = false) Integer pageNum,
                            @RequestParam(value = "pageSize", required = false) Integer pageSize) {
         if (ObjectUtils.isEmpty(pageNum) && ObjectUtils.isEmpty(pageSize)) {
             pageNum = 1;
-            pageSize = 7;
+            pageSize = 10;
         }
         User user = getCurrentUser();
         model.addAttribute("user", user);
         UserInfo userInfo = userInfoService.findByUid(user.getId());
         model.addAttribute("userInfo", userInfo);
-        if (!StringUtils.isEmpty(manage)) {
-            model.addAttribute("manage", manage);
-        }
         UserContent content = new UserContent();
         UserContent personalContent = new UserContent();
         if (user != null) {
@@ -75,21 +69,20 @@ public class PersonalController extends BaseController {
         //查询文章分类
         List<UserContent> ArticleCategorys = userContentService.findCategoryByUid(user.getId());
         model.addAttribute("categorys", ArticleCategorys);
-        //发布的文章 不含私密文章
+        //已发布的文章 不含私密文章
         content.setPersonal("0");
-        pageSize = 7; //默认每页显示7条数据
+
         PageInfo<UserContent> page = userContentService.findAll(content, pageNum, pageSize); //分页
         model.addAttribute("page", page);
 
-        //查询私密文章
+        //查询未公开
         personalContent.setPersonal("1");
         PageInfo<UserContent> personalPage = userContentService.findAll(personalContent, pageNum, pageSize);
         model.addAttribute("personalPage", personalPage);
 
-        //查询最热文章
-        pageSize = 10; //默认每页显示10条数据
-        PageInfo<UserContent> hotPage = userContentService.findByUpvote(pageNum, pageSize);
-        model.addAttribute("hotPage", hotPage);
+        //查询未通过
+        PageInfo<UserContent> refusePage = userContentService.findRefuseContent(user.getId(), pageNum, pageSize);
+        model.addAttribute("refusePage", refusePage);
         return "/personal/person";
     }
 
@@ -108,7 +101,7 @@ public class PersonalController extends BaseController {
         Map map = new HashMap<String, Object>();
         User user = getCurrentUser();
         if (ObjectUtils.isEmpty(pageSize)) {
-            pageSize = 7;
+            pageSize = 10;
         }
         UserContent userContent = new UserContent();
         userContent.setCategory(category);
@@ -120,7 +113,7 @@ public class PersonalController extends BaseController {
     }
 
     /**
-     * 根据用户id查询私人文章
+     * 根据用户id查询未公开
      *
      * @param pageNum
      * @param pageSize
@@ -136,10 +129,12 @@ public class PersonalController extends BaseController {
             map.put("pagePersonal", "fail");
             return map;
         }
+        if (ObjectUtils.isEmpty(pageSize)) {
+            pageSize = 10;
+        }
         UserContent userContent = new UserContent();
         userContent.setPersonal("1");
         userContent.setUId(user.getId());
-        pageSize = 10; //默认每页显示10条数据
         PageInfo<UserContent> page = userContentService.findAll(userContent, pageNum, pageSize);
         map.put("pagePersonal", page);
         return map;
@@ -147,21 +142,23 @@ public class PersonalController extends BaseController {
 
 
     /**
-     * 查询文章并分页 根据点赞数倒序排列
+     * 查询未通过
      *
-     * @param model
      * @param pageNum
      * @param pageSize
      * @return
      */
-    @RequestMapping("/findHot")
+    @RequestMapping("/findRefuse")
     @ResponseBody
-    public Map<String, Object> findHot(Model model, @RequestParam(value = "pageNum", required = false) Integer pageNum, @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+    public Map<String, Object> findHot(@RequestParam(value = "pageNum", required = false) Integer pageNum, @RequestParam(value = "pageSize", required = false) Integer pageSize) {
 
         Map map = new HashMap<String, Object>();
-        pageSize = 10; //默认每页显示15条数据
-        PageInfo<UserContent> hotPage = userContentService.findByUpvote(pageNum, pageSize);
-        map.put("hotPage", hotPage);
+        User user = getCurrentUser();
+        if (ObjectUtils.isEmpty(pageSize)) {
+            pageSize = 10;
+        }
+        PageInfo<UserContent> refusePage = userContentService.findRefuseContent(user.getId(), pageNum, pageSize);
+        map.put("pageRefuse", refusePage);
         return map;
     }
 
@@ -178,36 +175,9 @@ public class PersonalController extends BaseController {
         upvoteService.deleteByContentId(cid);
         userContentService.deleteById(cid);
         esDataService.delete(String.valueOf(cid));
-        return "redirect:/list?manage=manage";
+        return "redirect:/list";
     }
 
-//    /**
-//     * 进入个人资料修改页面
-//     *
-//     * @param model
-//     * @return
-//     */
-//    @RequestMapping("/profile")
-//    public String profile(Model model, @RequestParam(value = "email", required = false) String email,
-//                          @RequestParam(value = "password", required = false) String password,
-//                          @RequestParam(value = "phone", required = false) String phone) {
-//        User user = getCurrentUser();
-//        if (StringUtils.isEmpty(user.getPassword()) && StringUtils.isEmpty(password)) {
-//            return "redirect:/list";
-//        }
-//
-//        if (!StringUtils.isEmpty(email)) {
-//            user.setEmail(email);
-//            user.setPassword(MD5Util.encodeToHex(ConstantsValue.SALT + password));
-//            user.setPhone(phone);
-//            userService.update(user);
-//        }
-//        UserInfo userInfo = userInfoService.findByUid(user.getId());
-//        model.addAttribute("user", user);
-//        model.addAttribute("userInfo", userInfo);
-//
-//        return "/personal/profile";
-//    }
 
     /**
      * 保存个人头像
@@ -273,22 +243,6 @@ public class PersonalController extends BaseController {
     }
 
     /**
-     * 进入修改密码页面
-     *
-     * @param model
-     * @return
-     */
-    @RequestMapping("/repassword")
-    public String repassword(Model model) {
-        User user = getCurrentUser();
-        if (user != null) {
-            model.addAttribute("user", user);
-            return "/personal/repassword";
-        }
-        return "/login";
-    }
-
-    /**
      * 修改密码
      *
      * @param model
@@ -315,4 +269,5 @@ public class PersonalController extends BaseController {
         model.addAttribute("user", user);
         return "/personal/passwordSuccess";
     }
+
 }

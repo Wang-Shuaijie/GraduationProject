@@ -1,10 +1,10 @@
 package com.wangshjm.blog.service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.wangshjm.blog.entity.UserContent;
 import com.wangshjm.blog.utils.EsClientUtils;
+import com.wangshjm.blog.utils.PageHelperTool;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -36,7 +36,7 @@ public class EsDataService {
         HighlightBuilder highlightBuilder = new HighlightBuilder();
         highlightBuilder.field("nickName");
         highlightBuilder.field("title");//高亮title
-//        highlightBuilder.field("content");//高亮内容
+        //highlightBuilder.field("content");//高亮内容
         //下面这两项,如果你要高亮如文字内容等有很多字的字段,必须配置,不然会导致高亮不全,文章内容缺失等
         highlightBuilder.fragmentSize(800000); //最大高亮分片数
         highlightBuilder.numOfFragments(0); //从第一个分片获取高亮片段
@@ -50,11 +50,23 @@ public class EsDataService {
                         .should(QueryBuilders.matchQuery("content", keyWord).analyzer("ik_smart"))
                 )
                 .highlighter(highlightBuilder)
-                .from((pageNum - 1) * pageSize)
-                .size(pageSize);
+                //聚合查询默认最多查询10条
+                .size(100);
+
         List<UserContent> list = esClientUtils.search(sourceBuilder);
-        PageHelper.startPage(pageNum, pageSize);
-        PageInfo<UserContent> pageInfo = new PageInfo<UserContent>(list);
+        int total = list.size();
+        if (total / pageSize == 0 && total % pageSize > 0) {
+            list = list.subList(0, total);
+        } else {
+            if (total < pageNum * pageSize) {
+                list = list.subList((pageNum - 1) * pageSize, list.size());
+            } else {
+                list = list.subList((pageNum - 1) * pageSize, pageNum * pageSize);
+            }
+        }
+
+        PageInfo pageInfo = new PageInfo(list);
+        pageInfo = PageHelperTool.initPageInfoObj(pageNum, total, pageSize, pageInfo);
         return pageInfo;
     }
 }

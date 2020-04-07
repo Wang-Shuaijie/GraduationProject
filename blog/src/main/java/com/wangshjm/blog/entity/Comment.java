@@ -18,19 +18,19 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     //文章id
-    private Long conId;
+    private Long contentId;
     //评论者id
-    private Long comId;
+    private Long answererId;
     //被评论者id
-    private Long byId;
+    private Long respondentId;
     //评论时间
-    private Date commTime;
+    private Date commentTime;
     //字评论ids
     private String children;
     //点赞数
     private Integer upvote;
     //评论内容
-    private String comContent;
+    private String commentContent;
 
     //@Transient 表示该属性并非一个到数据库表的字段的映射,ORM框架将忽略该属性.
     @Transient

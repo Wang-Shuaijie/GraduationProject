@@ -1,5 +1,6 @@
 package com.wangshjm.blog.service;
 
+import com.github.pagehelper.PageInfo;
 import com.wangshjm.blog.entity.Comment;
 
 import java.util.List;
@@ -21,12 +22,6 @@ public interface CommentService {
      */
     void update(Comment comment);
 
-    /**
-     * 根据文章id查询所有评论
-     *
-     * @return
-     */
-    List<Comment> findAll(Long content_id);
 
     /**
      * 根据id查询评论
@@ -66,4 +61,7 @@ public interface CommentService {
      * @param cid
      */
     void deleteByContentId(Long cid);
+
+    //获取所有评论
+    PageInfo<Comment> findAllComment(Integer pageNum, Integer pageSize);
 }

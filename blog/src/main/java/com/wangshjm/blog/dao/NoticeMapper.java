@@ -1,10 +1,10 @@
 package com.wangshjm.blog.dao;
 
-import com.wangshjm.blog.entity.Category;
+import com.wangshjm.blog.entity.Notice;
 import org.springframework.stereotype.Repository;
 import tk.mybatis.mapper.common.Mapper;
 
 @Repository
-public interface CategoryMapper extends Mapper<Category> {
-
+public interface NoticeMapper extends Mapper<Notice> {
+    Notice findNewest();
 }

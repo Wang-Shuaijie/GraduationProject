@@ -23,4 +23,18 @@ public interface UserContentMapper extends Mapper<UserContent> {
      * 使用两表关联查询。查询文章的时候根据用户 id 关联查询用户表 uesr 和文章表 user_content。这里使用左连接查询
      */
     List<UserContent> findByJoin(UserContent userContent);
+
+    List<UserContent> findByUpvote();
+
+    List<UserContent> findByArchive(@Param("archive") String archive);
+
+    List<UserContent> findByTag(@Param("tag") String archive);
+
+    List<UserContent> findRefuseContent(Long uid);
+
+    int countByCategory(@Param("categoryName") String categoryName);
+
+    int countByArchive(@Param("archive") String archive);
+
+    int countArticleNum();
 }
