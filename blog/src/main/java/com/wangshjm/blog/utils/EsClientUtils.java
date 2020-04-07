@@ -126,7 +126,6 @@ public class EsClientUtils {
                 source.put("nickName", nickName);   //高亮字段替换掉原本的内容
             }
 
-
             UserContent userContent = JSONObject.parseObject(hit.getSourceAsString(), UserContent.class);
             //必须添加，否则替换成高亮内容
             userContent.setTitle((String)hit.getSource().get("title"));
