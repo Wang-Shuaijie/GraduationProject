@@ -9,20 +9,15 @@
     <meta http-equiv="Expires" content="0">
     <title>猿天地首页</title>
 
-    <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
-    <link th:href="@{/bootstrap/css/bootstrap-theme.min.css}" rel="stylesheet"/>
-    <link th:href="@{/zui/css/zui.min.css}" rel="stylesheet"/>
-    <link th:href="@{/zui/css/zui-theme.css}" rel="stylesheet"/>
+    <link href="https://cdn.bootcss.com/zui/1.9.1/css/zui.min.css" rel="stylesheet">
+    <link href="https://lib.baomitu.com/amazeui/2.7.2/css/amazeui.min.css" rel="stylesheet">
 
-    <link rel="stylesheet" th:href="@{/reply/css/style.css}">
-    <link rel="stylesheet" th:href="@{/reply/css/comment.css}">
-    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <link rel="stylesheet" href="/reply/css/style.css">
+    <link rel="stylesheet" href="/reply/css/comment.css">
+    <link rel="stylesheet" href="/css/index.css">
 
-    <script type="text/javascript" th:src="@{/js/jquery-3.2.1.min.js}"></script>
-    <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
-
-    <script type="text/javascript" th:src="@{/zui/js/zui.min.js}"></script>
-    <script type="text/javascript" th:src="@{/reply/js/jquery.flexText.js}"></script>
+    <script type="text/javascript" src="/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="/reply/js/jquery.flexText.js"></script>
 </head>
 <body>
 <canvas id="c"></canvas>
@@ -32,35 +27,38 @@
     <div class="row">
         <img th:src="@{/images/2.gif}">
     </div>
-    <nav class="navbar navbar-default">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-menu" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="javascript:void(0);"><span class="label label-badge label-primary">猿天地-分享你的技术</span></a>
-        </div>
-        <div id="navbar-menu" class="collapse navbar-collapse">
-            <ul class="nav navbar-nav">
-                <li class="active"><a th:href="@{/index}">最新文章</a></li>
-                <li><a th:href="@{/hot}">最热文章</a></li>
-                <li><a href="#">资源小站</a></li>
-                <li><a href="#">程序人生</a></li>
-                <li><a href="#">留言</a></li>
-                <li><a th:href="@{/list(pageSize=1,pageNum=7)}">管理</a></li>
-            </ul>
-        </div>
 
-        <form id="searchForm" class="navbar-form navbar-right" role="search" style="margin-top: -35px;margin-right: 10px" th:action="@{/index}">
-            <div class="form-group">
-                <input type="text" class="form-control" placeholder="Search" id="keyword" name="keyword">
+    <div class="header">
+        <div class="am-topbar" style="margin-bottom: 0">
+            <h1 class="am-topbar-brand">
+                <a href="/" class="blogTitleName"><img src="/images/head.jpg" width="50" height="50" class="img-circle">猿天地</a>
+            </h1>
+
+            <!--手机适配导航显示按钮-->
+            <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only" style="background-color: #CCCCCC;border-color: white;border-radius: 6px" data-am-collapse="{target: '#doc-topbar-collapse'}"><span class="am-sr-only">导航切换</span> <span class="am-icon-bars"></span></button>
+
+            <div class="am-collapse am-topbar-collapse" id="doc-topbar-collapse">
+                <ul class="am-nav am-nav-pills am-topbar-nav">
+                    <li><a class="top_bar" href="/index" style="cursor: pointer;"><span class="am-icon-home"></span>&nbsp;首页</a></li>
+                    <li><a class="top_bar" href="/categories" style="cursor: pointer;"><span class="am-icon-th"></span>&nbsp;分类</a></li>
+                    <li><a class="top_bar" href="/archives" style="cursor: pointer;"><span class="am-icon-archive"></span>&nbsp;归档</a></li>
+                    <li><a class="top_bar" href="/tags" style="cursor: pointer;"><span class="am-icon-tags"></span>&nbsp;标签</a></li>
+                    <li><a class="top_bar" href="/friendlylink" style="cursor: pointer;"><span class="am-icon-street-view"></span>&nbsp;友链</a></li>
+                    <li><a class="top_bar" href="/list" style="cursor: pointer;"><span class="am-icon-user"></span>&nbsp;管理</a> </li>
+                </ul>
             </div>
-            <button type="submit" class="btn btn-default">搜索</button>
-        </form>
-    </nav>
+
+            <div class="am-topbar-right reward am-hide-sm-down">
+                <form id="searchForm" class="navbar-form navbar-right" role="search" style="margin-top: -35px;margin-right: 10px" th:action="@{/index}">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search" id="keyword" name="keyword">
+                    </div>
+                    <button type="submit" class="btn btn-default">搜索</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <div id="main">
         <div id="content" class="row-fluid">
             <div id="content_col" class="content-main">
@@ -70,7 +68,7 @@
                     <h1 class="header-dividing"><a th:href="@{/watch(cid=${article.id})}" th:utext="${article.title}"></a></h1>
                     <div class="author clearfix">
                         <div>
-                            <a href="#" target="_blank" rel="nofollow" style="height: 35px">
+                            <a th:href="@{/profile(uid=${article.uId})}" target="_blank" rel="nofollow" style="height: 35px">
                                  <img th:src="${article.imgUrl}">
                             </a>
                         </div>
@@ -149,13 +147,56 @@
             </th:block>
         </div>
         </div>
+        <div id="sideBar" class="am-u-sm-12 am-u-lg-3">
+            <div id="right">
+                <h3 class="widget-title">公告</h3>
+                <div class="widget">
+                    <div>
+                        <div class="zhy-info">
+                            <i class="am-icon-quote-left" style="float: left"></i><br>
+                            <div class="zhy-info-day">
+                                <p th:utext="${notice.content}"></p>
+                                <p style="text-align: right;padding-top: 10px" th:text="${#dates.format(notice.time,'yyyy-MM-dd')}"></p>
+                            </div>
+                            <i class="am-icon-quote-right" style="float: right"></i>
+                            <div class="zhy-info-opinion">
+                                <p><strong>Welcome to my blog！！！</strong></p>
+                                <p style="line-height: 25px">平淡对待一切<br>努力做最好的自己</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="myStory" >
+                    <div class="bg-myStory">
+                        <div><a class="bg-myStory-a" href="#">最热推荐</a></div>
+                    </div>
+                    <div class="myStory-words">
+                        <ul>
+                            <th:block th:each="article: ${hotArticles}">
+                                <li><a th:href="@{/watch(cid=${article.id})}" th:text="${article.title}"></a></li>
+                            </th:block>
+                        </ul>
+                    </div>
+                </div>
+                <div class="tag-cloud">
+                    <h3 class="widget-title">最热标签</h3>
+                    <div class="widget-tag-cloud">
+                        <span>暂无标签</span>
+                    </div>
+                </div>
 
-        <div id="sideBar">
-            <div style="background-color: white;">
-                <iframe name="weather_inc" src="http://i.tianqi.com/index.php?c=code&id=82" width="250" height="440" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+                <div class="site-info am-hide-sm-only">
+                    <h5 class="site-title">
+                        <i class="am-icon-info site-icon"></i>
+                        <strong style="margin-left: 15px">网站信息</strong>
+                    </h5>
+                    <ul class="site-default" style="height: 200px">
+                        <li>made by wangshuaijie</li>
+                    </ul>
+                </div>
+
             </div>
         </div>
-
         <div style="clear:both;"></div>
     </div>
     <div style="clear:both;"></div>
@@ -164,22 +205,10 @@
 
         </ul>
     </div>
+    <!--引入共有底部-->
+    <div th:replace="/footer :: footer"></div>
 
-    <div class="foot">
-        <hr style="background-color: rgba(161,171,175,0.31);height: 1px;left: 0px"/>
-        <hr style="background-color: rgba(161,171,175,0.31);height: 1px;left: 0px"/>
-        <div class="foot-nav clearfix" style="margin-top: 40px;text-align: center">
-            <div class="foot-copyrights" style="">
-                <p>
-                    <span>邮箱：2283613941@qq.com</span>
-                </p>
-                <p style="margin-top: 8px">&copy;made by wangshuaijie 如有需要请联系</p>
-            </div>
-        </div>
-    </div>
-
-</div>
-<script type="text/javascript">
+    <script type="text/javascript">
     /**
      * 解决pagehelper页数量过多问题
      */
@@ -229,8 +258,8 @@
     });
 </script>
 
+</div>
 </body>
-
 <!--看板娘设计-->
 <script src="https://l2dwidget.js.org//lib/L2Dwidget.min.js"></script>
 <script type="text/javascript">
@@ -371,8 +400,8 @@
                                 "<div class='comment-show-con-list pull-left clearfix'>"+
                                 "<div class='pl-text clearfix'>"+
                                 "<a  class='comment-size-name'>"+this.user.nickName+" :</a>"+
-                                "<span class='my-pl-con'>&nbsp;"+this.comContent+"</span>"+
-                                "</div> <div class='date-dz'><span class='date-dz-left pull-left comment-time'>"+formatDate(this.commTime)+"</span>"+
+                                "<span class='my-pl-con'>&nbsp;"+this.commentContent+"</span>"+
+                                "</div> <div class='date-dz'><span class='date-dz-left pull-left comment-time'>"+formatDate(this.commentTime)+"</span>"+
                                 "<div class='date-dz-right pull-right comment-pl-block'>"+
                                 "<a onclick='deleteComment("+id+","+uid+","+this.id+",null)' id='comment_dl_"+this.id+"' style='cursor:pointer' class='removeBlock'>删除</a>"+
                                 "<a style='cursor:pointer' onclick='comment_hf("+id+","+this.id+","+null+","+this.user.id+","+uid+")' id='comment_hf_"+this.id+"' class='date-dz-pl pl-hf hf-con-block pull-left'>回复</a>"+
@@ -392,8 +421,8 @@
                                     // alert(this.id);
                                     var oHtml = "<div class='all-pl-con'><div class='pl-text hfpl-text clearfix'>"+
                                         "<a class='comment-size-name'>"+this.user.nickName+"<a class='atName'>@"+this.byUser.nickName+" :</a> </a>"+
-                                        "<span class='my-pl-con'>"+this.comContent+"</span>"+
-                                        "</div><div class='date-dz'> <span class='date-dz-left pull-left comment-time'>"+formatDate(this.commTime)+"</span>"+
+                                        "<span class='my-pl-con'>"+this.commentContent+"</span>"+
+                                        "</div><div class='date-dz'> <span class='date-dz-left pull-left comment-time'>"+formatDate(this.commentTime)+"</span>"+
                                         "<div class='date-dz-right pull-right comment-pl-block'>"+
                                         "<a style='cursor:pointer' onclick='deleteComment("+id+","+uid+","+this.id+","+parentComm_id+")' id='comment_dl_"+this.id+"' class='removeBlock'>删除</a>"+
                                         "<a onclick='comment_hf("+id+","+this.id+","+parentComm_id+","+this.user.id+","+uid+")' id='comment_hf_"+this.id+"' style='cursor:pointer' class='date-dz-pl pl-hf hf-con-block pull-left'>回复</a> <span class='pull-left date-dz-line'>|</span>"+
@@ -647,8 +676,9 @@
     function comment_pl(content_id,comment_id,fid,by_id,cuid) {
         var uid = "[[${user == null?null:user.id}]]";
         if(uid==null || uid == ''){
-            alert("你还未登录！");
-            window.location.href = "[[@{/login}]]";
+            new $.zui.Messager('请登录后评论！', {
+                icon: 'bell', // 定义消息图标
+            }).show()
             return
         }
         if(fid == null){
@@ -700,22 +730,22 @@
                         var oAt = '回复<a class="atName">@'+oHfName+'</a>  '+oHfVal;
                         var oHtml = '<div class="all-pl-con">' +
                             '<div class="pl-text hfpl-text clearfix">' +
-                                '<a class="comment-size-name">[[${user!=null?user.nickName:null}]] :</a><span class="my-pl-con">'+oAt+'</span>' +
+                            '<a class="comment-size-name">[[${user!=null?user.nickName:null}]] :</a><span class="my-pl-con">'+oAt+'</span>' +
                             '</div>' +
                             '<div class="date-dz"> ' +
-                                '<span class="date-dz-left pull-left comment-time">'+now+'</span> ' +
-                                '<div class="date-dz-right pull-right comment-pl-block"> ' +
-                                    '<a style="cursor:pointer" onclick="deleteComment('+content_id+','+cuid+','+id+','+fid+')" id="comment_dl_'+id+'" class="removeBlock">删除</a> ' +
-                                    '<a onclick="comment_hf('+content_id+','+id+','+fid+','+comm_data.user.id+','+cuid+')" id="comment_hf_'+id+'" style="cursor:pointer" class="date-dz-pl pl-hf hf-con-block pull-left">回复</a> ' +
-                                    '<span class="pull-left date-dz-line">|</span> ' +
-                                    '<a onclick="reply_up('+id+')" id="change_color_'+id+'" style="cursor:pointer" class="date-dz-z pull-left"><i class="date-dz-z-click-red"></i>赞 (<i class="z-num" id="comment_upvote_'+id+'">0</i>)</a> ' +
+                            '<span class="date-dz-left pull-left comment-time">'+now+'</span> ' +
+                            '<div class="date-dz-right pull-right comment-pl-block"> ' +
+                            '<a style="cursor:pointer" onclick="deleteComment('+content_id+','+cuid+','+id+','+fid+')" id="comment_dl_'+id+'" class="removeBlock">删除</a> ' +
+                            '<a onclick="comment_hf('+content_id+','+id+','+fid+','+comm_data.user.id+','+cuid+')" id="comment_hf_'+id+'" style="cursor:pointer" class="date-dz-pl pl-hf hf-con-block pull-left">回复</a> ' +
+                            '<span class="pull-left date-dz-line">|</span> ' +
+                            '<a onclick="reply_up('+id+')" id="change_color_'+id+'" style="cursor:pointer" class="date-dz-z pull-left"><i class="date-dz-z-click-red"></i>赞 (<i class="z-num" id="comment_upvote_'+id+'">0</i>)</a> ' +
                             '</div> </div></div>';
-                        $("#comment_pl_"+comment_id).parents('.hf-con').siblings('.comment-show-con-list').find('.hf-list-con').prepend(oHtml) && oThis.parents('.hf-con').siblings('.date-dz-right').find('.pl-hf').addClass('hf-con-block') && oThis.parents('.hf-con').remove();
+
+                        $("#comment_pl_"+comment_id).parents('.hf-con').parents('.comment-show-con-list').find('.hf-list-con').css('display','block').prepend(oHtml) && oThis.parents('.hf-con').siblings('.date-dz-right').find('.pl-hf').addClass('hf-con-block') && oThis.parents('.hf-con').remove();
 
 
-                        var num = document.getElementById("#comment_pl_"+comment_id).innerHTML;
-                        document.getElementById("#comment_pl_"+comment_id).innerHTML = (parseInt(num) + 1)+"";
-
+                        var num = document.getElementById("comment_num_"+content_id).innerHTML;
+                        document.getElementById("comment_num_"+content_id).innerHTML = (parseInt(num) + 1)+"";
                     }
                 }
             });

@@ -4,19 +4,23 @@
     <meta charset="UTF-8">
     <title>猿天地</title>
 
-    <link th:href="@{/zui/css/zui.min.css}" rel="stylesheet"/>
-    <link th:href="@{/zui/css/zui-theme.css}" rel="stylesheet"/>
+    <link href="https://cdn.bootcss.com/zui/1.9.1/css/zui.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/zui/1.9.1/css/zui-theme.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/zui/1.9.1/lib/chosen/chosen.css" rel="stylesheet">
 
-    <link th:href="@{/editormd/examples/css/style.css}" rel="stylesheet"/>
-    <link th:href="@{/editormd/css/editormd.css}" rel="stylesheet"/>
+    <link href="/editormd/examples/css/style.css" rel="stylesheet"/>
+    <link href="/editormd/css/editormd.css" rel="stylesheet"/>
 
-    <link th:href="@{/css/write.css}" rel="stylesheet"/>
 
-    <script type="text/javascript" th:src="@{/js/jquery-3.2.1.min.js}"></script>
-    <script type="text/javascript" th:src="@{/zui/js/zui.min.js}"></script>
+    <link href="/css/write.css" rel="stylesheet"/>
 
-    <script type="text/javascript" th:src="@{/editormd/examples/js/jquery.min.js}"></script>
-    <script type="text/javascript" th:src="@{/editormd/lib/editormd.min.js}"></script>
+    <script type="text/javascript" src="/js/jquery-3.2.1.min.js"></script>
+
+    <script src="https://cdn.bootcss.com/zui/1.9.1/lib/chosen/chosen.js"></script>
+    <script src="https://cdn.bootcss.com/zui/1.9.1/js/zui.min.js"></script>
+
+    <script type="text/javascript" src="/editormd/lib/editormd.min.js"></script>
+
 
 </head>
 <body>
@@ -25,7 +29,7 @@
 <script type="text/javascript" th:src="@{/js/background.js}"></script>
 <div id="container">
     <ul class="nav nav-tabs nav-justified">
-        <li class="nav-heading"><img th:src="@{/images/2.gif}" th:onclick="window.location.href=[[@{/index}]];"></li>
+        <li class="nav-heading"><img th:src="@{/images/2.gif}"></li>
         <li class="active"><a href="#">mardown编辑器</a></li>
         <li><a th:href="@{/write(cid=${article == null ? null: article.id})}">富文本编辑器</a></li>
     </ul>
@@ -38,19 +42,19 @@
                 <div class="input-control" id="title-div">
                     <input type="text" id="txtTitle" name="title" th:value="${article == null ? null: article.title}" class="form-control" maxlength="100" placeholder="&nbsp;&nbsp;&nbsp;&nbsp;输入文章标题"/>
                 </div>
-                <div class="input-group" style="margin-bottom: 8px; width:30%; left: 5%">
-                    <input type="text" name="tag" id="tagInput" class="form-control" maxlength="10">
-                    <div class="input-group-btn">
-                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">热门标签推荐 <span class="caret"></span></button>
-                        <ul class="dropdown-menu pull-right" role="menu" id="tag-div">
-                            <li><a href="#">java</a></li>
-                            <li><a href="#">后端开发</a></li>
-                            <li><a href="#">人工智能</a></li>
-                            <li><a href="#">python</a></li>
-                            <li><a href="#">springboot</a></li>
-                        </ul>
-                    </div>
+
+                <div class="input-control" style="margin-bottom: 8px; width:30%; left: 5%">
+                    <input type="hidden" id="tagNameInput"  th:value="${article == null ? null: article.tag}">
+                    <select data-placeholder="选择一些标签..." class="chosen-select form-control" tabindex="2" multiple="" name="tagName">
+                        <option value="java">java</option>
+                        <option value="python">python</option>
+                        <option value="springboot">springboot</option>
+                        <option value="ssm">ssm</option>
+                        <option value="后端开发">后端开发</option>
+                        <option value="人工智能">人工智能</option>
+                    </select>
                 </div>
+
                 <!--mrakdown编辑器-->
                 <div id="test-editormd" class="my-editormd">
                     <textarea class="editormd-markdown-textarea" th:utext="${article == null ? null: article.markdownContent}" id="doc" name="doc">
@@ -128,7 +132,6 @@
             saveHTMLToTextarea : true,
             emoji: true,
             taskList: true,
-            tocm: true,         // Using [TOCM]
             tex: true,                   // 开启科学公式TeX语言支持，默认关闭
             flowChart: true,             // 开启流程图支持，默认关闭
             sequenceDiagram: true,// 开启时序/序列图支持，默认关闭
@@ -156,10 +159,25 @@
         $("#categoryInput").val(valText);
     });
 
-    $("#tag-div li").click(function(){//jquery的click事件
-        var valText = $(this).text();
-        $("#tagInput").val(valText);
+    $('select.chosen-select').chosen({
+        no_results_text: '没有找到',    // 当检索时没有找到匹配项时显示的提示文本
+        disable_search_threshold: 10, // 10 个以下的选择项则不显示检索框
+        search_contains: true,         // 从任意位置开始检索
+        max_selected_options: 3,
     });
+
+    $(function () {
+        var tagName = $("#tagNameInput").val();
+        if(tagName!=null || tagName!=''){
+            var arr = tagName.split(',');
+            for(var i=0; i<arr.length;i++){
+                $("select.chosen-select option[value='"+arr[i]+"']").attr("selected","selected")
+            }
+        }
+        // 当原始select中的选项发生变化时通知chosen更新选项列表菜单
+        $('select.chosen-select').trigger('chosen:updated');
+        return;
+    })
 
 
     //是否公开开关点击事件

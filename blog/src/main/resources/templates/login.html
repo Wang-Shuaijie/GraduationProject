@@ -7,11 +7,10 @@
     <meta http-equiv="Expires" content="0">
     <title>登录页面</title>
 
-    <link rel="stylesheet" href="/zui/css/zui.min.css">
-    <link rel="stylesheet" href="/zui/lib/uploader/zui.uploader.min.css">
+    <link href="https://cdn.bootcss.com/zui/1.9.1/css/zui.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/login.css">
     <script src="/js/jquery-3.2.1.min.js"></script>
-    <script src="/zui/js/zui.min.js"></script>
+    <script src="https://cdn.bootcss.com/zui/1.9.1/js/zui.min.js"></script>
 </head>
 <body>
 <canvas id="c"></canvas>
@@ -58,7 +57,6 @@
                             <br/>
                             <div> <a th:href = "@{/register}" >没有账号？立即注册</a></div>
                         </div>
-                        <span th:if="${error ne null}" style="color: red" th:text="${error}"></span>
                     </form>
                 </div>
                 <!--手机登录-->
@@ -95,7 +93,6 @@
                                 <div> <a th:href = "@{/register}" >没有账号？立即注册</a></div>
                             </div>
                         </div>
-                        <span th:if="${error ne null}" style="color: red" th:text="${error}"></span>
                     </form>
                 </div>
             </div>
