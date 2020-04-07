@@ -11,19 +11,27 @@
         <result property="state" column="state" />
         <result property="enable" column="enable" />
     </resultMap>
+
     <select id="findUserByEmailAndPwd" parameterType="String" resultMap="userResult">
         select *
         from tb_user
         where email=#{email} and password=#{password};
     </select>
+
     <select id="findByEmail" parameterType="String" resultMap="userResult">
         select *
         from tb_user
         where email=#{email};
     </select>
+
     <select id="findByPhone" parameterType="String" resultMap="userResult">
         select *
         from tb_user
         where phone=#{phone};
+    </select>
+
+    <select id="countUserNum" resultType="int">
+        select count(*)
+        from tb_user
     </select>
 </mapper>
