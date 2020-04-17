@@ -31,7 +31,7 @@ body {
 }
 
 #content{
-    width: 130%;
+    width: 120%;
     padding: 0 0 10px 0;
     *padding-top: 10px;
     -o-text-overflow: ellipsis;

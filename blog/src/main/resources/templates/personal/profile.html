@@ -26,7 +26,7 @@
             <div class="caption">欢迎来到我的主页</div>
             <div class="card-heading" style="text-align: center"><strong th:text="${user.nickName}"></strong></div>
             <div class="card-content text-muted" style="text-align: center">
-                <span th:text="${userInfo.information}"></span>
+                <span th:text="${userInfo == null ? '空' : userInfo.information}"></span>
             </div>
         </div>
         <ul class="nav nav-primary nav-justified">
@@ -50,7 +50,7 @@
                     <h4 class="modal-title">私信</h4>
                 </div>
                 <div class="modal-body">
-                    <textarea id="contentSimple" name="content" style="width: 100%; height: 150px">Hello, world!</textarea>
+                    <textarea id="messageContent" name="content" style="width: 100%; height: 150px"> Hello, world! </textarea>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
@@ -72,27 +72,27 @@
                 <div class="modal-body">
                     <div class="input-group">
                         <span class="input-group-addon">学历:</span>
-                        <input type="text" class="form-control" th:value="${userInfo.education}" readonly>
+                        <input type="text" class="form-control" th:value="${userInfo == null ? '空' : userInfo.education}" readonly>
                     </div>
                     <br>
                     <div class="input-group">
                         <span class="input-group-addon">公司/学校:</span>
-                        <input type="text" class="form-control" th:value="${userInfo.address}" readonly>
+                        <input type="text" class="form-control" th:value="${userInfo == null ? '空' : userInfo.address}" readonly>
                     </div>
                     <br>
                     <div class="input-group">
                         <span class="input-group-addon">职位:</span>
-                        <input type="text" class="form-control" th:value="${userInfo.work}" readonly>
+                        <input type="text" class="form-control" th:value="${userInfo == null ? '空' : userInfo.work}" readonly>
                     </div>
                     <br>
                     <div class="input-group">
                         <span class="input-group-addon">性别:</span>
-                        <input type="text" class="form-control" th:value="${userInfo.sex==0?'男':'女'}" readonly>
+                        <input type="text" class="form-control" th:value="${userInfo.sex == 0 ? '男':'女'}" readonly>
                     </div>
                     <br>
                     <div class="input-group">
                         <span class="input-group-addon">爱好:</span>
-                        <input type="text" class="form-control" th:value="${userInfo.hobby}" readonly>
+                        <textarea class="form-control" rows="3" th:value="${userInfo == null ? '空' : userInfo.hobby}"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -216,6 +216,32 @@
         ul+=lastPage;
         ul+=nextPage;
         $("#page").html(ul);
+    });
+
+
+    $("#leaveMessageButton").click(function () {
+        var messageContent = $("#messageContent").val();
+        var answererId = "[[${visitor.id}]]";
+        var respondentId = "[[${user.id}]]";
+
+        $.ajax({
+            type: 'get',
+            url: '/insertLeaveMessage',
+            data: {
+                'answererId': answererId,
+                'respondentId': respondentId,
+                'message': messageContent,
+                'isRead': '1',
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (data['result'] == 1) {
+                    alert("发送失败！");
+                } else {
+                    window.location.reload();
+                }
+            }
+        })
     });
 </script>
 </body>

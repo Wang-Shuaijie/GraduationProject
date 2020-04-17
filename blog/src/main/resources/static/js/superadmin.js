@@ -575,7 +575,7 @@ $('.superAdminList .userFeedback').click(function () {
 $('.superAdminList .articleManagement').click(function () {
     getArticleManagement(1);
 });
-//点击反馈
+//点击评论管理
 $('.superAdminList .commentManagement').click(function () {
     getAllComment(1);
 });
@@ -669,9 +669,9 @@ function getStatisticsInfo() {
             $('.yesterdayVisitor').html(data['yesterdayVisitor']);
             $('.allUser').html(data['allUser']);
             $('.articleNum').html(data['articleNum']);
-            if(data['articleThumbsUpNum'] != 0){
-                $('.articleThumbsUp').find('a').append($('<span class="am-badge am-badge-warning am-margin-right am-fr articleThumbsUpNum">' + data['data']['articleThumbsUpNum'] + '</span>'));
-            }
+            // if(data['articleThumbsUpNum'] != 0){
+            //     $('.articleThumbsUp').find('a').append($('<span class="am-badge am-badge-warning am-margin-right am-fr articleThumbsUpNum">' + data['data']['articleThumbsUpNum'] + '</span>'));
+            // }
         },
         error:function () {
             alert("获取统计信息失败");

@@ -40,14 +40,14 @@
                 '</div>' +
                 '</header>'));
             var amCommentBd = $('<div class="am-comment-bd"></div>');
-            amCommentBd.append($('<i class="am-icon-calendar"> <a href="">' + timestampToYMDTime(obj['rptTime']) + '</a></i>' +
-                '<i class="am-icon-folder"> <a href="">' + obj['category'] + '</a></i>'));
+            amCommentBd.append($('<i class="am-icon-calendar"> <a href="/archives?archive=' + obj['rptTime'].substring(0, 7) + '">' + timestampToYMDTime(obj['rptTime']) + '</a></i>' +
+                '<i class="am-icon-folder"> <a href="/categories?category=' + obj['category'] + '">' + obj['category'] + '</a></i>'));
             var amCommentBdTags = $('<i class="am-comment-bd-tags am-icon-tag"></i>');
             if (obj['tag'] != null) {
                 var tagNames = obj['tag'].split(',');
 
                 for (var i = 0; i < tagNames.length; i++) {
-                    var tag = $('<a href="">' + tagNames[i] + '</a>');
+                    var tag = $('<a href="/tags?tag=' + tagNames[i] + '">' + tagNames[i] + '</a>');
                     amCommentBdTags.append(tag);
                     if (i != (tagNames.length - 1)) {
                         amCommentBdTags.append(",");

@@ -933,7 +933,7 @@ function _mediaType(src) {
 	if (/\.(swf|flv)(\?|$)/i.test(src)) {
 		return 'application/x-shockwave-flash';
 	}
-	if (/\.(mp4|mkv|flv)(\?|$)/i.test(src)) {
+	if (/\.(mp4|mkv)(\?|$)/i.test(src)) {
 		return 'video/mp4';
 	}
 	if (/\.(mp3)(\?|$)/i.test(src)) {

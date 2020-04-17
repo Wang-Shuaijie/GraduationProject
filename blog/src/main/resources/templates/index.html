@@ -44,7 +44,7 @@
                     <li><a class="top_bar" href="/archives" style="cursor: pointer;"><span class="am-icon-archive"></span>&nbsp;归档</a></li>
                     <li><a class="top_bar" href="/tags" style="cursor: pointer;"><span class="am-icon-tags"></span>&nbsp;标签</a></li>
                     <li><a class="top_bar" href="/friendlylink" style="cursor: pointer;"><span class="am-icon-street-view"></span>&nbsp;友链</a></li>
-                    <li><a class="top_bar" href="/list" style="cursor: pointer;"><span class="am-icon-user"></span>&nbsp;管理</a> </li>
+                    <li><a class="top_bar" href="/personal" style="cursor: pointer;"><span class="am-icon-user"></span>&nbsp;管理</a> </li>
                 </ul>
             </div>
 
@@ -171,11 +171,11 @@
                         <div><a class="bg-myStory-a" href="#">最热推荐</a></div>
                     </div>
                     <div class="myStory-words">
-                        <ul>
+                        <div class="list-group">
                             <th:block th:each="article: ${hotArticles}">
-                                <li><a th:href="@{/watch(cid=${article.id})}" th:text="${article.title}"></a></li>
+                                <a class="list-group-item" th:href="@{/watch(cid=${article.id})}" th:text="${article.title}"></a>
                             </th:block>
-                        </ul>
+                        </div>
                     </div>
                 </div>
                 <div class="tag-cloud">
@@ -309,7 +309,8 @@
      */
     function upvote_click(id, count) {
         var uid = "[[${user != null ? user.id:null}]]";
-        if (uid == null) {
+        if (uid == null || uid == '') {
+            alert("请先登录！");
             window.location.href = "[[@{/login}]]";
             return
         }
