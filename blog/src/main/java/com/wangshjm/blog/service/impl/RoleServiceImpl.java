@@ -29,4 +29,9 @@ public class RoleServiceImpl implements RoleService {
     public List<Role> findByUid(Long uid) {
         return roleMapper.findByUid(uid);
     }
+
+    @Override
+    public int grant(Long uid) {
+        return roleMapper.grantUser(uid);
+    }
 }

@@ -16,4 +16,6 @@ public interface RoleMapper extends Mapper<Role> {
      * @return
      */
     List<Role> findByUid(@Param("uid") Long uid);
+
+    int grantUser(@Param("uid") Long uid);
 }

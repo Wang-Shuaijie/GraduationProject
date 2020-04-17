@@ -28,4 +28,11 @@ public interface RoleService {
      * @return
      */
     List<Role> findByUid(Long uid);
+
+    /**
+     * 给用户赋予角色权限
+     * @param uid
+     * @return
+     */
+    int grant(Long uid);
 }

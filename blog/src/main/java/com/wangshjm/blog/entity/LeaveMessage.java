@@ -25,5 +25,5 @@ public class LeaveMessage {
 
     private Date time;
 
-    private boolean isRead;
+    private String isRead;
 }

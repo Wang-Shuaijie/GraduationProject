@@ -50,7 +50,7 @@ public class WriteController extends BaseController {
     }
 
     @RequestMapping("/doWrite")
-    public String doWrite(Model model, @RequestParam(value = "cid", required = false) Long cid,
+    public String doWrite(@RequestParam(value = "cid", required = false) Long cid,
                           @RequestParam(value = "tagName", required = false) String tagName,
                           @RequestParam(value = "category", required = false) String categoryName,
                           @RequestParam(value = "title", required = false) String title,
@@ -88,6 +88,7 @@ public class WriteController extends BaseController {
         } else {
             userContent.setPersonal("0");
         }
+        userContent.setEnabled("0");
         userContent.setTitle(title);
         userContent.setUId(user.getId());
         userContent.setNickName(user.getNickName());
@@ -104,8 +105,7 @@ public class WriteController extends BaseController {
             userContentService.update(userContent);
             esDataService.saveOrUpdate(userContent);
         }
-        model.addAttribute("article", userContent);
-        return "/write/writesuccess";
+        return "/write/writeSuccess";
     }
 
 }

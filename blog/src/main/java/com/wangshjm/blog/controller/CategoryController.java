@@ -5,6 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.wangshjm.blog.entity.UserContent;
 import com.wangshjm.blog.service.CategoryService;
 import com.wangshjm.blog.service.UserContentService;
+import com.wangshjm.blog.utils.TransCodingUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,7 +42,7 @@ public class CategoryController {
                                   HttpServletRequest request){
         JSONObject result = new JSONObject();
         if(!StringUtils.isEmpty(category)){
-            category = category;
+            category = TransCodingUtil.unicodeToString(category);
         }
         int rows = Integer.parseInt(request.getParameter("rows"));
         int pageNum = Integer.parseInt(request.getParameter("pageNum"));

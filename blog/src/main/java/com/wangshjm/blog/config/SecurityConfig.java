@@ -142,6 +142,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()    //所有人可以登出
                 .and().rememberMe().tokenValiditySeconds(86400)
                 .and()
+                .sessionManagement().invalidSessionUrl("/login")
+                .and()
                 .csrf()
                 .disable()
                 //配置自定义403响应

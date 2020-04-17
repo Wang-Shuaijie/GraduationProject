@@ -65,8 +65,6 @@ public interface UserContentService {
 
     /**
      * 根据点赞数查询
-     * @param pageNum
-     * @param pageSize
      * @return
      */
     List<UserContent> findByUpvote();

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.wangshjm.blog.service.TagService;
 import com.wangshjm.blog.service.UserContentService;
+import com.wangshjm.blog.utils.TransCodingUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,7 +32,7 @@ public class TagController {
         if(StringUtils.isEmpty(tag)){
             return tagService.findTags();
         }
-
+        tag = TransCodingUtil.unicodeToString(tag);
         int rows = Integer.parseInt(request.getParameter("rows"));
         int pageNum = Integer.parseInt(request.getParameter("pageNum"));
         PageInfo pageInfo = userContentService.findByTag(tag, pageNum, rows);

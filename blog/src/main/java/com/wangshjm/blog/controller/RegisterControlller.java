@@ -1,8 +1,8 @@
 package com.wangshjm.blog.controller;
 
-import com.google.code.kaptcha.Constants;
 import com.wangshjm.blog.constant.ConstantsValue;
 import com.wangshjm.blog.entity.User;
+import com.wangshjm.blog.service.RoleService;
 import com.wangshjm.blog.service.UserService;
 import com.wangshjm.blog.utils.MD5Util;
 import com.wangshjm.blog.utils.MailUtil;
@@ -12,6 +12,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,6 +29,8 @@ public class RegisterControlller extends BaseController {
     private UserService userService;
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
+    @Autowired
+    private RoleService roleService;
 
     @RequestMapping("/doRegister")
     @Transactional(rollbackFor = {Exception.class})
@@ -36,7 +39,11 @@ public class RegisterControlller extends BaseController {
                              @RequestParam(value = "phone", required = false) String phone,
                              @RequestParam(value = "nickName", required = false) String nickname,
                              @RequestParam(value = "code", required = false) String code) {
-        User user = new User();
+        User user = userService.findByEmail(email);
+        if(!ObjectUtils.isEmpty(user)){
+            log.error("注册出错,已存在用户:{}", user);
+            return "/register";
+        }
         user.setNickName(nickname);
         user.setPassword(MD5Util.encodeToHex(ConstantsValue.SALT + password));
         user.setPhone(phone);
@@ -45,6 +52,7 @@ public class RegisterControlller extends BaseController {
         user.setEnable("0");
         //默认头像
         user.setImgUrl("/images/icon_m.jpg");
+
         //生成邮件激活码
         String validateCode = MD5Util.encodeToHex(ConstantsValue.SALT + email + password);
         redisTemplate.opsForValue().set(email, validateCode, 24, TimeUnit.HOURS);// 24小时 有效激活 redis保存激活码
@@ -124,6 +132,7 @@ public class RegisterControlller extends BaseController {
         //判断是否已激活
         User userTrue = userService.findByEmail(email);
         if (userTrue != null && "1".equals(userTrue.getState())) {
+            roleService.grant(userTrue.getId());
             //已激活
             model.addAttribute("success", "您已激活,请直接登录！");
             return "/login";

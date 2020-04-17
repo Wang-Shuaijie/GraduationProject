@@ -7,7 +7,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -23,7 +22,7 @@ public class UserInfo {
     //性别
     private String sex;
     //生日
-    private Date birthday;
+    private String birthday;
     //爱好
     private String hobby;
     //地址

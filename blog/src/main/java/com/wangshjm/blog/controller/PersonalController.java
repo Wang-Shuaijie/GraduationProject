@@ -1,5 +1,6 @@
 package com.wangshjm.blog.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.wangshjm.blog.constant.ConstantsValue;
 import com.wangshjm.blog.entity.User;
@@ -8,17 +9,15 @@ import com.wangshjm.blog.entity.UserInfo;
 import com.wangshjm.blog.service.*;
 import com.wangshjm.blog.utils.MD5Util;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.text.ParseException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -209,10 +208,14 @@ public class PersonalController extends BaseController {
      */
     @RequestMapping("/saveUserInfo")
     public String saveUserInfo(Model model, @RequestParam(value = "name", required = false) String name,
-                               @RequestParam(value = "nick_name", required = false) String nickName,
+                               @RequestParam(value = "nickName", required = false) String nickName,
                                @RequestParam(value = "sex", required = false) String sex,
+                               @RequestParam(value = "education", required = false) String education,
                                @RequestParam(value = "address", required = false) String address,
-                               @RequestParam(value = "birthday", required = false) String birthday) throws ParseException {
+                               @RequestParam(value = "birthday", required = false) String birthday,
+                               @RequestParam(value = "work", required = false) String work,
+                               @RequestParam(value = "hobby", required = false) String hobby,
+                               @RequestParam(value = "information", required = false) String information){
         User user = getCurrentUser();
         UserInfo userInfo = userInfoService.findByUid(user.getId());
         boolean flag = false;
@@ -222,11 +225,13 @@ public class PersonalController extends BaseController {
             flag = true;
         }
         userInfo.setName(name);
+        userInfo.setWork(work);
+        userInfo.setEducation(education);
+        userInfo.setHobby(hobby);
         userInfo.setAddress(address);
         userInfo.setSex(sex);
-        Date bir = DateUtils.parseDate(birthday, "yyyy-MM-dd");
-
-        userInfo.setBirthday(bir);
+        userInfo.setInformation(information);
+        userInfo.setBirthday(birthday);
         userInfo.setUId(user.getId());
         if (!flag) {
             userInfoService.add(userInfo);
@@ -239,35 +244,66 @@ public class PersonalController extends BaseController {
 
         model.addAttribute("user", user);
         model.addAttribute("userInfo", userInfo);
-        return "/personal/profile";
+        return "redirect:/list";
     }
 
     /**
      * 修改密码
      *
-     * @param model
-     * @param oldPassword
-     * @param password
-     * @return
      */
-    @RequestMapping("/updatePassword")
-    public String updatePassword(Model model, @RequestParam(value = "old_password", required = false) String oldPassword,
-                                 @RequestParam(value = "password", required = false) String password) {
-
-        User user = getCurrentUser();
-        if (user != null) {
-            oldPassword = MD5Util.encodeToHex(ConstantsValue.SALT + oldPassword);
-            if (user.getPassword().equals(oldPassword)) {
-                password = MD5Util.encodeToHex(ConstantsValue.SALT + password);
-                user.setPassword(password);
-                userService.update(user);
-                model.addAttribute("message", "success");
-            } else {
-                model.addAttribute("message", "fail");
-            }
+    @GetMapping("/updatePassword")
+    @ResponseBody //返回json对象必须需要，除非使用@RestController
+    public JSONObject updatePassword(@RequestParam(value = "id") String id,
+                                     @RequestParam(value = "oldPassword") String oldPassword,
+                                     @RequestParam(value = "newPassword") String newPassword) {
+        JSONObject result = new JSONObject();
+        User user = userService.findById(Long.parseLong(id));
+        oldPassword = MD5Util.encodeToHex(ConstantsValue.SALT + oldPassword);
+        if (user.getPassword().equals(oldPassword)) {
+            newPassword = MD5Util.encodeToHex(ConstantsValue.SALT + newPassword);
+            user.setPassword(newPassword);
+            userService.update(user);
+            result.put("status", 1);
+        } else {
+            result.put("status", 0);
         }
-        model.addAttribute("user", user);
-        return "/personal/passwordSuccess";
+
+        return result;
+    }
+
+    @GetMapping("/updateEmail")
+    @ResponseBody //返回json对象必须需要，除非使用@RestController
+    public JSONObject updateEmail(@RequestParam(value = "id") String id,
+                                     @RequestParam(value = "email") String email) {
+        JSONObject result = new JSONObject();
+        User user = userService.findById(Long.parseLong(id));
+        try{
+            user.setEmail(email);
+            userService.update(user);
+            result.put("status", 1);
+        }catch (Exception e){
+            result.put("status", 0);
+        }
+        return result;
+    }
+
+
+
+    @GetMapping("/updatePhone")
+    @ResponseBody //返回json对象必须需要，除非使用@RestController
+    public JSONObject updatePhone(@RequestParam(value = "id") String id,
+                                  @RequestParam(value = "phone") String phone) {
+        JSONObject result = new JSONObject();
+        User user = userService.findById(Long.parseLong(id));
+        try{
+            user.setPhone(phone);
+            //TODO 后期实现获取手机验证码才能更改手机号
+            userService.update(user);
+            result.put("status", 1);
+        }catch (Exception e){
+            result.put("status", 0);
+        }
+        return result;
     }
 
 }
