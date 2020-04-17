@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>注册成功页面</title>
+    <link href="https://cdn.bootcss.com/zui/1.9.1/css/zui.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/zui/1.9.1/css/zui-theme.min.css" rel="stylesheet">
+    <script type="text/javascript" th:src="@{/js/jquery-3.2.1.min.js}"></script>
+    <style>
+        body,html{
+            background-color: #EBEBEB;
+            padding: 0;
+            margin: 0;
+            height:100%;
+        }
+        .active-head{
+            height: 50px;
+            width: 100%;
+            background-color: #990033;
+        }
+        .content{
+
+            height: auto;
+            height: 700px;
+            width: auto;
+            width: 1100px;
+            margin-top: 5px;
+            margin-left: 200px;
+            margin-right: 180px;
+        }
+        .register-active{
+            background-color: white;
+            height: 200px;
+            width: 1000px;
+        }
+
+        .register-question{
+            background-color: white;
+            height: 350px;
+            width: 1000px;
+            padding: 30px;
+        }
+        .single-clear{
+            background-color: #EBEBEB;
+            height: 5px;
+        }
+
+    </style>
+</head>
+<body>
+<div class="active-head">
+    <div style="line-height: 44px;margin-left: 5px">
+        <span style="color: white;font-family: Arial;font-size: 18px">注册成功页面</span>
+    </div>
+    <div class="content">
+        <div class="single-clear"> </div>
+        <div class="active-success">
+            <i class="icon-2x icon-check" style="color: green;"></i>&nbsp;&nbsp;&nbsp;<span style="font-size: 25px;color: red">恭喜,注册成功！</span><br/>
+        </div>
+        <div class="single-clear"> </div>
+        <div class="register-active">
+            <span style="font-size: 15px;font-weight: bold;padding: 20px;line-height: 100px">激活邮件已经发送到您的注册邮箱,点击邮件里的链接即可激活账号。</span><br/>
+            <button style="margin-left: 20px;" class="btn btn-primary" type="button" onclick="lookEmail('${message}');">立即查看邮件</button>
+        </div>
+
+        <div class="single-clear"></div>
+
+        <div class="register-question">
+            <a>还没有收到邮件?</a><br/><br/>
+            1.稍等片刻,重新检查您的收件箱（根据网络状况,可能需要2-5分钟您才能收到）<br/><br/>
+            2.您可以选择<button style="margin-left: 10px;" class="btn btn-primary" id="reBtn" onclick="reSendEmail('${message}')" type="button">重新发送邮件</button><br/><br/>
+            3.邮件地址写错了?抱歉,您需要<button style="margin-left: 10px;" class="btn btn-primary" id="btn" type="button" onclick="reRegist();">重新注册</button><br/><br/>
+        </div>
+    </div>
+
+    <!--引入共有底部-->
+    <div th:replace="/footer :: footer"></div>
+
+</div>
+
+
+</body>
+</html>

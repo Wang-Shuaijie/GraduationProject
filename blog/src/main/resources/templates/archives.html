@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>归档</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="keywords" content="博客,个人,学习,springboot,java,后端，归档">
+
+
+    <script type="text/javascript" src="/js/jquery-3.2.1.min.js"></script>
+    <link href="https://cdn.bootcss.com/zui/1.9.1/css/zui.min.css" rel="stylesheet">
+    <link href="https://lib.baomitu.com/amazeui/2.7.2/css/amazeui.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/tags.css">
+    <link rel="stylesheet" href="css/categories.css">
+    <link rel="stylesheet" href="css/archives.css">
+    <link rel="stylesheet" href="css/plugs_paging.css">
+
+</head>
+<body>
+<div id="container">
+    <!--引入共有头部-->
+    <div th:replace="/header :: header"></div>
+    <!--页面主体-->
+    <div id="main">
+        <div class="am-container">
+            <div class="am-g">
+                <div class="site-inner">
+                    <div class="am-u-sm-12 am-u-md-3">
+                        <div class="categories">
+
+                        </div>
+                    </div>
+
+                    <div class="am-u-sm-12 am-u-md-9">
+                        <div class="categoryTimeline">
+                            <!--消除留言先加载视觉效果-->
+                            <div class="timeline timeline-wrap">
+                                <div class="timeline-row">
+                                <span class="node" style="-webkit-box-sizing: content-box;-moz-box-sizing: content-box;box-sizing: content-box;">
+                                    <i class=""></i>
+                                </span>
+                                    <h1 class="title"></h1>
+                                </div>
+                                <div class="timeline-row-major">
+                                    <div style="height: 88.4px">
+                                    </div>
+                                </div>
+                                <div class="timeline-row-major">
+                                    <div style="height: 88.4px">
+                                    </div>
+                                </div>
+                                <div class="timeline-row-major">
+                                    <div style="height: 88.4px">
+                                    </div>
+                                </div>
+                                <div class="timeline-row-major">
+                                    <div style="height: 88.4px">
+                                    </div>
+                                </div>
+                                <div class="timeline-row-major">
+                                    <div style="height: 88.4px">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--引入共有底部-->
+    <div th:replace="/footer :: footer"></div>
+</div>
+
+<script src="js/plugs_paging.js"></script>
+<script src="js/all.js"></script>
+<script src="js/archives.js"></script>
+</body>
+</html>

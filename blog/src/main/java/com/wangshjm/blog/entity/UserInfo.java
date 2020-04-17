@@ -6,30 +6,32 @@ import lombok.NoArgsConstructor;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import javax.persistence.Table;
 
 @Data
 @NoArgsConstructor
+@Table(name = "tb_user_info")
 public class UserInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    //用户id
     private Long uId;
-
+    //姓名
     private String name;
-
+    //性别
     private String sex;
-
-    private Date birthday;
-
+    //生日
+    private String birthday;
+    //爱好
     private String hobby;
-
+    //地址
     private String address;
+    //公司或学校
+    private String work;
+    //学历
+    private String education;
+    //个人简介
+    private String information;
 
-    public String getFormateBirthday(){
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        return simpleDateFormat.format(birthday);
-    }
 }

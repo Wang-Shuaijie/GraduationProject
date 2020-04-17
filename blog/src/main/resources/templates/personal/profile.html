@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<!--suppress ALL-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>博主主页</title>
+    <link href="https://cdn.bootcss.com/zui/1.9.1/css/zui.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/zui/1.9.1/css/zui-theme.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/profile.css">
+
+    <script type="text/javascript" src="/js/jquery-3.2.1.min.js"></script>
+    <script src="https://cdn.bootcss.com/zui/1.9.1/js/zui.min.js"></script>
+
+</head>
+<body>
+<canvas id="c"></canvas>
+<!--&lt;!&ndash;动态码流背景 &ndash;&gt;-->
+<script type="text/javascript" th:src="@{/js/background.js}"></script>
+<div id="container">
+    <div id="author-info">
+        <div class="card" data-toggle="modal" data-target="#myModal3">
+            <div class="media-wrapper">
+                <img th:src="${user.imgUrl}" alt="图片加载失败" width="200px" height="200px" class="img-circle">
+            </div>
+            <div class="caption">欢迎来到我的主页</div>
+            <div class="card-heading" style="text-align: center"><strong th:text="${user.nickName}"></strong></div>
+            <div class="card-content text-muted" style="text-align: center">
+                <span th:text="${userInfo == null ? '空' : userInfo.information}"></span>
+            </div>
+        </div>
+        <ul class="nav nav-primary nav-justified">
+            <li><a th:href="@{/index}">返回首页 </a></li>
+            <li class="active"><a href="#">发布的文章 <span class="label label-badge label-success">4</span></a></li>
+            <li><a href="" data-toggle="modal" data-target="#myModal">博主简介 </a></li>
+            <li>
+                <a class="dropdown-toggle" data-toggle="dropdown" href="your/nice/url">更多 <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a href="" data-toggle="modal" data-target="#leaveMessageModal">私信</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div class="modal fade" id="leaveMessageModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
+                    <h4 class="modal-title">私信</h4>
+                </div>
+                <div class="modal-body">
+                    <textarea id="messageContent" name="content" style="width: 100%; height: 150px"> Hello, world! </textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" id="leaveMessageButton">发送</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!--弹出的对话框HTML  基本设置-->
+    <div class="modal fade" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
+                    <h4 class="modal-title">博主详情</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group">
+                        <span class="input-group-addon">学历:</span>
+                        <input type="text" class="form-control" th:value="${userInfo == null ? '空' : userInfo.education}" readonly>
+                    </div>
+                    <br>
+                    <div class="input-group">
+                        <span class="input-group-addon">公司/学校:</span>
+                        <input type="text" class="form-control" th:value="${userInfo == null ? '空' : userInfo.address}" readonly>
+                    </div>
+                    <br>
+                    <div class="input-group">
+                        <span class="input-group-addon">职位:</span>
+                        <input type="text" class="form-control" th:value="${userInfo == null ? '空' : userInfo.work}" readonly>
+                    </div>
+                    <br>
+                    <div class="input-group">
+                        <span class="input-group-addon">性别:</span>
+                        <input type="text" class="form-control" th:value="${userInfo.sex == 0 ? '男':'女'}" readonly>
+                    </div>
+                    <br>
+                    <div class="input-group">
+                        <span class="input-group-addon">爱好:</span>
+                        <textarea class="form-control" rows="3" th:value="${userInfo == null ? '空' : userInfo.hobby}"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="main">
+        <div id="content" class="row-fluid">
+            <div id="content_col" class="content-main">
+                <!-- 正文开始 -->
+                <th:block th:each="article: ${page.list}">
+                    <div class="content-text">
+                        <h1 class="header-dividing"><a th:href="@{/watch(cid=${article.id})}" th:utext="${article.title}"></a></h1>
+                        <div class="author clearfix">
+                            <div>
+                                <a href="#" target="_blank" rel="nofollow" style="height: 35px">
+                                     <img th:src="${article.imgUrl}">
+                                </a>
+                            </div>
+                            <div class="author-h2">
+                                <div th:utext="${article.nickName}" style="float: left;font-size: 15px;color: #9b8878"></div>
+                                <div th:text="${#dates.format(article.rptTime,'yyyy-MM-dd HH:mm:ss')}"
+                                     style="float: left;margin-left: 10px;color: grey;margin-top: 2px;font-size: 12px"></div>
+                            </div>
+                        </div>
+
+                        <div th:utext="${article.content}" style="height: 80px; overflow: hidden; margin-top: 15px"></div>
+                        <div style="height: 5px"></div>
+                        <div class="stats">
+                            <!-- 笑脸、评论数等 -->
+                            <span class="stats-vote"><i th:id="${article.id}" class="number"
+                                                        th:text="${article.upvote}"></i> 赞</span>
+                            <span class="stats-vote"><i th:id="${article.id}" class="number"
+                                                        th:text="${article.downvote < 0 ? -article.downvote:article.downvote}"></i> 踩</span>
+                            <span class="stats-comments">
+								<span class="dash"> · </span>
+								<a th:onclick="|reply(${article.id},${article.uId});|">
+								    <i class="number" th:id="|comment_num_${article.id}|"
+                                       th:text="${article.commentNum}"></i> 评论
+								</a>
+							</span>
+                        </div>
+                        <div style="height: 5px"></div>
+                    </div>
+                    <!-- 正文结束 -->
+                </th:block>
+            </div>
+        </div>
+
+        <div style="clear:both;"></div>
+    </div>
+    <div style="clear:both;"></div>
+    <div id="page-info">
+        <ul class="pager pager-loose" id="page">
+
+        </ul>
+    </div>
+    <div class="foot">
+        <hr style="background-color: rgba(161,171,175,0.31);height: 1px;left: 0px"/>
+        <hr style="background-color: rgba(161,171,175,0.31);height: 1px;left: 0px"/>
+        <div class="foot-nav clearfix" style="margin-top: 40px;text-align: center">
+            <div class="foot-copyrights" style="">
+                <p>
+                    <span>邮箱：2283613941@qq.com</span>
+                </p>
+                <p style="margin-top: 8px">&copy;made by wangshuaijie 如有需要请联系</p>
+            </div>
+        </div>
+    </div>
+    <div style="clear:both;"></div>
+</div>
+<div style="clear:both;"></div>
+<script type="text/javascript">
+    /**
+     * 解决pagehelper页数量过多问题
+     */
+    $(function () {
+        var ul = "";
+        var first ='<li><a href="[[@{/profile(pageNum = 1, pageSize = ${page.pageSize}, uid = ${user.id})}]]" aria-label="Previous">首页</a></li>';
+        var before;
+        if([[${page.pageNum}]] > 1){
+            before ='<li><a href="[[@{/profile(pageNum = ${page.pageNum - 1}, pageSize = ${page.pageSize}, uid = ${user.id})}]]" >上一页</a></li>';
+        }else{
+            before ='<li><a href="[[@{/profile(pageNum = 1, pageSize = ${page.pageSize}, uid = ${user.id})}]]" >上一页</a></li>';
+        }
+        ul+= first;
+        ul += before;
+        var begin;
+        var end;
+        if ([[${page.pages}]]<10){
+            begin=1;
+            end=[[${page.pages}]];
+        }else{
+            begin = [[${page.pageNum-5}]];
+            end = [[${page.pageNum+4}]];
+            if (begin < 1){
+                begin = 1;
+                end = begin + 9;
+            }
+            if (end > [[${page.pages}]]){
+                end = [[${page.pages}]];
+                begin = end -9;
+            }
+        }
+
+        var li ;
+        for (var i = begin ; i <= end ; i++) {
+            li = ' <li><a href="[[@{/profile}]]?pageNum='+i+'&pageSize=[[${page.pageSize}]]&uid=[[${user.id}]]">'+i+'</a></li>'
+            ul+=li;
+        }
+        if ([[${page.pageNum}]] >= [[${page.pages}]]){
+            var lastPage ='<li><a href="[[@{/profile(pageNum = ${page.pages}, pageSize = ${page.pageSize},uid = ${user.id})}]]" >下一页</a></li>';
+        }else {
+            var lastPage ='<li><a href="[[@{/profile(pageNum = ${page.pageNum + 1}, pageSize = ${page.pageSize}, uid = ${user.id})}]]" >下一页</a></li>';
+        }
+        var nextPage ='<li><a href="[[@{/profile(pageNum = ${page.pages}, pageSize = ${page.pageSize}, uid = ${user.id})}]]" aria-label="Next" >尾页</a></li>';
+        ul+=lastPage;
+        ul+=nextPage;
+        $("#page").html(ul);
+    });
+
+
+    $("#leaveMessageButton").click(function () {
+        var messageContent = $("#messageContent").val();
+        var answererId = "[[${visitor.id}]]";
+        var respondentId = "[[${user.id}]]";
+
+        $.ajax({
+            type: 'get',
+            url: '/insertLeaveMessage',
+            data: {
+                'answererId': answererId,
+                'respondentId': respondentId,
+                'message': messageContent,
+                'isRead': '1',
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (data['result'] == 1) {
+                    alert("发送失败！");
+                } else {
+                    window.location.reload();
+                }
+            }
+        })
+    });
+</script>
+</body>
+</html>

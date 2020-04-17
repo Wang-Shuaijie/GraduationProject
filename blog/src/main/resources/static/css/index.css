@@ -1,0 +1,244 @@
+#c{
+    position: fixed;
+    top:0;
+    left: 0;
+    z-index:-1;
+    opacity:0.8;
+}
+
+body {
+    background-color: #e6e6e6;
+    min-height: 101%;
+}
+
+#container{
+    border-radius: 18px;
+    width: 80%;
+    min-width: 750px;
+    background-color: #fff;
+    margin: 0 auto;
+    background-attachment: fixed;
+    padding: 30px;
+    margin-top:10px;
+    margin-bottom: 50px;
+    box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
+}
+
+#main {
+    width: auto;
+    min-height: 850px;
+    margin-top: 30px;
+}
+
+#sideBar{
+    width: 25%;
+    min-height: 200px;
+    padding: 0 0 0 5px;
+    float: right;
+
+}
+
+
+#content{
+    width: 100%;
+    padding: 0 0 10px 0;
+    *padding-top: 10px;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    float: left;
+    margin-left: -22em;
+}
+
+#content_col{
+    margin-left: 22em;
+    float: none;
+    width: auto;
+}
+
+.content-text{
+    width: 100%;
+    padding: 20px;
+    background-color: #f8f8f8;
+    margin-top: 8px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
+}
+
+#page-info{
+
+}
+
+.author img {
+    width: 25px;
+    height: 25px;
+    border-radius: 35px;
+    padding: 0;
+    margin-right: 10px;
+}
+fieldset, img {
+    border: 0;
+}
+.author a, .author span {
+    float: left;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 35px;
+    color: #9b8878;
+    text-decoration: none;
+}
+
+.author-h2 {
+    display: block;
+    font-size: 1.5em;
+    -webkit-margin-before: 0.83em;
+    -webkit-margin-after: 0.83em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+    font-weight: bold;
+    font-size: 100%;
+    font-weight: 400;
+}
+
+.commentAll{
+    margin-left: 5px;
+    width: 100%;
+}
+
+.single-share{
+    float: right;
+}
+.stats-buttons {
+    float: left;
+}
+a {
+    text-decoration:none;
+    color: inherit;
+    outline: 0;
+}
+a:-webkit-any-link {
+    cursor: pointer;
+}
+
+
+#right{
+    margin-top: 10px;
+}
+
+.widget-title{
+    margin-top: 7px;
+    margin-left: 20px;
+    font-weight: 700;
+    font-size: 1.3em;
+}
+.widget{
+    background-color: #f2dede;
+    margin-left: 15px;
+    padding: 15px 15px;
+    line-height: 1.6em;
+    word-wrap: break-word;
+    font-size: 0.9em;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+}
+
+.zhy-info-day{
+    padding: 7px 10px;
+}
+.zhy-info-day p{
+    text-align: center;
+    font-size: 14px;
+    line-height: 19px;
+}
+.zhy-info-opinion{
+    margin-top: 25px;
+    text-align: center;
+}
+.zhy-info-opinion p{
+    font-size: 16px;
+    font-family: 仿宋;
+}
+
+.myStory{
+    margin-top: 20px;
+    height: auto;
+    margin-left: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+}
+.myStory .bg-myStory,.bg-myGirl,.bg-myHeart{
+    font-size: 26px;
+    text-align: center;
+    height: 60px;
+    padding: 15px 20px 15px;
+    border-radius: 10px 10px 0px 0px;
+}
+.myStory-words{
+    text-align: left;
+    margin-top: 5px;
+}
+.tag-cloud{
+    padding-top: 9px;
+}
+.widget-tag-cloud{
+    margin-left: 20px;
+    display: inline-block;
+}
+.widget-tag-cloud a{
+    margin-right: 5px;
+    display: inline-block;
+}
+.widget-tag-cloud a:hover{
+    text-decoration: underline;
+}
+
+/*#站点信息*/
+.site-icon{
+    border-right: 1px solid #ddd;
+    width: 15px;
+}
+.site-title{
+    margin: 5px 15px 5px;
+    border-bottom: 1px solid #ddd;
+    padding: 10px;
+}
+.site-default-word{
+    letter-spacing: 1px;
+}
+.site-default-icon{
+    margin-right: 10px;
+}
+
+/*我的故事、我的女孩*/
+.bg-myStory-a{
+    text-decoration: none;
+    color: white;
+}
+.bg-myGirl-a{
+    text-decoration: none;
+    color: white;
+}
+.bg-myStory a:hover{
+    text-decoration: none;
+    color: #0a0a0a;
+}
+.bg-myGirl a:hover{
+    text-decoration: none;
+    color: #0a0a0a;
+}
+.bg-myHeart a:hover{
+    text-decoration: none;
+    color: #0a0a0a;
+}
+.bg-myStory{
+    background:repeating-linear-gradient(45deg, #74ccff, #74ccff 15px, #bba985 0, #bba985 30px);
+}
+.bg-myGirl{
+    background:repeating-linear-gradient(45deg, #ffbb33, #fb3 15px, #58a 0,#58a 30px);
+}
+.bg-myHeart{
+    background:repeating-linear-gradient(45deg, #8275fd, #8275fd 15px, #fd940c 0, #fd940c 30px);
+}
+
+
+
+

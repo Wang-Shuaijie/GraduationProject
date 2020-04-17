@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>猿天地</title>
+
+    <link href="https://cdn.bootcss.com/zui/1.9.1/css/zui.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/zui/1.9.1/css/zui-theme.min.css" rel="stylesheet">
+
+    <link href="https://cdn.bootcss.com/zui/1.9.1/lib/chosen/chosen.css" rel="stylesheet">
+    <link rel="stylesheet" href="/zui/lib/kindeditor/themes/default/default.css" />
+    <link rel="stylesheet" href="/zui/lib/kindeditor/plugins/code/prettify.css" />
+
+
+    <link th:href="@{/css/write.css}" rel="stylesheet"/>
+
+    <script type="text/javascript" src="/js/jquery-3.2.1.min.js"></script>
+    <script src="https://cdn.bootcss.com/zui/1.9.1/js/zui.min.js"></script>
+    <script src="https://cdn.bootcss.com/zui/1.9.1/lib/chosen/chosen.js"></script>
+
+    <script charset="utf-8" src="/zui/lib/kindeditor/kindeditor-all.js"></script>
+    <script charset="utf-8" src="/zui/lib/kindeditor/plugins/code/prettify.js"></script>
+    <script charset="utf-8" src="/zui/lib/kindeditor/plugins/preview/preview.js"></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<!--&lt;!&ndash;动态码流背景 &ndash;&gt;-->
+<script type="text/javascript" th:src="@{/js/background.js}"></script>
+<div id="container">
+    <ul class="nav nav-tabs nav-justified">
+        <li class="nav-heading"><img th:src="@{/images/2.gif}"></li>
+        <li><a th:href="@{/write(cid=${article == null ? null: article.id},style=1)}">markdown编辑器</a></li>
+        <li class="active"><a href="#">kindeditor编辑器</a></li>
+    </ul>
+    <div id="main">
+        <div id="content">
+            <form th:action="@{/doWrite}" id="write_form" method="post">
+
+                <input hidden="hidden" name="cid" th:value="${article == null ? null: article.id}"/>
+
+                <div class="input-control">
+                    <input type="text" id="txtTitle" name="title" th:value="${article == null ? null: article.title}" class="form-control" maxlength="100" placeholder="&nbsp;&nbsp;&nbsp;&nbsp;输入文章标题"/>
+                </div>
+
+                <div style="margin-bottom: 8px; width:30%;">
+                    <input type="hidden" id="tagNameInput"  th:value="${article == null ? null: article.tag}">
+                    <select data-placeholder="选择一些标签..." class="chosen-select form-control" tabindex="2" multiple="" name="tagName">
+                        <option value="java">java</option>
+                        <option value="python">python</option>
+                        <option value="springboot">springboot</option>
+                        <option value="ssm">ssm</option>
+                        <option value="后端开发">后端开发</option>
+                        <option value="人工智能">人工智能</option>
+                    </select>
+                </div>
+
+                <!--富文本编辑器-->
+                <div id="article-div">
+                    <textarea id="articleContent" name="content" class="form-control kindeditor"
+                              th:utext="${article == null ? null: article.content}"></textarea>
+                </div>
+
+                <div class="input-group" style="margin-bottom: 8px; width:30%;">
+                    <div class="input-group-btn">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">选择分类 <span class="caret"></span></button>
+                        <ul class="dropdown-menu" role="menu" id="category-div">
+                            <th:block th:each="category:${categoryList}">
+                                <li><a th:text="${category.name}"></a></li>
+                            </th:block>
+                        </ul>
+                    </div>
+                    <input type="text" name="category" id="categoryInput" class="form-control" maxlength="10" th:value="${article == null ? '' : article.category}" readonly>
+                </div>
+
+                <div class="switch">
+                    <input type="checkbox" id="private" value="off" name="private">
+                    <label>不公开</label>
+                </div>
+                <br/>
+                <div class="col-sm-offset-2 col-sm-10" id="btn-div">
+                    <button  class="btn btn-lg" type="button" id="sub_dream">发布</button>
+                    <button  class="btn btn-lg" type="button" id="go_back">返回</button>
+                </div>
+            </form>
+            <div style="clear:both;"></div>
+        </div>
+
+        <div style="clear:both;"></div>
+    </div>
+    <div style="clear:both;"></div>
+
+    <div class="foot">
+        <hr style="background-color: rgba(161,171,175,0.31);height: 1px;left: 0px"/>
+        <hr style="background-color: rgba(161,171,175,0.31);height: 1px;left: 0px"/>
+        <div class="foot-nav clearfix" style="margin-top: 40px;text-align: center">
+            <div class="foot-copyrights" style="">
+                <p>
+                    <span>邮箱：2283613941@qq.com</span>
+                </p>
+                <p style="margin-top: 8px">&copy;made by wangshuaijie 如有需要请联系</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+
+    $('select.chosen-select').chosen({
+        no_results_text: '没有找到',    // 当检索时没有找到匹配项时显示的提示文本
+        disable_search_threshold: 10, // 10 个以下的选择项则不显示检索框
+        search_contains: true,         // 从任意位置开始检索
+        max_selected_options: 3,
+    });
+
+    $(function () {
+        var tagName = $("#tagNameInput").val();
+        if(tagName!=null || tagName!=''){
+            var arr = tagName.split(',');
+            for(var i=0; i<arr.length;i++){
+                $("select.chosen-select option[value='"+arr[i]+"']").attr("selected","selected")
+            }
+        }
+        // 当原始select中的选项发生变化时通知chosen更新选项列表菜单
+        $('select.chosen-select').trigger('chosen:updated');
+        return;
+    })
+
+    //li标签的点击事件
+    $("#category-div li").click(function(){//jquery的click事件
+        var valText = $(this).text();
+        $("#categoryInput").val(valText);
+    });
+
+
+    $(function () {
+        editor =  KindEditor.create('#articleContent', {
+            basePath: '/zui/lib/kindeditor/',
+            uploadJson : '[[@{/uploadJson}]]',
+            fileManagerJson : '[[@{/fileManagerJson}]]',
+            allowFileManager : true,
+            bodyClass : 'article-content',
+            height: 640,
+            width: "90%"
+        });
+        editor.sync();
+    });
+
+    //是否公开开关点击事件
+    $(".switch").click(function () {
+        var pd = document.getElementById('private');
+        if(pd.checked == true){
+            $("#private").val("on");
+        }else{
+            $("#private").val("off");
+        }
+    });
+    //返回
+    $("#go_back").click(function () {
+        location.href ="javascript:history.go(-1);"
+    });
+
+    //发布
+    $("#sub_dream").click (function(){
+        var val =  $("#categoryInput").val();
+        if(val==''||val==null){
+            new $.zui.Messager('请选择文章分类！', {
+                icon: 'bell', // 定义消息图标
+                type:'danger'
+            }).show()
+            return;
+        }
+        var tit = $("#txtTitle").val();
+        if(tit == null || tit.trim() == ""){
+            new $.zui.Messager('请输入文章标题！', {
+                icon: 'bell', // 定义消息图标
+                type:'danger'
+            }).show()
+            return;
+        }
+        editor.sync();
+        var v1 = $("#articleContent").val();
+        if(v1 == null || v1.trim() == ""){
+            new $.zui.Messager('文章内容为空！', {
+                icon: 'bell', // 定义消息图标
+                type:'danger'
+            }).show()
+            return;
+        }
+        $("#write_form").submit();
+    });
+
+    //不公开开关回显
+    $(function () {
+        var v = '[[${article == null ? 0:article.personal}]]';
+        if(v == "1"){
+            var pd = document.getElementById('private');
+            pd.checked = true;
+        }
+    });
+</script>
+</body>
+</html>

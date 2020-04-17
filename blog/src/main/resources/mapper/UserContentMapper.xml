@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wangshjm.blog.dao.UserContentMapper">
+    <resultMap id="categoryMap" type="com.wangshjm.blog.entity.UserContent">
+        <!-- property 表示com.wsj.myblog.entity.UserContent中的属性； column 表示表中的列名 -->
+        <id property="id" column="id" />
+        <result property="category" column="category" />
+        <result property="num" column="num" />
+    </resultMap>
+
+    <resultMap id="joinMap" type="com.wangshjm.blog.entity.UserContent">
+        <id property="id" column="id" />
+        <result property="uId" column="u_id" />
+        <result property="categoryId" column="category_id"></result>
+        <result property="title" column="title" />
+        <result property="category" column="category" />
+        <result property="tag" column="tag"></result>
+        <result property="personal" column="personal" />
+        <result property="rptTime" column="rpt_time" />
+        <result property="imgUrl" column="img_url" />
+        <result property="nickName" column="nick_name" />
+        <result property="upvote" column="upvote" />
+        <result property="downvote" column="downvote" />
+        <result property="commentNum" column="comment_num" />
+        <result property="content" column="content" />
+        <result property="markdownContent" column="markdown_content" />
+        <result property="enabled" column="enabled"></result>
+        <result property="remark" column="remark"></result>
+    </resultMap>
+
+    <select id="findCategoryByUid"  resultMap="categoryMap">
+        select category,count(1) as num
+        from tb_user_content
+        where u_id = #{uid} and personal = '0' and enabled = '0'
+        group by category
+        order by num desc
+    </select>
+
+    <!--tb_user_content和tb_user,tb_category表连接查询-->
+    <select id="findByJoin"  resultMap="joinMap">
+        <!--我们要的是 user 表中的 imgUrl 和 nickName，还有别名 nickName、imgUrl 要和 UserContent 实体类中的属性对应，主要是通过属性的 setter 方法赋值，页面通过 getter 方法取值的。-->
+        select u1.id,u1.u_id,u1.category_id, u1.tag, u1.title,u1.personal,u1.rpt_time,u1.upvote,
+        u1.downvote,u1.comment_num,u1.content,u1.markdown_content, u1.remark, u1.enabled,
+        u2.nick_name nick_name,u2.img_url img_url,
+        c.name category
+        from tb_user_content u1
+        LEFT JOIN tb_user u2
+        ON u1.u_id = u2.id
+        Left join tb_category c
+        on u1.category_id = c.id
+        <where>
+            <choose>
+                <when test='id!=null and id!=""'>
+                    u1.id = #{id}
+                </when>
+                <otherwise>
+                    <if test='personal!=null and personal!=""'>
+                        u1.personal = #{personal}
+                    </if>
+                    <if test='personal==null or personal==""'>
+                        u1.personal = '0'
+                    </if>
+                </otherwise>
+            </choose>
+        </where>
+        <if test='category!=null and category!=""'>
+            and c.name = #{category}
+        </if>
+        <if test='uId!=null and uId!=""'>
+            and u1.u_id = #{uId}
+        </if>
+        order by u1.rpt_time desc
+    </select>
+
+    <select id="findByUpvote" resultMap="joinMap">
+        select *
+        from tb_user_content
+        where personal = '0' and enabled = '0'
+        order by upvote DESC
+        limit 0,10
+    </select>
+
+    <select id="countByCategory" resultType="int">
+        select count(*)
+        from tb_user_content
+        where category=#{categoryName} and personal = '0' and enabled = '0'
+    </select>
+
+    <select id="findRefuseContent" resultMap="joinMap">
+        select *
+        from tb_user_content
+        where enabled = '1' and u_id = #{uid}
+    </select>
+
+    <select id="findByArchive" resultMap="joinMap">
+        select *
+        from tb_user_content
+        where enabled = '0' and rpt_time like '%${archive}%'
+    </select>
+
+    <select id="findByTag" resultMap="joinMap">
+        select *
+        from tb_user_content
+        where enabled = '0' and tag like '%${tag}%'
+    </select>
+
+    <select id="countByArchive" resultType="int">
+        select count(*)
+        from tb_user_content
+        where rpt_time like '%${archive}%' and personal = '0' and enabled = '0'
+    </select>
+
+    <select id="countArticleNum" resultType="int">
+        select count(*)
+        from tb_user_content
+    </select>
+
+</mapper>

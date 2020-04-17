@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<!--suppress ALL-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>个人空间</title>
+
+    <link href="https://cdn.bootcss.com/zui/1.9.1/css/zui.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/zui/1.9.1/css/zui-theme.min.css" rel="stylesheet">
+
+    <link href="/css/person.css" rel="stylesheet">
+
+    <script type="text/javascript" src="/js/jquery-3.2.1.min.js"></script>
+
+    <script src="https://cdn.bootcss.com/zui/1.9.1/js/zui.min.js"></script>
+
+    <!--文件上传-->
+    <link href="https://cdn.bootcss.com/zui/1.9.1/lib/uploader/zui.uploader.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/zui/1.9.1/lib/uploader/zui.uploader.min.js"></script>
+
+
+
+</head>
+<body>
+<canvas id="c"></canvas>
+<!--&lt;!&ndash;动态码流背景 &ndash;&gt;-->
+<script type="text/javascript" th:src="@{/js/background.js}"></script>
+<div id="container">
+    <ul class="nav nav-tabs nav-justified">
+        <li class="nav-heading"><img th:src="@{/images/2.gif}"></li>
+        <li><a th:href="@{/index}">首页</a></li>
+        <li class="active"><a th:href="@{/list}">我的</a></li>
+        <li>
+            <a class="dropdown-toggle" data-toggle="dropdown" href="your/nice/url">设置 <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+                <li><a href="" data-toggle="modal" data-target="#myModal">基本设置</a></li>
+                <li><a href="" data-toggle="modal" data-target="#myModal2">高级设置</a></li>
+                <li><a href="">反馈bug</a></li>
+                <li><a href="">申请管理员</a></li>
+            </ul>
+        </li>
+        <li><a href="" data-toggle="modal" data-target="#myModal4">消息</a></li>
+        <li><a th:href="@{/write(style=1)}">去创作</a></li>
+    </ul>
+
+    <!--弹出的对话框HTML  基本设置-->
+    <div class="modal fade" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span
+                            class="sr-only">关闭</span></button>
+                    <h4 class="modal-title">基本设置</h4>
+                </div>
+                <form th:action="@{/saveUserInfo}" method="post">
+                    <div class="modal-body">
+
+                        <div class="input-group">
+                            <span class="input-group-addon">昵称:</span>
+                            <input type="text" class="form-control" name="nickName" th:value="${user.nickName}">
+                        </div>
+                        <br>
+                        <div class="input-group">
+                            <span class="input-group-addon">姓名:</span>
+                            <input type="text" class="form-control" name="name"
+                                   th:value="${userInfo == null ? '空' : userInfo.name}">
+                        </div>
+                        <br>
+                        <div class="input-group">
+                            <span class="input-group-addon">学历:</span>
+                            <input type="text" class="form-control" name="education"
+                                   th:value="${userInfo == null ? '空' : userInfo.education}">
+                        </div>
+                        <br>
+                        <div class="input-group">
+                            <span class="input-group-addon">公司/学校:</span>
+                            <input type="text" class="form-control" name="address"
+                                   th:value="${userInfo == null ? '空' : userInfo.address}">
+                        </div>
+                        <br>
+                        <div class="input-group">
+                            <span class="input-group-addon">职位:</span>
+                            <input type="text" class="form-control" name="work"
+                                   th:value="${userInfo == null ? '空' : userInfo.work}">
+                        </div>
+                        <br>
+                        <div class="input-group">
+                            <span class="input-group-addon">性别:</span>
+                            <select class="form-control" name="sex">
+                                <option value="1">男</option>
+                                <option value="0">女</option>
+                            </select>
+                        </div>
+                        <br>
+
+                        <div class="input-group">
+                            <span class="input-group-addon">生日:</span>
+                            <input type="date" class="form-control" name="birthday"
+                                   th:value="${userInfo == null ? '' : userInfo.birthday}">
+                        </div>
+
+                        <br>
+                        <div class="input-group">
+                            <span class="input-group-addon">爱好:</span>
+                            <textarea class="form-control" name="hobby" rows="3"
+                                      th:text="${userInfo == null ? '空' : userInfo.hobby}"></textarea>
+                        </div>
+                        <br>
+                        <div class="input-group">
+                            <span class="input-group-addon">简介:</span>
+                            <textarea class="form-control" name="information" rows="3"
+                                      th:text="${userInfo == null ? '空' : userInfo.information}"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="submit" class="btn btn-primary">保存</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!--弹出的对话框HTML  高级设置-->
+    <div class="modal fade" id="myModal2">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span
+                            class="sr-only">关闭</span></button>
+                    <h4 class="modal-title">高级设置</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <ul class="nav nav-tabs nav-stacked">
+                                <li class="active"><a href="###" data-target="#tab3Content1" data-toggle="tab">修改密码</a></li>
+                                <li><a href="###" data-target="#tab3Content2" data-toggle="tab">更换邮箱</a></li>
+                                <li><a href="###" data-target="#tab3Content3" data-toggle="tab">更换手机号</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-xs-9">
+                            <div class="tab-content col-xs-9">
+                                <div class="tab-pane fade active in" id="tab3Content1">
+                                    <form id="form1" action="" method="post">
+                                        <input type="hidden" class="form-control" name="id" th:value="${user.id}">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">旧密码:</span>
+                                            <input type="password" class="form-control" name="oldPassword">
+                                        </div>
+                                        <br>
+                                        <div class="input-group">
+                                            <span class="input-group-addon">新密码:</span>
+                                            <input type="password" class="form-control" name="newPassword">
+                                        </div>
+                                        <br>
+                                        <button type="button" class="btn btn-primary" id="updatePwdBtn">保存</button>
+                                    </form>
+                                </div>
+                                <div class="tab-pane fade" id="tab3Content2">
+                                    <form id="form2" action="" method="post">
+                                        <input type="hidden" class="form-control" name="id" th:value="${user.id}">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">新邮箱:</span>
+                                            <input type="email" class="form-control" name="email">
+                                        </div>
+                                        <br>
+                                        <button type="button" class="btn btn-primary" id="updateEmailBtn">保存</button>
+                                    </form>
+                                </div>
+                                <div class="tab-pane fade" id="tab3Content3">
+                                    <form id="form3" action="" method="post">
+                                        <input type="hidden" class="form-control" name="id" th:value="${user.id}">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">新手机号:</span>
+                                            <input type="phone" class="form-control" name="phone">
+                                        </div>
+                                        <br>
+                                        <button type="button" class="btn btn-primary" id="updatePhoneBtn">保存</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--更换头像对话框-->
+    <div class="modal fade" id="myModal3">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span
+                            class="sr-only">关闭</span></button>
+                    <h4 class="modal-title">更换头像</h4>
+                </div>
+                <div class="modal-body">
+                    <div id='myUploader' class="uploader">
+                        <div class="uploader-message text-center">
+                            <div class="content"></div>
+                            <button type="button" class="close">×</button>
+                        </div>
+                        <div class="uploader-files file-list file-list-grid" data-drag-placeholder="请拖拽文件到此处"></div>
+                        <div class="uploader-actions">
+                            <div class="uploader-status pull-right text-muted"></div>
+                            <button type="button" class="btn btn-link uploader-btn-browse"><i
+                                    class="icon icon-plus"></i> 选择文件
+                            </button>
+                            <button type="button" class="btn btn-link uploader-btn-start"><i
+                                    class="icon icon-cloud-upload"></i> 开始上传
+                            </button>
+                        </div>
+                        <input type="hidden" name="imgUrl" id="imgUrlVale">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--消息对话框-->
+    <div class="modal fade" id="myModal4">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span
+                            class="sr-only">关闭</span></button>
+                    <h4 class="modal-title">消息</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a href="###" data-target="#tab2Content1" data-toggle="tab">未读消息</a></li>
+                            <li><a href="###" data-target="#tab2Content2" data-toggle="tab">已读消息</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane fade active in" id="tab2Content1">
+                                <div class="list-group" >
+                                    <th:block th:each="list: ${unReadList}">
+                                        <a class="list-group-item"
+                                           th:onclick="checkMessage([[${list.id}]],[[${list.message}]],[[${list.answererId}]])"
+                                           th:text="${list.message}"></a>
+                                    </th:block>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="tab2Content2">
+                                <div class="list-group" >
+                                    <th:block th:each="list: ${readList}">
+                                        <a class="list-group-item"
+                                           th:onclick="checkMessage([[${list.id}]],[[${list.message}]],[[${list.answererId}]])"
+                                           th:text="${list.message}"></a>
+                                    </th:block>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="main">
+        <!-- 左侧菜单栏-->
+        <div class="author-card follow-box">
+            <div id="author-info">
+                <a class="card" href="" data-toggle="modal" data-target="#myModal3">
+                    <div class="media-wrapper">
+                        <img th:src="${user.imgUrl}" alt="图片加载失败">
+                    </div>
+                    <div class="caption">更换头像</div>
+                    <div class="card-heading"><strong th:text="${user.nickName}"></div>
+                    <div class="card-content text-muted">
+                        </strong><strong> 简介:</strong>
+                        <textarea class="form-control" name="information" rows="3"
+                                  th:text="${userInfo == null ? '空' : userInfo.information}" readonly></textarea>
+                    </div>
+                </a>
+            </div>
+
+            <div id="category">
+                <div class="customer" style="height: 40px;background-color:#262626;line-height: 40px ">
+                    <font color="white" size="2.8" face="黑体" style="margin-top: 10px;margin-left: 10px">文章分类</font>
+                </div>
+                <div class="list-group">
+                    <a onclick="changeToActive('category_x','',0)" class="list-group-item active" id="category_x">
+                        <span th:text="|全部(${page.total})|"></span>
+                    </a>
+                    <th:block th:each="articleCategory : ${categorys}">
+                        <a th:onclick="changeToActive([[|category_${articleCategoryStat.index}|]],[[${articleCategory.category}]],0)"
+                           ;
+                           class="list-group-item" th:id="|category_${articleCategoryStat.index}|">
+                            <span th:text="|${articleCategory.category}(${articleCategory.num})|"></span>
+                        </a>
+                    </th:block>
+                </div>
+            </div>
+            <div style="clear:both;"></div>
+        </div>
+
+        <!-- 中间内容展示 -->
+        <div class="content" style="margin-left: 20px; background-color: #f8f8f8; border-radius: 18px;">
+            <div class="content-bar">
+                <div id="release-bar"
+                     style="background-color: #B22222;width: 120px;text-align: center;height: 40px;line-height: 40px;float: left"
+                     onclick="release_dreamland();">
+                    <span id="release-span" style="color: white">已发布</span>
+                </div>
+
+                <div id="personal-bar"
+                     style="background-color: #F0F0F0;width: 120px;text-align: center;height: 40px;line-height: 40px;float: left;margin-left: 20px"
+                     onclick="personal_dreamland();">
+                    <span id="personal-span" style="color: black">未公开</span>
+                </div>
+
+                <div id="refuse-bar"
+                     style="background-color: #F0F0F0;width: 120px;text-align: center;height: 40px;line-height: 40px;float: left;margin-left: 20px"
+                     onclick="refuse_dreamland();">
+                    <span id="refuse-span" style="color: black">未通过</span>
+                </div>
+
+
+            </div>
+
+            <div id="release-dreamland" style="margin-top: 50px;width: 100%;">
+                <div id="release-div">
+                    <ul style="font-size: 12px" id="release-dreamland-ul">
+                        <!--                        <th:block th:each="article:${page.list}">-->
+                        <!--                            <li class="dreamland-fix">-->
+                        <!--                                <a th:href="@{/watch(cid=${article.id})}"><span th:text="${article.title}"></span></a>-->
+                        <!--                                <span class="bar-read" th:text="|评论 (${article.commentNum})|"></span>-->
+                        <!--                                <span class="bar-commend" th:text="|${article.upvote}人阅读|"></span>-->
+                        <!--                                <hr/>-->
+                        <!--                            </li>-->
+                        <!--                        </th:block>-->
+                    </ul>
+                </div>
+                <div id="release-dreamland-div" style="float: left;margin-left: 20px">
+                    <ul class="pager pager-loose" id="release-dreamland-fy">
+
+                    </ul>
+                </div>
+                <div style="clear:both;"></div>
+            </div>
+
+            <div id="personal-dreamland" style="margin-top: 50px;width: 100%;display: none">
+                <div id="personal-div">
+                    <ul style="font-size: 12px" id="personal-dreamland-ul">
+                        <!--                        <th:block th:each="article: ${personalPage.list}">-->
+                        <!--                            <li class="dreamland-fix">-->
+                        <!--                                <a th:href="@{/watch(cid=${article.id})}"><span th:text="${article.title}"></span></a>-->
+                        <!--                                <a th:href="@{/delete(cid=${article.id})}"><span class="bar-delete">删除</span></a>-->
+                        <!--                                <a th:href="@{/write(cid=${article.id},style=${article.markdownContent!=null?1:2})}"><span class="bar-update">修改</span></a>-->
+                        <!--                                <hr/>-->
+                        <!--                            </li>-->
+                        <!--                        </th:block>-->
+                    </ul>
+                </div>
+
+                <div id="personal-dreamland-div" style="float: left;margin-left: 20px">
+                    <ul class="pager pager-loose" id="personal-dreamland-fy">
+
+                    </ul>
+                </div>
+                <div style="clear:both;"></div>
+            </div>
+
+            <div id="refuse-dreamland" style="margin-top: 50px;width: 100%;display: none">
+                <div id="refuse-div">
+                    <ul style="font-size: 12px" id="refuse-dreamland-ul">
+                        <!--                        <th:block th:each="article: ${page.list}">-->
+                        <!--                            <li class="dreamland-fix">-->
+                        <!--                                <a th:href="@{/watch(cid=${article.id})}"><span th:text="${article.title}"></span></a>-->
+                        <!--                                <a th:href="@{/delete(cid=${article.id})}"><span class="bar-delete">删除</span></a>-->
+                        <!--                                <a th:href="@{/write(cid=${article.id},style=${article.markdownContent!=null?1:2})}"><span class="bar-update">修改</span></a>-->
+                        <!--                                <hr/>-->
+                        <!--                            </li>-->
+                        <!--                        </th:block>-->
+                    </ul>
+                </div>
+
+                <div id="refuse-dreamland-div" style="float: left;margin-left: 20px">
+                    <ul class="pager pager-loose" id="refuse-dreamland-fy">
+
+                    </ul>
+                </div>
+                <div style="clear:both;"></div>
+            </div>
+
+
+        </div>
+
+        <!--右侧-->
+        <div class="ibx-advice" onmouseover="changeBackColor();" onmouseout="back2color();">
+            <a th:href="@{/write(style=1)}"><i class="icon icon-edit icon-3x"></i></a>
+        </div>
+
+        <div style="clear:both;"></div>
+    </div>
+    <!--底部-->
+    <div class="foot">
+        <hr style="background-color: rgba(161,171,175,0.31);height: 1px;left: 0px"/>
+        <hr style="background-color: rgba(161,171,175,0.31);height: 1px;left: 0px"/>
+        <div class="foot-nav clearfix" style="margin-top: 40px;text-align: center">
+            <div class="foot-copyrights" style="">
+                <p>
+                    <span>邮箱：2283613941@qq.com</span>
+                </p>
+                <p style="margin-top: 8px">&copy;made by wangshuaijie 如有需要请联系</p>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<script type="text/javascript">
+    /**
+     * 页码显示
+     */
+    $(function () {
+        var val = "[[${manage}]]";
+        if (val == "manage") {
+            manage_dreamland();
+        }
+
+        changeToActive("category_x", '', 0);
+        turnPage(1);
+        personTurnPage(1);
+    });
+</script>
+
+<!--上传图像配置-->
+<script type="text/javascript">
+    function saveImg(url) {
+        $.ajax({
+            type: "post",
+            data: {
+                "url": url
+            },
+            url: "[[@{/saveImage}]]",
+            dataType: "json",
+            success: function (data) {
+                new $.zui.Messager('头像更换成功', {
+                    type: 'success',
+                    icon: 'ok-sign',
+                    actions: [{
+                        name: 'close',
+                        icon: 'remove'
+                    }]
+                }).show();
+                location.reload();
+            }
+        })
+    }
+
+    var options = {
+        // 初始化选项
+        url: '[[@{/uploadJson}]]',
+        lang: 'zh_cn',
+        filters: {
+            // 只允许上传图片或图标（.ico）
+            mime_types: [
+                {title: '图片', extensions: 'jpg,gif,png'},
+                {title: '图标', extensions: 'ico'}
+            ],
+            // 最大上传文件为 1MB
+            max_file_size: '1mb',
+            // 不允许上传重复文件
+            prevent_duplicates: true
+        },
+        //不允许选择多个文件
+        multi_selection: false,
+        //限制文件上传数目
+        limitFilesCount: 1,
+        file_data_name: 'file',
+        //允许删除上传成功的文件
+        deleteActionOnDone: function (file, doRemoveFile) {
+            //因为没有写具体实现，这里其实是移除
+            return true;
+        },
+        responseHandler: function (responseObject, file) {
+            //这里把responseObject变回传统的json对象
+            var jsonObject = eval("(" + responseObject.response + ")");
+            saveImg(jsonObject["url"]);
+        }
+
+    };
+    $("#myUploader").uploader(options);
+
+</script>
+</body>
+<script type="text/javascript">
+
+    /**
+     * 文章分类点击事件
+     * @param id a标签id
+     * @param category 分类名称
+     * @param pageNum  页码
+     */
+    function changeToActive(id, category, pageNum) {
+        var ulist_id = "";
+        if (typeof (id) == "object") {
+            ulist_id = id.id;
+        } else {
+            ulist_id = id;
+        }
+        $("ul").remove("#release-dreamland-ul");
+        $("ul").remove("#release-dreamland-fy");
+        $(".list-group-item").attr("class", "list-group-item");
+        $("#" + ulist_id).attr("class", "list-group-item active");
+
+        $.ajax({
+            type: 'post',
+            url: '/findByCategory',
+            data: {
+                "category": category,
+                "pageNum": pageNum
+            },
+            dataType: 'json',
+            success: function (data) {
+                var pageCategory = data["pageCategory"];
+                if (pageCategory == "fail") {
+                    window.location.href = "[[@{/login}]]";
+                } else {
+                    var ucList = pageCategory.list;
+                    if (ucList == null || ucList.length == 0) {
+                        return;
+                    } else {
+                        var startHtml = "<ul style='font-size: 12px' id='release-dreamland-ul'>";
+                        $(ucList).each(function () {
+                            var contHtml =
+                                "<li class='dreamland-fix'>" +
+                                "<a href='[[@{/watch}]]?cid=" + this.id + "'>" + this.title + "</a> " +
+
+                                "<a href='[[@{/write}]]?style=" + (this.markdownContent != null ? 1 : 0) + "&cid=" + this.id + "'><span class='bar-update'>修改</span></a>" +
+                                "<a onclick='deleteArticle(" + this.id + ")'><span class='bar-delete'>删除</span></a>" +
+                                "<span class='bar-read'>评论 " + this.commentNum + "</span>" +
+                                "<span class='bar-commend'>" + (this.upvote + this.commentNum) + "人阅读</span>" +
+                                "<hr/></li>";
+                            startHtml = startHtml + contHtml;
+                        });
+                        var endHtml = "</ul>";
+                        var okHtml = startHtml + endHtml;
+
+                        $("#release-div").append(okHtml);
+
+
+                        //分页
+                        var stPageHtml = " <ul id='release-dreamland-fy' class='pager pager-loose'>";
+                        var before;
+                        if (pageCategory.pageNum > 1) {
+                            var num = parseInt(pageCategory.pageNum) - 1;
+                            before = "<li><a onclick='changeToActive(" + ulist_id + ",\"" + category + "\"," + num + ")'>« 上一页</a></li>";
+                        } else {
+                            before = '<li><a href="javascript:void(0);" >上一页</a></li>';
+                        }
+                        stPageHtml += before;
+                        var begin;
+                        var end;
+                        if (pageCategory.pageNum < 10) {
+                            begin = 1;
+                            end = pageCategory.pages;
+                        } else {
+                            begin = pageCategory.pageNum - 5;
+                            end = pageCategory.pageNum + 4;
+                            if (begin < 1) {
+                                begin = 1;
+                                end = begin + 9;
+                            }
+                            if (end > pageCategory.pages) {
+                                end = pageCategory.pages;
+                                begin = end - 9;
+                            }
+                        }
+                        var li;
+                        for (var i = begin; i <= end; i++) {
+                            li = "<li ><a onclick='changeToActive(" + ulist_id + ",\"" + category + "\"," + i + ")'>" + i + "</a></li>"
+                            stPageHtml += li;
+                        }
+                        if (pageCategory.pageNum >= pageCategory.pages) {
+                            var lastPage = '<li><a href="javascript:void(0);" >下一页</a></li>';
+                        } else {
+                            var num = parseInt(pageCategory.pageNum) + 1;
+                            var lastPage = "<li><a onclick='changeToActive(" + ulist_id + ",\"" + category + "\"," + num + ")'>下一页 »</a></li>";
+                        }
+                        stPageHtml += lastPage;
+                        var endPageHtml = "</ul>";
+                        var pageOkHtml = stPageHtml + endPageHtml;
+
+                        $("#release-dreamland-div").append(pageOkHtml);
+                    }
+
+                }
+            }
+
+        });
+    }
+
+    /**
+     * 已发布点击事件
+     */
+    function release_dreamland() {
+        document.getElementById("release-bar").style.backgroundColor = "#B22222";
+        document.getElementById("release-span").style.color = "white";
+
+        document.getElementById("refuse-bar").style.backgroundColor = "#F0F0F0";
+        document.getElementById("refuse-span").style.color = "black";
+
+        document.getElementById("personal-bar").style.backgroundColor = "#F0F0F0";
+        document.getElementById("personal-span").style.color = "black";
+
+        document.getElementById("personal-dreamland").style.display = "none";
+        document.getElementById("refuse-dreamland").style.display = "none";
+        document.getElementById("release-dreamland").style.display = "";
+    }
+
+    /**
+     * 未通过点击事件
+     */
+    function refuse_dreamland() {
+        document.getElementById("release-bar").style.backgroundColor = "#F0F0F0";
+        document.getElementById("release-span").style.color = "black";
+
+        document.getElementById("personal-bar").style.backgroundColor = "#F0F0F0";
+        document.getElementById("personal-span").style.color = "black";
+
+        document.getElementById("refuse-bar").style.backgroundColor = "#B22222";
+        document.getElementById("refuse-span").style.color = "white";
+
+        document.getElementById("release-dreamland").style.display = "none";
+        document.getElementById("personal-dreamland").style.display = "none";
+        document.getElementById("refuse-dreamland").style.display = "";
+    }
+
+    /**
+     * 未公开点击事件
+     */
+    function personal_dreamland() {
+        document.getElementById("release-bar").style.backgroundColor = "#F0F0F0";
+        document.getElementById("release-span").style.color = "black";
+
+        document.getElementById("personal-bar").style.backgroundColor = "#B22222";
+        document.getElementById("personal-span").style.color = "white";
+
+        document.getElementById("refuse-bar").style.backgroundColor = "#F0F0F0";
+        document.getElementById("refuse-span").style.color = "black";
+
+        document.getElementById("release-dreamland").style.display = "none";
+        document.getElementById("refuse-dreamland").style.display = "none";
+        document.getElementById("personal-dreamland").style.display = "";
+    }
+
+    /**
+     * 未通过分页
+     * @param pageNum
+     */
+    function turnPage(pageNum) {
+        $("ul").remove("#refuse-dreamland-ul");
+        $("ul").remove("#refuse-dreamland-fy");
+        $.ajax({
+            type: 'post',
+            url: '/findRefuse',
+            data: {"pageNum": pageNum},
+            dataType: 'json',
+            success: function (data) {
+                var pageRefuse = data["pageRefuse"];
+                if (pageRefuse == "fail") {
+                    window.location.href = "[[@{/login}]]";
+                } else {
+                    var ucList = pageRefuse.list;
+                    if (ucList == null || ucList.length == 0) {
+                        return;
+                    } else {
+                        var startHtml = "<ul style='font-size: 12px' id='refuse-dreamland-ul'>";
+                        $(ucList).each(function () {
+                            var contHtml =
+                                "<li class='dreamland-fix'>" +
+                                "<span class='bar-read' style='color: red'> 未通过原因：" + this.remark + "</span>" +
+                                "<a href='[[@{/watch}]]?cid=" + this.id + "'>" + this.title + "</a> " +
+                                "<a onclick='deleteArticle(" + this.id + ")'><span class='bar-delete'>删除</span></a>" +
+                                "<a href='[[@{/write}]]?style=" + (this.markdownContent != null ? 1 : 0) + "&cid=" + this.id + "'><span class='bar-update'>修改</span><hr/></a>" +
+                                "</li>";
+                            startHtml = startHtml + contHtml;
+                        });
+                        var endHtml = "</ul>";
+                        var okHtml = startHtml + endHtml;
+
+                        $("#refuse-div").append(okHtml);
+
+
+                        //分页
+                        var stPageHtml = " <ul id='update-dreamland-fy' class='pager pager-loose'>";
+                        var before;
+                        if (pageRefuse.pageNum > 1) {
+                            var num = parseInt(pageRefuse.pageNum) - 1;
+                            before = "<li><a onclick='turnPage(" + num + ")'>« 上一页</a></li>";
+                        } else {
+                            before = '<li><a href="javascript:void(0);" >上一页</a></li>';
+                        }
+                        stPageHtml += before;
+                        var begin;
+                        var end;
+                        if (pageRefuse.pageNum < 10) {
+                            begin = 1;
+                            end = pageRefuse.pages;
+                        } else {
+                            begin = pageRefuse.pageNum - 5;
+                            end = pageRefuse.pageNum + 4;
+                            if (begin < 1) {
+                                begin = 1;
+                                end = begin + 9;
+                            }
+                            if (end > pageRefuse.pages) {
+                                end = pageRefuse.pages;
+                                begin = end - 9;
+                            }
+                        }
+                        var li;
+                        for (var i = begin; i <= end; i++) {
+                            li = "<li ><a onclick='turnPage(" + i + ")'>" + i + "</a></li>"
+                            stPageHtml += li;
+                        }
+                        if (pageRefuse.pageNum >= pageRefuse.pages) {
+                            var lastPage = '<li><a href="javascript:void(0);" >下一页</a></li>';
+                        } else {
+                            var num = parseInt(pageRefuse.pageNum) + 1;
+                            var lastPage = "<li><a onclick='turnPage(" + num + ")'>下一页 »</a></li>";
+                        }
+                        stPageHtml += lastPage;
+                        var endPageHtml = "</ul>";
+                        var pageOkHtml = stPageHtml + endPageHtml;
+
+                        $("#update-dreamland-div").append(pageOkHtml);
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * 未公开文章分页
+     * @param pageNum
+     */
+    function personTurnPage(pageNum) {
+        $("ul").remove("#personal-dreamland-ul");
+        $("ul").remove("#personal-dreamland-fy");
+        $.ajax({
+            type: 'post',
+            url: '/findPersonal',
+            data: {"pageNum": pageNum},
+            dataType: 'json',
+            success: function (data) {
+                var pagePersonal = data["pagePersonal"];
+                if (pagePersonal == "fail") {
+                    window.location.href = "[[@{/login}]]";
+                } else {
+                    var ucList = pagePersonal.list;
+                    if (ucList == null || ucList.length == 0) {
+                        return;
+                    } else {
+                        var startHtml = "<ul style='font-size: 12px' id='personal-dreamland-ul'>";
+                        $(ucList).each(function () {
+                            var contHtml =
+                                "<li class='dreamland-fix'>" +
+                                "<a href='[[@{/watch}]]?cid=" + this.id + "'>" + this.title + "</a> " +
+                                "<a onclick='deleteArticle(" + this.id + ")'><span class='bar-delete'>删除</span></a>" +
+                                "<a href='[[@{/write}]]?style=" + (this.markdownContent != null ? 1 : 0) + "&cid=" + this.id + "'><span class='bar-update'>修改</span><hr/></a>" +
+                                "</li>";
+                            startHtml = startHtml + contHtml;
+                        });
+                        var endHtml = "</ul>";
+                        var okHtml = startHtml + endHtml;
+
+                        $("#personal-div").append(okHtml);
+
+
+                        //分页
+                        var stPageHtml = " <ul id='persoanl-dreamland-fy' class='pager pager-loose'>";
+                        var before;
+                        if (pagePersonal.pageNum > 1) {
+                            var num = parseInt(pagePersonal.pageNum) - 1;
+                            before = "<li><a onclick='personTurnPage(" + num + ")'>« 上一页</a></li>";
+                        } else {
+                            before = '<li><a href="javascript:void(0);" >上一页</a></li>';
+                        }
+                        stPageHtml += before;
+                        var begin;
+                        var end;
+                        if (pagePersonal.pageNum < 10) {
+                            begin = 1;
+                            end = pagePersonal.pages;
+                        } else {
+                            begin = pagePersonal.pageNum - 5;
+                            end = pagePersonal.pageNum + 4;
+                            if (begin < 1) {
+                                begin = 1;
+                                end = begin + 9;
+                            }
+                            if (end > pagePersonal.pages) {
+                                end = pagePersonal.pages;
+                                begin = end - 9;
+                            }
+                        }
+                        var li;
+                        for (var i = begin; i <= end; i++) {
+                            li = "<li ><a onclick='personTurnPage(" + i + ")'>" + i + "</a></li>"
+                            stPageHtml += li;
+                        }
+                        if (pagePersonal.pageNum >= pagePersonal.pages) {
+                            var lastPage = '<li><a href="javascript:void(0);" >下一页</a></li>';
+                        } else {
+                            var num = parseInt(pagePersonal.pageNum) + 1;
+                            var lastPage = "<li><a onclick='personTurnPage(" + num + ")'>下一页 »</a></li>";
+                        }
+                        stPageHtml += lastPage;
+                        var endPageHtml = "</ul>";
+                        var pageOkHtml = stPageHtml + endPageHtml;
+
+                        $("#personal-dreamland-div").append(pageOkHtml);
+                    }
+                }
+            }
+        });
+    }
+    
+    function deleteArticle(cid) {
+        new $.zui.Messager('是否删除文章', {
+            type: 'error',
+            close: true,
+            placement: 'center', // 定义显示位置
+            actions: [{
+                name: 'check',
+                icon: 'check',
+                text: '是',
+                action: function () {  // 点击该操作按钮的回调函数
+                    $.ajax({
+                        type: 'get',
+                        url: '/deleteArticle',
+                        data: {"id": cid},
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data['result'] == 1) {
+                                alert("删除失败！");
+                            } else {
+                                window.location.reload();
+                            }
+                        }
+                    });
+                    return false;
+                }
+            }]
+        }).show();
+    }
+
+    function changeBackColor() {
+        $(".glyphicon-edit").css("color", "blue");
+    }
+
+    function back2color() {
+        $(".glyphicon-edit").css("color", "black");
+    }
+
+    $("#updateEmailBtn").click();
+
+    $("#updatePwdBtn").click(function () {
+        $.ajax({
+            type: 'get',
+            url: '/updatePassword',
+            data: $("#form1").serialize(),
+            dataType: 'json',
+            success: function (data) {
+                if(data['status'] == 1){
+                    alert("修改成功，下一次登录有效！");
+                }else{
+                    alert("修改成功，下一次登录有效！");
+                }
+            }
+        })
+    });
+
+    function checkMessage(id, message, respondentId) {
+        $.ajax({
+            type: 'get',
+            url: '/updateLeaveMessage',
+            data: {
+                'id': id,
+            },
+            dataType: 'json',
+            success: function (data) {
+
+            }
+        });
+        (new $.zui.ModalTrigger({
+            title: '消息内容',
+            custom: function () {
+                return ""+
+                    "<div class=\"modal-body\">\n" +
+                    "                    <p style='font-size: 18px'>\""+message+"\"</p>\n" +
+                    "                    <hr>\n" +
+                    "                    <strong>回复：</strong><br/>\n" +
+                    "                    <textarea id=\"messageContent\" name=\"content\" style=\"width: 100%; height: 150px\"> Hello, world! </textarea>\n" +
+                    "</div>\n" +
+                    "<div class=\"modal-footer\">\n" +
+                    "                    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">关闭</button>\n" +
+                    "                    <button type=\"button\" class=\"btn btn-primary\" onclick='replyLeassageMessage(\""+respondentId+"\")'>发送</button>\n" +
+                    " </div>";
+            }
+        })).show();
+    }
+
+    function replyLeassageMessage(respondentId){
+        var answererId = "[[${user.id}]]";
+        var respondentId = respondentId;
+        var messageContent = $("#messageContent").val();
+        $.ajax({
+            type: 'get',
+            url: '/insertLeaveMessage',
+            data: {
+                'answererId': answererId,
+                'respondentId': respondentId,
+                'message': messageContent,
+                'isRead': '0',
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (data['result'] == 1) {
+                    alert("发送失败！");
+                } else {
+                    window.location.reload();
+                }
+            }
+        });
+    }
+
+</script>
+</html>

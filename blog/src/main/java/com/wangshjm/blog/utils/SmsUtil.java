@@ -14,10 +14,10 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class SmsUtil {
-    private static String accessKeyId = "LTAI4FiFeAFbd2TEAamaySp4";//你的accessKeyId,参考本文档步骤2
-    private static String accessKeySecret = "FunHdT4lEsyLx0pUPqkhnCn1etH7jG";//你的accessKeySecret，参考本文档步骤2
-    private static String setSignName = "dreamland";//短信签名
-    private static String dayutemplateCode = "SMS_173766994";//短信模板code
+    private static String accessKeyId = "xxxxxxxxxxx";//你的accessKeyId,参考本文档步骤2
+    private static String accessKeySecret = "xxxxxxxxxxx";//你的accessKeySecret，参考本文档步骤2
+    private static String setSignName = "xxxxxx";//短信签名
+    private static String dayutemplateCode = "xxxxxxxx";//短信模板code
 
     public static void sendMessages(String code,String phone) {
         //设置超时时间-可自行调整

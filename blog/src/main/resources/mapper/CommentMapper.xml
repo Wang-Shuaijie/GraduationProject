@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wangshjm.blog.dao.CommentMapper">
+    <resultMap type="com.wangshjm.blog.entity.Comment" id="commentMap">
+        <id property="id" column="id"></id>
+        <!-- property 表示com.wsj.myblog.entity.Comment中的属性； column 表示表中的列名 -->
+        <result property="children" column="children"></result>
+        <result property="contentId" column="content_id" />
+        <result property="answererId" column="answerer_id" />
+        <result property="respondentId" column="respondent_id" />
+        <result property="upvote" column="upvote" />
+        <result property="commentTime" column="comment_time" />
+        <result property="commentContent" column="comment_content" />
+
+        <association property="user" javaType="com.wangshjm.blog.entity.User">
+            <id column="uid" property="id" />
+            <result column="email" property="email" />
+            <result column="password" property="password" />
+            <result column="nick_name" property="nickName" />
+            <result column="phone" property="phone" />
+            <result column="state" property="state" />
+            <result column="img_url" property="imgUrl" />
+            <result column="enable" property="enable" />
+        </association>
+    </resultMap>
+
+    <select id="findByAnswererId" resultMap="commentMap">
+        select c.id,c.children,c.content_id,c.answerer_id,c.respondent_id,c.upvote,c.comment_time,c.comment_content,u.id as uid,u.email,u.password,u.nick_name,u.phone,u.state,u.img_url,u.enable
+        from tb_comment c, tb_user u
+        WHERE content_id = #{cid} and c.answerer_id = u.id
+        order by id desc
+    </select>
+
+    <select id="findByRespondentId" resultMap="commentMap">
+        select c.id,c.children,c.content_id,c.answerer_id,c.respondent_id,c.upvote,c.comment_time,c.comment_content,u.id as uid,u.email,u.password,u.nick_name,u.phone,u.state,u.img_url,u.enable
+        from tb_comment c, tb_user u
+        WHERE content_id = #{cid} and c.respondent_id = u.id
+        order by id desc
+    </select>
+
+    <insert id="insertComment" parameterType="com.wangshjm.blog.entity.Comment">
+        <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER">
+            select last_insert_id()
+        </selectKey>
+        insert into tb_comment(content_id, answerer_id, respondent_id, comment_content, upvote, comment_time,children)
+        values(#{contentId},#{answererId}, #{respondentId},#{commentContent},#{upvote}, #{commentTime},#{children})
+    </insert>
+
+    <!--查询全部一级评论-->
+    <select id="findAllFirstComment"  resultMap="commentMap">
+        select c.id,c.children,c.content_id,c.answerer_id,c.respondent_id,c.upvote,c.comment_time,c.comment_content,u.id as uid,u.email,u.password,u.nick_name,u.phone,u.state,u.img_url,u.enable
+        from tb_comment c, tb_user u
+        WHERE content_id = #{cid} and respondent_id is null and c.answerer_id = u.id
+        order by id desc
+    </select>
+
+    <!--查询所有子评论-->
+    <select id="findAllChildrenComment"  resultMap="commentMap">
+        select c.id,c.children,c.content_id,c.answerer_id,c.respondent_id,c.upvote,c.comment_time,c.comment_content,u.id as uid,u.email,u.password,u.nick_name,u.phone,u.state,u.img_url,u.enable
+        from tb_comment c, tb_user u
+        WHERE content_id = #{cid}
+        <if test='children!=null and children!=""'>
+            AND c.id in (${children})
+        </if>
+        and c.answerer_id = u.id order by id desc
+    </select>
+
+</mapper>
