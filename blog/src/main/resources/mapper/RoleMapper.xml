@@ -17,4 +17,12 @@
         where u.id = r.u_id and r.u_id = #{uid}
         ) and enabled =1
   </select>
+
+    <insert id="grantUser">
+        <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER">
+            select last_insert_id()
+        </selectKey>
+        insert into tb_role_user(u_id, r_id)
+        values(#{uid}, 1)
+    </insert>
 </mapper>

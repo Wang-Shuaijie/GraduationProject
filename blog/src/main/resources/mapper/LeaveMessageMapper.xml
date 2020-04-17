@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wangshjm.blog.dao.LeaveMessageMapper">
+
+    <select id="findRead" resultType="com.wangshjm.blog.entity.LeaveMessage">
+        select *
+        from tb_leave_message
+        where is_read = '1' and respondent_id = #{uid}
+        order by time desc
+    </select>
+
+    <select id="findUnRead" resultType="com.wangshjm.blog.entity.LeaveMessage">
+        select *
+        from tb_leave_message
+        where is_read = '0' and respondent_id = #{uid}
+        order by time desc
+    </select>
+
+</mapper>
