@@ -174,7 +174,7 @@ public class PersonalController extends BaseController {
         upvoteService.deleteByContentId(cid);
         userContentService.deleteById(cid);
         esDataService.delete(String.valueOf(cid));
-        return "redirect:/list";
+        return "redirect:/personal";
     }
 
 
@@ -244,7 +244,7 @@ public class PersonalController extends BaseController {
 
         model.addAttribute("user", user);
         model.addAttribute("userInfo", userInfo);
-        return "redirect:/list";
+        return "redirect:/personal";
     }
 
     /**

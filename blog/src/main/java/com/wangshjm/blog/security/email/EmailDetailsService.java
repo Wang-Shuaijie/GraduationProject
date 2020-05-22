@@ -23,7 +23,7 @@ public class EmailDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         User user = userService.findByEmail(s);
         if (user == null) {
-            throw new UsernameNotFoundException("用户名或密码错误");
+            throw new UsernameNotFoundException("用户名错误");
         }
         List<Role> roles = roleService.findByUid(user.getId());
         user.setRoles(roles);

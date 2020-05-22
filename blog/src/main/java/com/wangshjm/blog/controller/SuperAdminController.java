@@ -165,7 +165,7 @@ public class SuperAdminController {
     @PostMapping(value = "/getFriendLink")
     public JSONObject getFriendLink() {
         JSONObject resultJson = new JSONObject();
-        List<FriendLink> friendLinkList = friendLinkService.findAllFriendLink();
+        List<FriendLink> friendLinkList = friendLinkService.getAllFriendLink();
         resultJson.put("data", friendLinkList);
         return resultJson;
     }

@@ -21,6 +21,7 @@ public class FeedBack {
 
     private Long userId;
 
+    @Transient
     private String nickName;
 
     private String contactInfo;

@@ -14,7 +14,7 @@ public class FriendLinkServiceImpl implements FriendLinkService {
     private FriendLinkMappper friendLinkMappper;
 
     @Override
-    public List<FriendLink> findAllFriendLink() {
+    public List<FriendLink> getAllFriendLink() {
         return friendLinkMappper.selectAll();
     }
 }
