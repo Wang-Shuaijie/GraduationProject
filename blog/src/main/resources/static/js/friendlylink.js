@@ -12,7 +12,7 @@
                 for(var i in data['data']){
                     friendLinks.append($('<div class="friendLink">' +
                         '<i class="am-icon-street-view "></i>' +
-                        '<a href="' + data['data'][i]['url'] + '" target="_blank">' + data['data'][i]['blogger'] + '</a>' +
+                        '<a href="' + data['data'][i]['url'] + '" target="_blank">' + data['data'][i]['name'] + '</a>' +
                         '</div>'));
                 }
             },
